@@ -1,4 +1,3 @@
-"use strict";
 
 //  Adapted from Daniel Rohmer tutorial
 //
@@ -15,6 +14,7 @@ const sceneElements = {
     camera: null,
     control: null,  // NEW
     renderer: null,
+    treeComponents: null,
 };
 
 
@@ -36,6 +36,19 @@ window.addEventListener('resize', resizeWindow);
 var keyD = false, keyA = false, keyS = false, keyW = false;
 document.addEventListener('keydown', onDocumentKeyDown, false);
 document.addEventListener('keyup', onDocumentKeyUp, false);
+document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+function onDocumentMouseMove(event)
+{
+	// the following line would stop any other event handler from firing
+	// (such as the mouse's TrackballControls)
+	event.preventDefault();
+
+	// update the mouse variable
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+}
 
 // Update render image size and camera aspect when the window is resized
 function resizeWindow(eventParam) {
@@ -83,6 +96,51 @@ function onDocumentKeyUp(event) {
 
 //////////////////////////////////////////////////////////////////
 
+function makeHead() {
+    const radius =  1.0;  
+    const tubeRadius =  4.4;  
+    const radialSegments = 30;  
+    const tubularSegments = 100;  
+    const geometry = new THREE.TorusGeometry(radius, tubeRadius,radialSegments, tubularSegments);
+    const material = new THREE.MeshBasicMaterial({color: 0xf7e7ce});
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.scale.set(0.1, 0.1, 0.1);
+    return mesh;
+}
+function createLathe() {
+    const points = [];
+    for (var i = 0; i < 5; i+=0.5) {
+        points.push(new THREE.Vector3(i + 4, 0.5*i*i, 0));
+    }
+
+    for (var i = 11.125; i < 16; i++ ) {
+        points.push(new THREE.Vector3(8.5, i + 0.1*i, 0));
+    }
+
+    
+    points.push(new THREE.Vector3(8, 18.25, 0));
+    points.push(new THREE.Vector3(7.5, 20.125, 0));
+    points.push(new THREE.Vector3(7, 21.75, 0));
+    points.push(new THREE.Vector3(6.5, 23.125, 0));
+    points.push(new THREE.Vector3(6, 24.25, 0));
+    points.push(new THREE.Vector3(5.5, 25.125, 0));
+    points.push(new THREE.Vector3(5, 25.75, 0));
+    points.push(new THREE.Vector3(4.5, 26.125, 0));
+    points.push(new THREE.Vector3(4, 26.25, 0));
+
+    
+    //console.log(points);
+
+    const segments = 50;  
+    const phiStart = Math.PI * 2.00;  
+    const phiLength = Math.PI * 2.00;  
+    const geometry = new THREE.LatheGeometry(points, segments, phiStart, phiLength);
+        const material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true} );
+    const lathe = new THREE.Mesh( geometry, material );
+    return lathe;
+
+}
+
 function createEdges(geometry) {
     const edges = new THREE.EdgesGeometry( geometry );
     const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
@@ -112,9 +170,9 @@ function createPiece(color) {
     var mesh = new THREE.Mesh( geometry, material);
     return mesh;
 }
+
 // Create and insert in the scene graph the models of the 3D scene
 function load3DObjects(sceneGraph) {
-
     // ************************** //
     // Create a ground plane
     // ************************** //
@@ -129,6 +187,7 @@ function load3DObjects(sceneGraph) {
     planeObject.receiveShadow = true;
 
     var center = new THREE.Object3D();
+    center.name = "center";
 
     for (var i=0; i<100; i++) {
         var piece = createPiece(0x00472a);
@@ -136,6 +195,7 @@ function load3DObjects(sceneGraph) {
         piece.position.y = 1;
         piece.position.x = Math.cos(1 + i*0.1);
         piece.position.z = Math.sin(1 + i*0.1);
+        //console.log(piece);
     }
     var randomNumber = Math.random();
     for (var i=0; i<100; i++) {
@@ -169,18 +229,27 @@ function load3DObjects(sceneGraph) {
         //piece.rotation.y = Math.PI * randomNumber;
         piece.position.z = Math.sin(1 + i*0.1)/1.3;
     }
-
     var randomNumber = Math.random();
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x000000);
-        //piece.scale.set(0.5,0.5,0.5);
+    for (var i=0; i<400; i++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var piece = createPiece(randomColor);
+        piece.scale.set(1.3, 1.3, 1.3);
         center.add(piece);
-        piece.position.y = 4.5;
-        piece.position.x = Math.cos(1 + i*0.1)/3;
-        //piece.rotation.y = Math.PI * randomNumber;
-        piece.position.z = Math.sin(1 + i*0.1)/3;
+        piece.position.y = 5.2;
+        //piece.position.x = Math.cos(i)/3;
+        piece.rotation.y = THREE.Math.degToRad(i);
+        //piece.position.z = Math.sin(i)/3;
     }
 
+    var lathe1 = createLathe();
+    sceneGraph.add(lathe1);
+    lathe1.position.x = -2;
+    lathe1.position.y = 10;
+
+    var head1 = makeHead();
+    head1.position.y = 2;
+    head1.position.x = 5;
+    sceneGraph.add(head1);
     /*
         NICE IDEA TO MAKE A NEW KIND OF TREE!! :)
     for (var i=0; i<100; i++) {
@@ -236,10 +305,10 @@ function load3DObjects(sceneGraph) {
     edges4.position.y = 1.2;
     edges4.position.x = 0.6;
     */
-
-
-
     
+    // Create raycaster
+	raycaster = new THREE.Raycaster();
+	mouse = new THREE.Vector2(1, 1);
 }
 
 // Displacement value
@@ -249,39 +318,52 @@ var delta = 0.1;
 var dispX = 0.2, dispZ = 0.2;
 
 function computeFrame(time) {
+    
+    // update the picking ray with the camera and mouse position
+	raycaster.setFromCamera( mouse, sceneElements.camera );
+	
+	// calculate objects intersecting the picking ray
+    var array = sceneElements.sceneGraph.getObjectByName("center").children;
+    
+    // for (var i = 0; i < array.length; )
+
+    var intersects = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center").children);
+    console.log(intersects);
+
+        
+
+    if ( intersects.length > 0 && array.includes(intersects[0].object)) {
+        intersects[0].object.material.color.set( 0xff0000 );
+        
+    
+    } else {
+        for (var k = 0; k < array.length; k++) {
+            array[k].material.color.set( 0x00472a);
+        }
+        
+    
+    }
     /*
+    for (var k = 0; k < array.length; k++) {
 
-    // THE SPOT LIGHT
+		if ( intersects.length > 0 && array.includes(intersects[0].object)) {
+	
+            array[k].material.color.set( 0xff0000 );
+        
+        } else {
+        
+            array[k].material.color.set( 0x00472a);
+        
+        }
 
-    // Can extract an object from the scene Graph from its name
-    const light = sceneElements.sceneGraph.getObjectByName("light");
-
-    // Apply a small displacement
-
-    if (light.position.x >= 10) {
-        delta *= -1;
-    } else if (light.position.x <= -10) {
-        delta *= -1;
-    }
-    light.translateX(delta);
-
-    // CONTROLING THE CUBE WITH THE KEYBOARD
-
-    const cube = sceneElements.sceneGraph.getObjectByName("cube");
-
-    if (keyD && cube.position.x < 2.5) {
-        cube.translateX(dispX);
-    }
-    if (keyW && cube.position.z > -2.5) {
-        cube.translateZ(-dispZ);
-    }
-    if (keyA && cube.position.x > -2.5) {
-        cube.translateX(-dispX);
-    }
-    if (keyS && cube.position.z < 2.5) {
-        cube.translateZ(dispZ);
     }
     */
+
+
+
+	
+
+	
 
     // Rendering
     helper.render(sceneElements);

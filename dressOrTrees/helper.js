@@ -1,4 +1,3 @@
-"use strict";
 
 //  Adapted from Daniel Rohmer tutorial
 //
