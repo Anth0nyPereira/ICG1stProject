@@ -14,7 +14,7 @@ const sceneElements = {
     camera: null,
     control: null,  // NEW
     renderer: null,
-    treeComponents: null,
+    textGeometry: null,
 };
 
 
@@ -171,6 +171,70 @@ function createPiece(color) {
     return mesh;
 }
 
+function loadFont(url) {
+    const loader = new THREE.FontLoader();
+    return new Promise((resolve, reject) => {
+      loader.load(url, resolve, undefined, reject);
+    });
+  }
+
+  async function doit() {
+    const font = await loadFont('https://threejsfundamentals.org/threejs/resources/threejs/fonts/helvetiker_regular.typeface.json');  
+    const geometry = new THREE.TextGeometry('three.js', {
+      font: font,
+      size: 3.0,
+      height: .2,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 0.15,
+      bevelSize: .3,
+      bevelSegments: 5,
+    });
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x00ff00}));
+    geometry.computeBoundingBox();
+    geometry.boundingBox.getCenter(mesh.position).multiplyScalar(-1);
+    sceneElements.sceneGraph.add(mesh);
+  }
+
+function createText() {
+    
+var loader = new THREE.FontLoader();
+
+loader.load( 'fonts/helvetiker_regular.typeface.js', function ( font ) {
+
+  var material = new THREE.MeshPhongMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
+
+  var geometry = new THREE.TextGeometry( 'Hello three.js!', {
+    font: font,
+    size: 20000000000,
+    height: 5,
+    curveSegments: 12,
+    bevelEnabled: true,
+    bevelThickness: 10,
+    bevelSize: 8,
+    bevelSegments: 5
+  } );
+
+  var mesh = new THREE.Mesh( geometry, material );
+
+  sceneElements.sceneGraph.add(mesh);
+
+  var light = new THREE.DirectionalLight( 0xffffff );
+  light.position.set( 0, 1, 1 ).normalize();
+  sceneElements.sceneGraph.add(light);
+
+
+  var renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+
+  renderer.render(  sceneElements.sceneGraph, sceneElements.camera );
+
+} );
+console.log(loader);
+  }
+
+
 // Create and insert in the scene graph the models of the 3D scene
 function load3DObjects(sceneGraph) {
     // ************************** //
@@ -306,9 +370,12 @@ function load3DObjects(sceneGraph) {
     edges4.position.x = 0.6;
     */
     
-    // Create raycaster
+    // Create raycaster (for tree color change)
 	raycaster = new THREE.Raycaster();
 	mouse = new THREE.Vector2(1, 1);
+
+    // Create text (lyrics of the Skye Boat Song, from the Outlander series)
+    doit();
 }
 
 // Displacement value
@@ -328,7 +395,7 @@ function computeFrame(time) {
     // for (var i = 0; i < array.length; )
 
     var intersects = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center").children);
-    console.log(intersects);
+    //console.log(intersects);
 
         
 
