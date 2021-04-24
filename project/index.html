@@ -379,6 +379,26 @@ function createBody() {
     foot2.position.set(-4, -47, -1);
     body.add(foot2);
 
+    // HANDS
+
+    // 1st wrist
+    var skinMaterial = new THREE.MeshBasicMaterial({color: 0xf7e7ce});
+    var wrist1 = new THREE.Mesh( forearmGeometry, skinMaterial );
+    wrist1.scale.set(0.7, 0.2, 0.7);
+    wrist1.position.set(21, 20, 0);
+    wrist1.rotation.z = -0.6;
+    body.add(wrist1);
+
+    // 1st palm
+
+    // 2nd wrist
+    var wrist2 = new THREE.Mesh( forearmGeometry, skinMaterial );
+    wrist2.scale.set(0.7, 0.2, 0.7);
+    wrist2.position.set(-21, 20, 0);
+    wrist2.rotation.z = 0.6;
+    body.add(wrist2);
+
+
     return body;
 }
 function createLathe() {
