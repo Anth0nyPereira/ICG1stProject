@@ -390,6 +390,15 @@ function createBody() {
     body.add(wrist1);
 
     // 1st palm
+    var palmRadius = 1.5;  
+    var palmTubeRadius = 1.5;  
+    var palmRadialSegments = 8;  
+    var palmTubularSegments = 24;  
+    var palmGeometry = new THREE.TorusGeometry(palmRadius, palmTubeRadius, palmRadialSegments, palmTubularSegments);
+    var palm1 = new THREE.Mesh(palmGeometry, skinMaterial);
+    palm1.position.set(23, 22, 0);
+    palm1.rotation.x = Math.PI/2;
+    body.add(palm1);
 
     // 2nd wrist
     var wrist2 = new THREE.Mesh( forearmGeometry, skinMaterial );
@@ -397,6 +406,12 @@ function createBody() {
     wrist2.position.set(-21, 20, 0);
     wrist2.rotation.z = 0.6;
     body.add(wrist2);
+
+    // 2nd palm
+    var palm2 = new THREE.Mesh(palmGeometry, skinMaterial);
+    palm2.position.set(-23, 22, 0);
+    palm2.rotation.x = Math.PI/2;
+    body.add(palm2);
 
 
     return body;
