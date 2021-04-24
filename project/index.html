@@ -772,7 +772,17 @@ function makeStone() {
     var zerotwo2 = createZeroTwo();
     zerotwo2.scale.set(0.2, 0.2, 0.2);
     zerotwo2.position.set(0, 13.5, 5);
-    sceneGraph.add(zerotwo2);
+
+    var centerZeroTwo2 = new THREE.Object3D();
+    centerZeroTwo2.position.set(0, 13.5, 5);
+    centerZeroTwo2.add(zerotwo2);
+
+    sceneGraph.add(centerZeroTwo2);
+    zerotwo2.name = "zerotwo2";
+    centerZeroTwo2.name = "centerzerotwo2";
+    console.log(zerotwo2);
+
+
 
 
     /*
@@ -805,7 +815,13 @@ function makeStone() {
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(0.01, 0.01);
 
+        var quaternion = new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
+
         function computeFrame(time) {
+
+            // rotate zero two
+            var zerotwo2 = sceneElements.sceneGraph.getObjectByName("centerzerotwo2");
+            zerotwo2.rotation.y += 0.05;
             
 
             // update the picking ray with the camera and mouse position
