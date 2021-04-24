@@ -351,7 +351,7 @@ function createBody() {
     var shape = new THREE.Shape();
     shape.moveTo(-1, 0);
     //shape.lineTo(3, 0);
-    shape.bezierCurveTo(-0.2, 0.04, 0.2, 0.04, -0.5, 0, 1, 0);
+    shape.bezierCurveTo(-0.5, 0.25, 0.5, 0.25, 1, 0);
     shape.lineTo(-1, 0);
     console.log(shape);
     //
@@ -367,12 +367,17 @@ function createBody() {
     }
 
     var footGeometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-    var wireframeMaterial = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
-    var footMesh = new THREE.Mesh(footGeometry, wireframeMaterial);
-    footMesh.position.x = 5;
-    footMesh.position.y = 1;
-    footMesh.rotation.z = Math.PI/2;
-    body.add(footMesh);
+    var wireframeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    var foot1 = new THREE.Mesh(footGeometry, wireframeMaterial);
+    foot1.scale.set(1, 2, 1.8);
+    foot1.position.set(4, -47, -1);
+    body.add(foot1);
+
+    // 2nd foot
+    var foot2 = new THREE.Mesh(footGeometry, wireframeMaterial);
+    foot2.scale.set(1, 2, 1.8);
+    foot2.position.set(-4, -47, -1);
+    body.add(foot2);
 
     return body;
 }
