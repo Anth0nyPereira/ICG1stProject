@@ -226,9 +226,38 @@ function makeSemiSphere() {
 }
 
 function makeHair() {
-    const geometry = new THREE.BoxGeometry( 0.5, 20, 8);
-    const material = new THREE.MeshBasicMaterial( {color: 0xffc0cb} );
-    const hair = new THREE.Mesh( geometry, material );
+    var hair = new THREE.Group();
+    var geometry = new THREE.BoxGeometry( 0.5, 20, 8);
+    var material = new THREE.MeshBasicMaterial( {color: 0xffc0cb} );
+    var hair1 = new THREE.Mesh( geometry, material );
+
+    var shape = new THREE.Shape();
+    shape.moveTo(5,0);
+    shape.lineTo(0, 10);
+    shape.lineTo(-5, 0);
+    shape.lineTo(5, 0);
+
+    const extrudeSettings = {
+        steps: 2,
+        depth: 0.2,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+};
+
+var shapeGeometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+var shapeMaterial = new THREE.MeshBasicMaterial( { color: 0xffc0cb } );
+var shapeHair = new THREE.Mesh( shapeGeometry, shapeMaterial ) ;
+shapeHair.rotation.y = Math.PI/2;
+shapeHair.scale.set(1, 1.8, 1.3);
+shapeHair.position.y = -10;
+
+hair.add(hair1);
+hair.add(shapeHair);
+
+
     return hair;
 }
 
@@ -430,11 +459,31 @@ function createBody() {
     holder1.position.set(23, 20, 0);
     body.add(holder1);
 
+    // Neck
+    var neck1 = new THREE.Mesh( forearmGeometry, skinMaterial );
+    neck1.position.set(0, 5, 0);
+    body.add(neck1);
+
 
 
 
     return body;
 }
+
+function createZeroTwo() {
+    var zerotwo1 = new THREE.Group();
+    var head1 = createHead();
+    head1.position.x = 70;
+
+    var body1 = createBody();
+    body1.position.x = 70;
+    body1.position.y = -20;
+    
+    zerotwo1.add(head1);
+    zerotwo1.add(body1);
+    return zerotwo1;
+}
+
 function createLathe(color) {
     const points = [];
     for (var i = 0; i < 5; i+=0.5) {
@@ -716,14 +765,14 @@ function makeStone() {
     lathe1.position.y = 10;
 
     // Make zero two character
-    var head1 = createHead();
-    head1.position.x = 70;
-    sceneGraph.add(head1);
 
-    var body1 = createBody();
-    body1.position.x = 70;
-    body1.position.y = -20;
-    sceneGraph.add(body1);
+    var zerotwo1 = createZeroTwo();
+    sceneGraph.add(zerotwo1);
+
+    var zerotwo2 = createZeroTwo();
+    zerotwo2.scale.set(0.2, 0.2, 0.2);
+    zerotwo2.position.set(0, 13.5, 5);
+    sceneGraph.add(zerotwo2);
 
 
     /*
