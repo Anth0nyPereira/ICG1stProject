@@ -139,13 +139,13 @@
 
         function onDocumentMouseMove(event)
 {
-	// the following line would stop any other event handler from firing
-	// (such as the mouse's TrackballControls)
-	event.preventDefault();
+    // the following line would stop any other event handler from firing
+    // (such as the mouse's TrackballControls)
+    event.preventDefault();
 
-	// update the mouse variable
-	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    // update the mouse variable
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
 }
 
@@ -191,17 +191,68 @@
                     keyW = false;
                     break;
             }
-        }
-        function makeHead() {
-    const radius =  1.0;  
-    const tubeRadius =  4.4;  
-    const radialSegments = 30;  
-    const tubularSegments = 100;  
-    const geometry = new THREE.TorusGeometry(radius, tubeRadius,radialSegments, tubularSegments);
-    const material = new THREE.MeshBasicMaterial({color: 0xf7e7ce});
+    }
+function makeCircle(color) {
+    var radius =  1.0;  
+    var tubeRadius =  5.0;  
+    var radialSegments = 30;  
+    var tubularSegments = 100;  
+    var geometry = new THREE.TorusGeometry(radius, tubeRadius,radialSegments, tubularSegments);
+    var material = new THREE.MeshBasicMaterial({color: color});
     var mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.set(0.1, 0.1, 0.1);
+    //mesh.scale.set(0.1, 0.1, 0.1);
     return mesh;
+}
+
+function makeSemiSphere() {
+    const midSphereRadius =  5.8;  
+    const widthSegments = 30;  
+    const heightSegments = 30;  
+    const phiStart = Math.PI * 0.68;  
+    const phiLength = Math.PI * 1.06;  
+    const thetaStart = Math.PI * 1.00;  
+    const thetaLength = Math.PI * 0.46; 
+
+    var midSphereGeometry = new THREE.SphereGeometry(
+        midSphereRadius,
+        widthSegments, heightSegments,
+        phiStart, phiLength,
+        thetaStart, thetaLength);
+    
+    var material = new THREE.MeshBasicMaterial({color: 0xffc0cb});
+    var mesh = new THREE.Mesh(midSphereGeometry, material);
+    return mesh;
+    
+}
+
+function makeHair() {
+    const geometry = new THREE.BoxGeometry( 0.5, 20, 8);
+    const material = new THREE.MeshBasicMaterial( {color: 0xffc0cb} );
+    const hair = new THREE.Mesh( geometry, material );
+    return hair;
+}
+
+function createHead() {
+    var head = new THREE.Group();
+    var circle = makeCircle(0xf7e7ce);
+    var beginHair = makeCircle(0xffc0cb);
+    beginHair.scale.set(0.9, 0.2, 1);
+    beginHair.position.set(0, 5, -1);
+    beginHair.rotation.x = -0.2;
+    /*
+    var beginHair = makeSemiSphere();
+    beginHair.rotation.z = 3*Math.PI/2 + 0.2;
+    beginHair.position.y = 10;
+    beginHair.position.z = -4;
+    */
+    var hair = makeHair();
+    hair.rotation.y = Math.PI/2;
+    hair.position.z = -4.8;
+    hair.position.y = -6;
+    head.add(circle);
+    head.add(beginHair);
+    head.add(hair);
+    return head;
 }
 function createLathe() {
     const points = [];
@@ -270,27 +321,27 @@ function createPiece(color) {
 function loadFont(url) {
     const loader = new THREE.FontLoader();
     return new Promise((resolve, reject) => {
-      loader.load(url, resolve, undefined, reject);
+    loader.load(url, resolve, undefined, reject);
     });
-  }
+}
 
-  async function doit() {
+async function doit() {
     const font = await loadFont('https://threejsfundamentals.org/threejs/resources/threejs/fonts/helvetiker_regular.typeface.json');  
     const geometry = new THREE.TextGeometry('three.js', {
-      font: font,
-      size: 3.0,
-      height: .2,
-      curveSegments: 12,
-      bevelEnabled: true,
-      bevelThickness: 0.15,
-      bevelSize: .3,
-      bevelSegments: 5,
+    font: font,
+    size: 3.0,
+    height: .2,
+    curveSegments: 12,
+    bevelEnabled: true,
+    bevelThickness: 0.15,
+    bevelSize: .3,
+    bevelSegments: 5,
     });
     const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x00ff00}));
     geometry.computeBoundingBox();
     geometry.boundingBox.getCenter(mesh.position).multiplyScalar(-1);
     sceneElements.sceneGraph.add(mesh);
-  }
+}
 
 function createText() {
     
@@ -298,9 +349,9 @@ var loader = new THREE.FontLoader();
 
 loader.load( 'fonts/helvetiker_regular.typeface.js', function ( font ) {
 
-  var material = new THREE.MeshPhongMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
+var material = new THREE.MeshPhongMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
 
-  var geometry = new THREE.TextGeometry( 'Hello three.js!', {
+var geometry = new THREE.TextGeometry( 'Hello three.js!', {
     font: font,
     size: 20000000000,
     height: 5,
@@ -309,26 +360,26 @@ loader.load( 'fonts/helvetiker_regular.typeface.js', function ( font ) {
     bevelThickness: 10,
     bevelSize: 8,
     bevelSegments: 5
-  } );
+} );
 
-  var mesh = new THREE.Mesh( geometry, material );
+var mesh = new THREE.Mesh( geometry, material );
 
-  sceneElements.sceneGraph.add(mesh);
+sceneElements.sceneGraph.add(mesh);
 
-  var light = new THREE.DirectionalLight( 0xffffff );
-  light.position.set( 0, 1, 1 ).normalize();
-  sceneElements.sceneGraph.add(light);
+var light = new THREE.DirectionalLight( 0xffffff );
+light.position.set( 0, 1, 1 ).normalize();
+sceneElements.sceneGraph.add(light);
 
 
-  var renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  document.body.appendChild( renderer.domElement );
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
-  renderer.render(  sceneElements.sceneGraph, sceneElements.camera );
+renderer.render(  sceneElements.sceneGraph, sceneElements.camera );
 
 } );
 console.log(loader);
-  }
+}
         function generatePoints() {    
         var points = [];
         for (var i = 0; i < 25; i++) {
@@ -342,29 +393,29 @@ console.log(loader);
     return points;
 }
 
-  function goodPointsArray(array) {
+function goodPointsArray(array) {
     var count = 0;
     for (var i = 0; i < array.length; i++) {
-      var point = array[i];
-      if (point.y == 0) {
+    var point = array[i];
+    if (point.y == 0) {
         count = count + 1;
-      }
+    }
     }
     if (count >= 3) {
-      return true;
+    return true;
     } else {
-      return false;
+    return false;
     }
-  }
+}
 
-  function makeStone() {
+function makeStone() {
 
     var points = generatePoints();
 
     var bool = goodPointsArray(points);
     while (!bool) {
-      points = generatePoints();
-      bool = goodPointsArray(points);
+    points = generatePoints();
+    bool = goodPointsArray(points);
     }
 
     var material2 = new THREE.MeshLambertMaterial({
@@ -375,7 +426,7 @@ console.log(loader);
 
     const stone = new THREE.Mesh(meshGeometry, material2);
     return stone;
-  }
+}
         
         // Create and insert in the scene graph the models of the 3D scene
         function load3DObjects(sceneGraph) {
@@ -419,11 +470,11 @@ console.log(loader);
             stone.position.x = 30;
             center.rotation.y = Math.PI/4 + i*(Math.PI/2);
         }
-       
+    
 
 
 
-           var center = new THREE.Object3D();
+        var center = new THREE.Object3D();
     center.name = "center";
 
     for (var i=0; i<100; i++) {
@@ -483,10 +534,12 @@ console.log(loader);
     lathe1.position.x = -2;
     lathe1.position.y = 10;
 
-    var head1 = makeHead();
-    head1.position.y = 2;
-    head1.position.x = 5;
+    // Make zero two character
+    var head1 = createHead();
+    head1.position.x = 70;
     sceneGraph.add(head1);
+
+
     /*
         NICE IDEA TO MAKE A NEW KIND OF TREE!! :)
     for (var i=0; i<100; i++) {
@@ -515,15 +568,15 @@ console.log(loader);
         var dispX = 0.2, dispZ = 0.2;
 
         var raycaster = new THREE.Raycaster();
-	    var mouse = new THREE.Vector2(0.01, 0.01);
+        var mouse = new THREE.Vector2(0.01, 0.01);
 
         function computeFrame(time) {
             
 
             // update the picking ray with the camera and mouse position
-	raycaster.setFromCamera( mouse, sceneElements.camera );
-	
-	// calculate objects intersecting the picking ray
+    raycaster.setFromCamera( mouse, sceneElements.camera );
+    
+    // calculate objects intersecting the picking ray
     var array = sceneElements.sceneGraph.getObjectByName("center").children;
     
     // for (var i = 0; i < array.length; )
