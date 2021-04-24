@@ -413,10 +413,29 @@ function createBody() {
     palm2.rotation.x = Math.PI/2;
     body.add(palm2);
 
+    // Flashlight
+    var flashlight1 = createLathe(0xffcc00);
+    flashlight1.scale.set(0.4, 0.4, 0.4);
+    flashlight1.position.set(23, 26, 0);
+    body.add(flashlight1);
+
+    // Holder
+    var holderRadiusTop =  1.3;  
+    var holderRadiusBottom =  0.7;  
+    var holderHeight = 12;  
+    var holderRadialSegments = 12;  
+    var holderGeometry = new THREE.CylinderGeometry(holderRadiusTop, holderRadiusBottom, holderHeight, holderRadialSegments);
+    var holderMaterial = new THREE.MeshBasicMaterial({color: 0x312113});
+    var holder1 = new THREE.Mesh(holderGeometry, holderMaterial);
+    holder1.position.set(23, 20, 0);
+    body.add(holder1);
+
+
+
 
     return body;
 }
-function createLathe() {
+function createLathe(color) {
     const points = [];
     for (var i = 0; i < 5; i+=0.5) {
         points.push(new THREE.Vector3(i + 4, 0.5*i*i, 0));
@@ -444,7 +463,7 @@ function createLathe() {
     const phiStart = Math.PI * 2.00;  
     const phiLength = Math.PI * 2.00;  
     const geometry = new THREE.LatheGeometry(points, segments, phiStart, phiLength);
-        const material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true} );
+    var material = new THREE.MeshBasicMaterial( { color: color, wireframe: true} );
     const lathe = new THREE.Mesh( geometry, material );
     return lathe;
 
@@ -691,7 +710,7 @@ function makeStone() {
         //piece.position.z = Math.sin(i)/3;
     }
 
-    var lathe1 = createLathe();
+    var lathe1 = createLathe(0x000000);
     sceneGraph.add(lathe1);
     lathe1.position.x = -2;
     lathe1.position.y = 10;
