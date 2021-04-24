@@ -392,29 +392,36 @@ console.log(loader);
         var axes = new THREE.AxisHelper(500);  
         sceneGraph.add(axes);
 
-            //var stone1 = makeStone();
-            //sceneGraph.add(stone1);
-            
-            
-            ///// NEW /////
-            // ************************** //
-            // NEW - Create a CONVEX HULL
-            // ************************** //
-            /*
-            vertices.push(new THREE.Vector3(-1, 0, 1));
-            vertices.push(new THREE.Vector3(0, 0, 1));
-            vertices.push(new THREE.Vector3(0, 0, 2));
-            vertices.push(new THREE.Vector3(-1, 0, 2));
-            vertices.push(new THREE.Vector3(-0.5, 2.5, 1.5));
-            */
+        var stone1 = makeStone();
+        sceneGraph.add(stone1);
+        stone1.position.x = 30;
 
-            /*
-            sceneGraph.add(convexHull);
+        var stone2 = makeStone();
+        sceneGraph.add(stone2);
+        stone2.position.x = -30;
 
-            convexHull.castShadow = true;
-            */
-           var stone = makeStone();
-           sceneGraph.add(stone);
+        var stone3 = makeStone();
+        sceneGraph.add(stone3);
+        stone3.position.z = 30;
+
+        var stone4 = makeStone();
+        sceneGraph.add(stone4);
+        stone4.position.z = -30;
+
+        // Rotated stones (midpoints)
+        for (var i = 1; i < 5; i++) {
+            var stone = makeStone();
+            stone.name = "stone" + i;
+            var center = new THREE.Object3D();
+            center.name = "center" + i;
+            center.add(stone);
+            sceneGraph.add(center);
+            stone.position.x = 30;
+            center.rotation.y = Math.PI/4 + i*(Math.PI/2);
+        }
+       
+
+
 
            var center = new THREE.Object3D();
     center.name = "center";
@@ -522,7 +529,7 @@ console.log(loader);
     // for (var i = 0; i < array.length; )
 
     var intersects = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center").children);
-    console.log(intersects);
+    //console.log(intersects);
 
         
 
