@@ -280,12 +280,16 @@ function createBody() {
     // 1st forearm
     var forearmGeometry = new THREE.CylinderGeometry( 2, 2, 20, 50 );
     var forearm1 = new THREE.Mesh( forearmGeometry, material );
-    forearm1.position.x = 40;
-    forearm1.rotation.z = -0.5;
+    forearm1.scale.set(1, 0.7, 1);
+    forearm1.position.set(16, 13, 0);
+    forearm1.rotation.z = -0.6;
     body.add(forearm1);
 
     // 2nd forearm
     var forearm2 = new THREE.Mesh( forearmGeometry, material );
+    forearm2.scale.set(1, 0.7, 1);
+    forearm2.position.set(-16, 13, 0);
+    forearm2.rotation.z = 0.6;
     body.add(forearm2);
 
     // 1st arm
@@ -294,6 +298,81 @@ function createBody() {
     arm1.rotation.z = Math.PI/2;
     arm1.position.set(7, 6, 0);
     body.add(arm1);
+
+    // 2nd arm
+    var arm2 = new THREE.Mesh( forearmGeometry, material );
+    arm2.scale.set(1, 0.3, 1);
+    arm2.rotation.z = Math.PI/2;
+    arm2.position.set(-7, 6, 0);
+    console.log(arm2);
+    body.add(arm2);
+
+    // 1st sphere arm
+    var sphereGeometry = new THREE.SphereGeometry( 2, 32, 32 );
+    var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x808080} );
+    var sphere1 = new THREE.Mesh( sphereGeometry, sphereMaterial );
+    sphere1.position.set(11, 6, 0);
+    body.add(sphere1);
+
+    // 2nd sphere arm
+    var sphere2 = new THREE.Mesh( sphereGeometry, sphereMaterial );
+    sphere2.position.set(-11, 6, 0);
+    body.add(sphere2);
+
+    // 1st leg
+    var legGeometry = new THREE.CylinderGeometry( 1, 2, 30, 32 );
+    var legMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
+    var leg1 = new THREE.Mesh( legGeometry, legMaterial );
+    leg1.position.set(-4, -30, 0);
+    body.add(leg1);
+
+    // 2nd leg
+    var leg2 = new THREE.Mesh( legGeometry, legMaterial );
+    leg2.position.set(4, -30, 0);
+    body.add(leg2);
+
+    // 1st boot
+    var whiteMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    var bootPoints = [];
+    for ( var i = 0; i < 5; i ++ ) {
+	    bootPoints.push(new THREE.Vector2( 2, i));
+    }
+    var bootGeometry = new THREE.LatheGeometry(bootPoints);
+    var boot1 = new THREE.Mesh(bootGeometry, whiteMaterial);
+    boot1.position.set(4, -45, 0);
+    body.add(boot1);
+
+    // 2nd boot
+    var boot2 = new THREE.Mesh(bootGeometry, whiteMaterial);
+    boot2.position.set(-4, -45, 0);
+    body.add(boot2);
+
+    // 1st foot
+    var shape = new THREE.Shape();
+    shape.moveTo(-1, 0);
+    //shape.lineTo(3, 0);
+    shape.bezierCurveTo(-0.2, 0.04, 0.2, 0.04, -0.5, 0, 1, 0);
+    shape.lineTo(-1, 0);
+    console.log(shape);
+    //
+
+    var extrudeSettings = {
+        steps: 20,
+        depth: 3,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+    }
+
+    var footGeometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+    var wireframeMaterial = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
+    var footMesh = new THREE.Mesh(footGeometry, wireframeMaterial);
+    footMesh.position.x = 5;
+    footMesh.position.y = 1;
+    footMesh.rotation.z = Math.PI/2;
+    body.add(footMesh);
 
     return body;
 }
