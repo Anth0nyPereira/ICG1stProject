@@ -473,10 +473,10 @@ function createBody() {
 function createZeroTwo() {
     var zerotwo1 = new THREE.Group();
     var head1 = createHead();
-    head1.position.x = 70;
+    head1.position.x = 0;
 
     var body1 = createBody();
-    body1.position.x = 70;
+    body1.position.x = 0;
     body1.position.y = -20;
     
     zerotwo1.add(head1);
@@ -763,23 +763,27 @@ function makeStone() {
     sceneGraph.add(lathe1);
     lathe1.position.x = -2;
     lathe1.position.y = 10;
+    lathe1.name = "lathe1";
 
     // Make zero two character
 
     var zerotwo1 = createZeroTwo();
     sceneGraph.add(zerotwo1);
+    zerotwo1.position.set(100, 0, 0);
+    zerotwo1.name = "zerotwo1";
 
     var zerotwo2 = createZeroTwo();
+    sceneGraph.add(zerotwo2);
     zerotwo2.scale.set(0.2, 0.2, 0.2);
-    zerotwo2.position.set(0, 13.5, 5);
+    zerotwo2.position.set(20, 13.5, 5);
 
-    var centerZeroTwo2 = new THREE.Object3D();
-    centerZeroTwo2.position.set(0, 13.5, 5);
-    centerZeroTwo2.add(zerotwo2);
+    //var centerZeroTwo2 = new THREE.Object3D();
+    //centerZeroTwo2.position.set(0, 0, 5);
+    //centerZeroTwo2.add(zerotwo2);
 
-    sceneGraph.add(centerZeroTwo2);
+    //sceneGraph.add(centerZeroTwo2);
     zerotwo2.name = "zerotwo2";
-    centerZeroTwo2.name = "centerzerotwo2";
+    //centerZeroTwo2.name = "centerzerotwo2";
     console.log(zerotwo2);
 
 
@@ -815,14 +819,16 @@ function makeStone() {
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(0.01, 0.01);
 
-        var quaternion = new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
+        //var quaternion = new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
 
         function computeFrame(time) {
 
+            var lathe1 = sceneElements.sceneGraph.getObjectByName("lathe1");
+            lathe1.rotation.y += 0.05;
+
             // rotate zero two
-            var zerotwo2 = sceneElements.sceneGraph.getObjectByName("centerzerotwo2");
+            var zerotwo2 = sceneElements.sceneGraph.getObjectByName("zerotwo2");
             zerotwo2.rotation.y += 0.05;
-            
 
             // update the picking ray with the camera and mouse position
     raycaster.setFromCamera( mouse, sceneElements.camera );
