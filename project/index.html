@@ -132,7 +132,7 @@
         window.addEventListener('resize', resizeWindow);
 
         //To keep track of the keyboard - WASD
-        var keyD = false, keyA = false, keyS = false, keyW = false;
+        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -174,6 +174,12 @@
                 case 87: //w
                     keyW = true;
                     break;
+                case 187: //+
+                    keyPlus = true;
+                    break;
+                case 189: //-
+                    keyMinus = true;
+                    break;
             }
         }
         function onDocumentKeyUp(event) {
@@ -189,6 +195,12 @@
                     break;
                 case 87: //w
                     keyW = false;
+                    break;
+                case 187: //+
+                    keyPlus = false;
+                    break;
+                case 189: //-
+                    keyMinus = false;
                     break;
             }
     }
@@ -239,7 +251,7 @@ function makeHair() {
 
     const extrudeSettings = {
         steps: 2,
-        depth: 0.2,
+        depth: 0.01,
         bevelEnabled: true,
         bevelThickness: 1,
         bevelSize: 1,
@@ -278,6 +290,43 @@ function createHead() {
     hair.rotation.y = Math.PI/2;
     hair.position.z = -4.8;
     hair.position.y = -6;
+
+    // eyebrows
+    var eyeBrowsShape = new THREE.Shape();
+    eyeBrowsShape.moveTo( 0,0 );
+    eyeBrowsShape.lineTo(0.5, 1);
+    eyeBrowsShape.lineTo(1.5, 3);
+    eyeBrowsShape.lineTo(3.5, 3);
+    eyeBrowsShape.lineTo(5, 1);
+    eyeBrowsShape.lineTo(5.5, 0);
+    eyeBrowsShape.lineTo(3.5, 3);
+    eyeBrowsShape.lineTo(1.5, 3);
+    eyeBrowsShape.lineTo(0, 0);
+
+    var extrudeSettings = {
+        steps: 2,
+        depth: 0.01,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+    };
+
+    var eyeBrowsGeometry = new THREE.ExtrudeGeometry( eyeBrowsShape, extrudeSettings );
+    var eyeBrowsMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+    var eyeBrow1 = new THREE.Mesh( eyeBrowsGeometry, eyeBrowsMaterial ) ;
+    eyeBrow1.position.set(-4, 2.5, 4);
+    eyeBrow1.rotation.y = -0.2;
+    eyeBrow1.scale.set(0.3, 0.3, 0.3);
+
+    var eyeBrow2 = new THREE.Mesh( eyeBrowsGeometry, eyeBrowsMaterial ) ;
+    eyeBrow2.position.set(3, 2.5, 4);
+    eyeBrow2.rotation.y = 0.2;
+    eyeBrow2.scale.set(0.3, 0.3, 0.3);
+
+    head.add(eyeBrow1);
+    head.add(eyeBrow2);
     head.add(circle);
     head.add(beginHair);
     head.add(hair);
@@ -658,6 +707,8 @@ function makeStone() {
     return stone;
 }
         
+    var existingZeroTwoObjects = [];
+    var removedZeroTwoObjects = [];
         // Create and insert in the scene graph the models of the 3D scene
         function load3DObjects(sceneGraph) {
 
@@ -767,24 +818,38 @@ function makeStone() {
 
     // Make zero two character
 
-    var zerotwo1 = createZeroTwo();
-    sceneGraph.add(zerotwo1);
-    zerotwo1.position.set(100, 0, 0);
-    zerotwo1.name = "zerotwo1";
-
+    var zerotwoOriginal = createZeroTwo();
+    sceneGraph.add(zerotwoOriginal);
+    zerotwoOriginal.position.set(100, 0, 0);
+    zerotwoOriginal.name = "zerotwoOriginal";
+    /*
     var zerotwo2 = createZeroTwo();
     sceneGraph.add(zerotwo2);
     zerotwo2.scale.set(0.2, 0.2, 0.2);
-    zerotwo2.position.set(20, 13.5, 5);
+    zerotwo2.position.set(20, 13.5, 0);
+    zerotwo2.name = "zerotwo2";
+    */
 
+    // Create and rotate zero twos
+    for (var i = 0; i < 8; i++) {
+        var zerotwo = createZeroTwo();
+        var rotateZeroTwo = new THREE.Object3D();
+        rotateZeroTwo.add(zerotwo);
+        zerotwo.scale.set(0.2, 0.2, 0.2);
+        zerotwo.position.set(20, 13.5, 0);
+        zerotwo.name = "zerotwo" + i;
+        rotateZeroTwo.name = "rotateZeroTwo" + i;
+        rotateZeroTwo.rotation.y = i*(Math.PI/4);
+        sceneGraph.add(rotateZeroTwo);
+
+        existingZeroTwoObjects.push(rotateZeroTwo);
+    }
     //var centerZeroTwo2 = new THREE.Object3D();
     //centerZeroTwo2.position.set(0, 0, 5);
     //centerZeroTwo2.add(zerotwo2);
 
     //sceneGraph.add(centerZeroTwo2);
-    zerotwo2.name = "zerotwo2";
     //centerZeroTwo2.name = "centerzerotwo2";
-    console.log(zerotwo2);
 
 
 
@@ -805,7 +870,7 @@ function makeStone() {
 
     sceneGraph.add(center);
     
-
+    console.log(existingZeroTwoObjects);
     }
     
 
@@ -826,9 +891,40 @@ function makeStone() {
             var lathe1 = sceneElements.sceneGraph.getObjectByName("lathe1");
             lathe1.rotation.y += 0.05;
 
-            // rotate zero two
+
+            // dynamically remove zero twos
+            if (keyMinus && existingZeroTwoObjects.length > 0) {
+                var randomItem = existingZeroTwoObjects[existingZeroTwoObjects.length - 1];
+                removedZeroTwoObjects.push(randomItem);
+                sceneElements.sceneGraph.remove(randomItem);
+                existingZeroTwoObjects.pop(randomItem);
+                console.log(existingZeroTwoObjects);
+            }
+
+            if (keyPlus && existingZeroTwoObjects.length <=8 && removedZeroTwoObjects.length != 0) {
+                var object = removedZeroTwoObjects[removedZeroTwoObjects.length - 1];
+                console.log(removedZeroTwoObjects[0]);
+                console.log("keyplus: " + object);
+                sceneElements.sceneGraph.add(object);
+                removedZeroTwoObjects.pop(object);
+                existingZeroTwoObjects.push(object);
+            }
+            
+             // rotate zero twos
+             for (var i=0; i<existingZeroTwoObjects.length; i++) {
+                var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
+                console.log("Zero Two Object:" + zerotwoObject);
+                zerotwoObject.rotation.y -= 0.01;
+                var zerotwo = zerotwoObject.children[0];
+                zerotwo.rotation.y -= 0.05;
+             }
+
+        
+
+            /*
             var zerotwo2 = sceneElements.sceneGraph.getObjectByName("zerotwo2");
             zerotwo2.rotation.y += 0.05;
+            */
 
             // update the picking ray with the camera and mouse position
     raycaster.setFromCamera( mouse, sceneElements.camera );
