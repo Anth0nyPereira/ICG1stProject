@@ -132,7 +132,7 @@
         window.addEventListener('resize', resizeWindow);
 
         //To keep track of the keyboard - WASD
-        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false;
+        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -180,6 +180,12 @@
                 case 189: //-
                     keyMinus = true;
                     break;
+                case 80: //P 
+                    keyP = true;
+                    break;
+                case 77: //M
+                    keyM = true;
+                    break;
             }
         }
         function onDocumentKeyUp(event) {
@@ -201,6 +207,12 @@
                     break;
                 case 189: //-
                     keyMinus = false;
+                    break;
+                case 80: //P 
+                    keyP = false;
+                    break;
+                case 77: //M
+                    keyM = false;
                     break;
             }
     }
@@ -325,6 +337,20 @@ function createHead() {
     eyeBrow2.rotation.y = 0.2;
     eyeBrow2.scale.set(0.3, 0.3, 0.3);
 
+    // mouth
+    var mouthShape = new THREE.Shape();
+    mouthShape.moveTo(-1, 0);
+    mouthShape.lineTo(1, 0);
+    mouthShape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -1, 0);
+
+    var mouthGeometry = new THREE.ExtrudeGeometry( mouthShape, extrudeSettings );
+    var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+    var mouthMaterial = new THREE.MeshBasicMaterial({color: randomColor})
+    var mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+    mouth.scale.set(0.5, 0.5, 0.5);
+    mouth.position.set(0, 0, 5);
+
+    head.add(mouth);
     head.add(eyeBrow1);
     head.add(eyeBrow2);
     head.add(circle);
@@ -334,6 +360,7 @@ function createHead() {
 }
 
 function createBody() {
+    var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
     var body = new THREE.Group();
 
     // torse
@@ -885,7 +912,8 @@ function makeStone() {
         var mouse = new THREE.Vector2(0.01, 0.01);
 
         //var quaternion = new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
-
+        var countSpeed = 0;
+        var countReduceSpeed = 0.01;
         function computeFrame(time) {
 
             var lathe1 = sceneElements.sceneGraph.getObjectByName("lathe1");
@@ -918,6 +946,30 @@ function makeStone() {
                 var zerotwo = zerotwoObject.children[0];
                 zerotwo.rotation.y -= 0.05;
              }
+
+             // upgrade speed of zero two's rotations
+             
+             if (keyP) {
+                for (var i=0; i<existingZeroTwoObjects.length; i++) {
+                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
+                    zerotwoObject.rotation.y -= 0.01 * countSpeed;
+                    var zerotwo = zerotwoObject.children[0];
+                    zerotwo.rotation.y -= 0.05 * countSpeed;
+                }
+                countSpeed = countSpeed + 1;
+             }
+
+             if (keyM) {
+                 console.log("here!");
+                for (var i=0; i<existingZeroTwoObjects.length; i++) {
+                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
+                    zerotwoObject.rotation.y -= countReduceSpeed/100;
+                    var zerotwo = zerotwoObject.children[0];
+                    zerotwo.rotation.y -= countReduceSpeed/100;
+                }
+                countReduceSpeed = countReduceSpeed/4;
+             } 
+             
 
         
 
