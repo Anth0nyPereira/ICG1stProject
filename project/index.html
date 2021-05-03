@@ -350,6 +350,13 @@ function createHead() {
     mouth.scale.set(0.5, 0.5, 0.5);
     mouth.position.set(0, 0, 5);
 
+    // band
+    var bandGeometry = new THREE.BoxGeometry(8, 0.5, 1);
+    var bandMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    var band1 = new THREE.Mesh(bandGeometry, bandMaterial);
+    band1.position.y = 6.2;
+
+    head.add(band1);
     head.add(mouth);
     head.add(eyeBrow1);
     head.add(eyeBrow2);
@@ -540,8 +547,86 @@ function createBody() {
     neck1.position.set(0, 5, 0);
     body.add(neck1);
 
+    // Arrows (dress)
+    var arrowShape = new THREE.Shape();
+    arrowShape.moveTo(1, 0);
+    arrowShape.lineTo(2, 0);
+    arrowShape.lineTo(1.5, 1.5);
+    arrowShape.lineTo(2, 3);
+    arrowShape.lineTo(1, 3);
+    arrowShape.lineTo(0.5, 1.5);
+    arrowShape.lineTo(1, 0);
 
+    var ArrowExtrudeSettings = {
+        steps: 2,
+        depth: 0.5,
+        bevelEnabled: false,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+    };
 
+    var arrowGeometry = new THREE.ExtrudeGeometry( arrowShape, ArrowExtrudeSettings);
+    var arrowMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    var arrow1 = new THREE.Mesh( arrowGeometry, arrowMaterial );
+    arrow1.scale.set(1, 0.5, 1);
+    arrow1.position.set(1, -1, 3.7);
+
+    var arrowEdges = new THREE.EdgesGeometry(arrowGeometry);
+    var arrowLine1 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    arrowLine1.scale.set(1, 0.5, 1);
+    arrowLine1.position.set(1, -1, 3.7);
+
+    body.add(arrow1);
+    body.add(arrowLine1);
+
+    var arrow2 = new THREE.Mesh( arrowGeometry, arrowMaterial );
+    arrow2.scale.set(1, 0.5, 1);
+    arrow2.position.set(-1, -1, 4.2);
+    arrow2.rotation.y = Math.PI;
+    var arrowLine2 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    arrowLine2.scale.set(1, 0.5, 1);
+    arrowLine2.position.set(-1, -1, 4.2);
+    arrowLine2.rotation.y = Math.PI;
+
+    body.add(arrow2);
+    body.add(arrowLine2);
+
+    var arrowMaterial2 = new THREE.MeshBasicMaterial({color: 0xb8860b});
+    var arrow3 = new THREE.Mesh( arrowGeometry, arrowMaterial2 );
+    arrow3.scale.set(0.8, 0.4, 1);
+    arrow3.position.set(0, -1, 3.7);
+    var arrowLine3 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    arrowLine3.scale.set(0.8, 0.4, 1);
+    arrowLine3.position.set(0, -1, 3.7);
+
+    var arrow4 = new THREE.Mesh( arrowGeometry, arrowMaterial2 );
+    arrow4.scale.set(0.8, 0.4, 1);
+    arrow4.rotation.y = Math.PI;
+    arrow4.position.set(0, -1, 4.2);
+    var arrowLine4 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    arrowLine4.scale.set(0.8, 0.4, 1);
+    arrowLine4.rotation.y = Math.PI;
+    arrowLine4.position.set(0, -1, 4.2);
+
+    body.add(arrow3);
+    body.add(arrow4);
+    body.add(arrowLine3);
+    body.add(arrowLine4);
+
+    // belt
+
+    var beltPoints = [];
+    for (let i = 4; i < 6; ++i) {
+        beltPoints.push(new THREE.Vector2(7, i));
+    }
+    var beltGeometry = new THREE.LatheGeometry(beltPoints);
+    var beltMaterial = new THREE.MeshBasicMaterial({color: 0x654321});
+    var belt1 = new THREE.Mesh(beltGeometry, beltMaterial);
+    belt1.scale.set(0.85, 0.85, 0.6);
+    belt1.position.set(0, -4.3, -0.7);
+    body.add(belt1);
 
     return body;
 }
@@ -752,23 +837,35 @@ function makeStone() {
         sceneGraph.add(axes);
 
         var stone1 = makeStone();
-        sceneGraph.add(stone1);
+        var center1 = new THREE.Object3D();
+        center1.name = "center1";
+        center1.add(stone1);
+        sceneGraph.add(center1);
         stone1.position.x = 30;
 
         var stone2 = makeStone();
-        sceneGraph.add(stone2);
+        var center2 = new THREE.Object3D();
+        center2.name = "center2";
+        center2.add(stone2);
+        sceneGraph.add(center2);
         stone2.position.x = -30;
 
         var stone3 = makeStone();
-        sceneGraph.add(stone3);
+        var center3 = new THREE.Object3D();
+        center3.name = "center3";
+        center3.add(stone3);
+        sceneGraph.add(center3);
         stone3.position.z = 30;
 
         var stone4 = makeStone();
-        sceneGraph.add(stone4);
+        var center4 = new THREE.Object3D();
+        center4.name = "center4";
+        center4.add(stone4);
+        sceneGraph.add(center4);
         stone4.position.z = -30;
 
         // Rotated stones (midpoints)
-        for (var i = 1; i < 5; i++) {
+        for (var i = 5; i < 9; i++) {
             var stone = makeStone();
             stone.name = "stone" + i;
             var center = new THREE.Object3D();
@@ -858,7 +955,7 @@ function makeStone() {
     */
 
     // Create and rotate zero twos
-    for (var i = 0; i < 8; i++) {
+    for (var i = 1; i < 9; i++) {
         var zerotwo = createZeroTwo();
         var rotateZeroTwo = new THREE.Object3D();
         rotateZeroTwo.add(zerotwo);
