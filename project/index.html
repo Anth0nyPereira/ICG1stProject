@@ -347,7 +347,7 @@ function createHead() {
     var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
     var mouthMaterial = new THREE.MeshBasicMaterial({color: randomColor})
     var mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
-    mouth.scale.set(0.5, 0.5, 0.5);
+    mouth.scale.set(0.5, 2, 0.5);
     mouth.position.set(0, 0, 5);
 
     // band
@@ -356,6 +356,22 @@ function createHead() {
     var band1 = new THREE.Mesh(bandGeometry, bandMaterial);
     band1.position.y = 6.2;
 
+    // horns
+    var hornRadius =  1.0;  
+    var hornHeight = 10.0;  
+    var hornRadialSegments =  3;  
+    var hornGeometry = new THREE.ConeGeometry(hornRadius, hornHeight, hornRadialSegments);
+    var hornMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+    var horn1 = new THREE.Mesh(hornGeometry, hornMaterial);
+    horn1.scale.set(1, 0.5, 1);
+    horn1.position.set(2, 7, 0);
+
+    var horn2 = new THREE.Mesh(hornGeometry, hornMaterial);
+    horn2.scale.set(1, 0.5, 1);
+    horn2.position.set(-2, 7, 0);
+
+    head.add(horn2);
+    head.add(horn1);
     head.add(band1);
     head.add(mouth);
     head.add(eyeBrow1);
@@ -627,6 +643,44 @@ function createBody() {
     belt1.scale.set(0.85, 0.85, 0.6);
     belt1.position.set(0, -4.3, -0.7);
     body.add(belt1);
+
+    // collar
+    var collarGeometry = new THREE.BoxGeometry(5, 5, 5);
+    var collarMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    var collar1 = new THREE.Mesh(collarGeometry, collarMaterial);
+    body.add(collar1);
+    collar1.position.set(0, 10, 0);
+
+    // tie
+    var tieShape = new THREE.Shape();
+    tieShape.moveTo(2, 2);
+    tieShape.lineTo(3, 1);
+    tieShape.lineTo(4, 2);
+    tieShape.lineTo(3, 5);
+    tieShape.lineTo(3.5, 5.5);
+    tieShape.lineTo(3, 6);
+    tieShape.lineTo(2.5, 5.5);
+    tieShape.lineTo(3, 5);
+    tieShape.lineTo(2, 2);
+    
+
+    var tieSettings = {
+        steps: 2,
+        depth: 0.5,
+        bevelEnabled: false,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+    };
+
+    var tieGeometry = new THREE.ExtrudeGeometry(tieShape, tieSettings);
+    var tieMaterial = new THREE.MeshBasicMaterial({color: 0xffa500});
+    var tie1 = new THREE.Mesh(tieGeometry, tieMaterial);
+    tie1.scale.set(0.9, 0.9, 0.9);
+    tie1.position.set(-2.75, 7.1, 2.5);
+
+    body.add(tie1);
 
     return body;
 }
