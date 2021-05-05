@@ -981,12 +981,12 @@ function makeStone() {
     var existingZeroTwoObjects = [];
     var removedZeroTwoObjects = [];
         // Create and insert in the scene graph the models of the 3D scene
-        function load3DObjects(sceneGraph) {
+    function load3DObjects(sceneGraph) {
 
             // ************************** //
             // Create a ground plane
             // ************************** //
-            const pgeometry = new THREE.PlaneGeometry( 100, 100, 32 );
+        const pgeometry = new THREE.PlaneGeometry( 100, 100, 32 );
         const pmaterial = new THREE.MeshBasicMaterial( {color: 0x567d46, side: THREE.DoubleSide} );
         const plane = new THREE.Mesh( pgeometry, pmaterial );
         plane.rotation.x = Math.PI / 2;
@@ -1237,7 +1237,7 @@ function makeStone() {
             zerotwo2.rotation.y += 0.05;
             */
 
-            // update the picking ray with the camera and mouse position
+    // Change color of tree when mouse hover
     raycaster.setFromCamera( mouse, sceneElements.camera );
     
     // calculate objects intersecting the picking ray
@@ -1260,6 +1260,25 @@ function makeStone() {
         }
         
     
+    }
+
+    // change size of stones when hover
+    for (var i=1; i<9; i++) {
+        var arrayStone = sceneElements.sceneGraph.getObjectByName("center" + i).children;
+        var intersectsStone = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center" + i).children);
+        
+        if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y <= 1.7) {
+            console.log("scale: " + intersectsStone[0].object.scale.y);
+            console.log("intersectStone: " + intersectsStone[0].object);
+            intersectsStone[0].object.scale.y += 0.2;
+        } else if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y > 1.7) {
+            intersectsStone[0].object.scale.y = 2.0;
+        } else {
+            for (var k=0; k<arrayStone.length; k++) {
+                arrayStone[k].scale.set(1, 1, 1);
+            }
+            
+        }
     }
         
 
