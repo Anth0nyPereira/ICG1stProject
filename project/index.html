@@ -682,7 +682,103 @@ function createBody() {
 
     body.add(tie1);
 
+    // COMPLETE LEAF
+    
+    var completeLeaf1 = createComplexLeaf();
+    completeLeaf1.scale.set(0.7, 0.7, 0.7);
+
+    //completeLeaf1.position.set(32, -3, 0);
+    //completeLeaf1.rotation.y = Math.PI/2;
+    // completeLeaf1.rotation.x = 1;
+    body.add(completeLeaf1);
+
     return body;
+}
+
+function createComplexLeaf() {
+
+    var completeLeaf1 = new THREE.Group();
+
+    // stem
+
+    var stemGeometry = new THREE.CylinderGeometry(0.2, 0.2, 10, 50);
+    var stemMaterial = new THREE.MeshBasicMaterial( {color: 0x006400} );
+    var stem1 = new THREE.Mesh(stemGeometry, stemMaterial);
+
+    stem1.position.y = 30;
+    completeLeaf1.add(stem1);
+
+    // leaves
+    var leafShape = new THREE.Shape();
+    leafShape.moveTo(0, 0);
+    leafShape.bezierCurveTo(1, 2, 1, 3, 0, 4);
+    leafShape.bezierCurveTo(-1, 3, -1, 2, 0, 0);
+
+    var leafSettings = {
+        steps: 2,
+        depth: 0.5,
+        bevelEnabled: false,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+    };
+
+    var leafGeometry = new THREE.ExtrudeGeometry(leafShape, leafSettings);
+    var leafMaterial = new THREE.MeshBasicMaterial({color: 0x149414});
+    var leaf1 = new THREE.Mesh(leafGeometry, leafMaterial);
+    leaf1.scale.set(1, 2, 1);
+    leaf1.position.y = 34;
+
+    // right side
+
+    var leaf2 = new THREE.Mesh(leafGeometry, leafMaterial);
+    leaf2.scale.set(1, 1.5, 1);
+    leaf2.position.set(0, 34, 0);
+    leaf2.rotation.z = -0.6;
+
+    var leaf3 = new THREE.Mesh(leafGeometry, leafMaterial);
+    leaf3.scale.set(1, 1.5, 1);
+    leaf3.position.set(0, 32, 0);
+    leaf3.rotation.z = -0.8;
+
+    var leaf4 = new THREE.Mesh(leafGeometry, leafMaterial);
+    leaf4.scale.set(1, 1.5, 1);
+    leaf4.position.set(0, 29.5, 0);
+    leaf4.rotation.z = -0.8;
+
+    // left side
+
+    var leaf5 = new THREE.Mesh(leafGeometry, leafMaterial);
+    leaf5.scale.set(1, 1.5, 1);
+    leaf5.position.set(0, 34, 0);
+    leaf5.rotation.y = Math.PI;
+    leaf5.rotation.z = -0.6;
+
+    var leaf6 = new THREE.Mesh(leafGeometry, leafMaterial);
+    leaf6.scale.set(1, 1.5, 1);
+    leaf6.position.set(0, 32, 0);
+    leaf6.rotation.y = Math.PI;
+    leaf6.rotation.z = -0.8;
+
+    var leaf7 = new THREE.Mesh(leafGeometry, leafMaterial);
+    leaf7.scale.set(1, 1.5, 1);
+    leaf7.position.set(0, 29.5, 0);
+    leaf7.rotation.y = Math.PI;
+    leaf7.rotation.z = -0.8;
+
+    completeLeaf1.add(leaf7);
+    completeLeaf1.add(leaf6);
+    completeLeaf1.add(leaf5);
+    completeLeaf1.add(leaf4);
+    completeLeaf1.add(leaf3);
+    completeLeaf1.add(leaf2);
+    completeLeaf1.add(leaf1);
+
+    console.log("leaf pos " + completeLeaf1.position.x);
+    // BEAUTIFUL EFFECT TBH completeLeaf1.translateX(-80);
+    completeLeaf1.translateX(-100);
+    return completeLeaf1;
 }
 
 function createZeroTwo() {
