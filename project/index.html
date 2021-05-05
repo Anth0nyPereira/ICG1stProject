@@ -685,17 +685,23 @@ function createBody() {
     // COMPLETE LEAF
     
     var completeLeaf1 = createComplexLeaf();
+    completeLeaf1.position.set(0, 0, 0);
     completeLeaf1.scale.set(0.7, 0.7, 0.7);
+    completeLeaf1.rotateOnWorldAxis(new THREE.Vector3(0,0,1), -0.9);
+    completeLeaf1.position.set(9, 12.5, 0);
+    // completeLeaf1.rotation.z = -0.3;
+    
+    var completeLeaf2 = createComplexLeaf(true);
+    completeLeaf2.position.set(32, -3, 0);
+    completeLeaf2.rotation.y = Math.PI/2;
 
-    //completeLeaf1.position.set(32, -3, 0);
-    //completeLeaf1.rotation.y = Math.PI/2;
-    // completeLeaf1.rotation.x = 1;
+    body.add(completeLeaf2);
     body.add(completeLeaf1);
 
     return body;
 }
 
-function createComplexLeaf() {
+function createComplexLeaf(flag=false) {
 
     var completeLeaf1 = new THREE.Group();
 
@@ -776,8 +782,12 @@ function createComplexLeaf() {
     completeLeaf1.add(leaf1);
 
     console.log("leaf pos " + completeLeaf1.position.x);
+
+    if (flag == true) {
+        completeLeaf1.translateX(-80);
+    }
     // BEAUTIFUL EFFECT TBH completeLeaf1.translateX(-80);
-    completeLeaf1.translateX(-100);
+    completeLeaf1.rotation.y = Math.PI/2;
     return completeLeaf1;
 }
 
