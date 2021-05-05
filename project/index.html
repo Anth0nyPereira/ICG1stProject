@@ -1093,6 +1093,9 @@ function makeStone() {
         //piece.position.z = Math.sin(i)/3;
     }
 
+    center.position.set(-45, 0, -45);
+    center.scale.set(2, 2 , 2);
+
     var lathe1 = createLathe(0x000000);
     sceneGraph.add(lathe1);
     lathe1.position.x = -2;
@@ -1248,7 +1251,7 @@ function makeStone() {
         
 
     if ( intersects.length > 0 && array.includes(intersects[0].object)) {
-        intersects[0].object.material.color.set( 0xff0000 );
+        intersects[0].object.material.color.set(0xadff2f);
         
     
     } else {
