@@ -684,15 +684,17 @@ function createBody() {
 
     // COMPLETE LEAF
     
-    var completeLeaf1 = createComplexLeaf();
+    var completeLeaf1 = createComplexLeaf(0x006400, 0x149414);
     completeLeaf1.position.set(0, 0, 0);
     completeLeaf1.scale.set(0.7, 0.7, 0.7);
     completeLeaf1.rotateOnWorldAxis(new THREE.Vector3(0,0,1), -0.9);
     completeLeaf1.position.set(9, 12.5, 0);
     // completeLeaf1.rotation.z = -0.3;
     
-    var completeLeaf2 = createComplexLeaf(true);
-    completeLeaf2.position.set(32, -3, 0);
+    var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+    var completeLeaf2 = createComplexLeaf(randomColor, randomColor);
+    completeLeaf2.translateZ(-100).translateY(-10);
+    completeLeaf2.rotation.z = -0.6;
     completeLeaf2.rotation.y = Math.PI/2;
 
     body.add(completeLeaf2);
@@ -701,14 +703,14 @@ function createBody() {
     return body;
 }
 
-function createComplexLeaf(flag=false) {
+function createComplexLeaf(color1, color2) {
 
     var completeLeaf1 = new THREE.Group();
 
     // stem
 
     var stemGeometry = new THREE.CylinderGeometry(0.2, 0.2, 10, 50);
-    var stemMaterial = new THREE.MeshBasicMaterial( {color: 0x006400} );
+    var stemMaterial = new THREE.MeshBasicMaterial( {color: color1} );
     var stem1 = new THREE.Mesh(stemGeometry, stemMaterial);
 
     stem1.position.y = 30;
@@ -731,7 +733,7 @@ function createComplexLeaf(flag=false) {
     };
 
     var leafGeometry = new THREE.ExtrudeGeometry(leafShape, leafSettings);
-    var leafMaterial = new THREE.MeshBasicMaterial({color: 0x149414});
+    var leafMaterial = new THREE.MeshBasicMaterial({color: color2});
     var leaf1 = new THREE.Mesh(leafGeometry, leafMaterial);
     leaf1.scale.set(1, 2, 1);
     leaf1.position.y = 34;
@@ -783,9 +785,6 @@ function createComplexLeaf(flag=false) {
 
     console.log("leaf pos " + completeLeaf1.position.x);
 
-    if (flag == true) {
-        completeLeaf1.translateX(-80);
-    }
     // BEAUTIFUL EFFECT TBH completeLeaf1.translateX(-80);
     completeLeaf1.rotation.y = Math.PI/2;
     return completeLeaf1;
