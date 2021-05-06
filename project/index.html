@@ -997,14 +997,11 @@ function createMaze() {
     var usedXValues = [];
     var usedZValues = [];
 
-    var xPossibleValues1stRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
-    var zPossibleValues = [55, 65, 75, 85, 95, 105, 115, 125, 135, 145];
-
-    // 
+    var xPossibleValues1stRow = [-45, -35, -25, -15, 15, 25, 35, 45];
 
     // 1st row of the maze
     var count = 0;
-    while (count <= 8) {
+    while (count < 8) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
         var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
 
@@ -1022,7 +1019,7 @@ function createMaze() {
         count = count + 1;
     }
 
-    var xPossibleValues2ndRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues2ndRow = [-45, -35, -25, -15, 15, 25, 35, 45];
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
     // 2nd row
@@ -1041,7 +1038,7 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues3rdRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues3rdRow = [-45, -35, -25, 25, 35, 45];
     // 3rd row
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
@@ -1060,7 +1057,7 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues4thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues4thRow = [-45, -35, -25, -5, 5, 25, 35, 45];
     // 4th row
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
@@ -1079,7 +1076,7 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues5thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues5thRow = [-45, -5, 5, 45];
     // 5th row
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
@@ -1098,7 +1095,7 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues6thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues6thRow = [-45, -25, -15, -5, 5, 15, 25, 45];
     // 6th row
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
@@ -1117,7 +1114,7 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues7thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues7thRow = [-45, -5, 5, 45];
     // 7th row
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
@@ -1136,7 +1133,7 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues8thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues8thRow = [-45, -35, -25, -5, 5, 25, 35, 45];
     // 8th row
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
@@ -1155,7 +1152,7 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues9thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues9thRow = [-45, -35, -25, 25, 35, 45];
     // 9th row
     var possibleNumberBoxes = [4, 5, 6, 7, 8];
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
@@ -1174,11 +1171,10 @@ function createMaze() {
         maze.add(box);
     }
 
-    var xPossibleValues10thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues10thRow = [-45, -35, -25, -15, 15, 25, 35, 45];
     // 10th row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
+    var count = 0;
+    while (count < 8) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
         var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
         var itemX = xPossibleValues10thRow[Math.floor(Math.random() * xPossibleValues10thRow.length)];
@@ -1191,6 +1187,7 @@ function createMaze() {
             }
         }
         maze.add(box);
+        count = count + 1;
     }
 
 
