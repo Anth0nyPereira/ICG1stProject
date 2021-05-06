@@ -132,7 +132,7 @@
         window.addEventListener('resize', resizeWindow);
 
         //To keep track of the keyboard - WASD
-        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false;
+        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -186,6 +186,19 @@
                 case 77: //M
                     keyM = true;
                     break;
+                case 38: // ArrowUp
+                    keyArrowUp = true;
+                    break;
+                case 40: // ArrowDown
+                    keyArrowDown = true;
+                    break;
+                case 37: // ArrowLeft
+                    keyArrowLeft = true;
+                    break;
+                case 39: // ArrowRight
+                    keyArrowRight = true;
+                    break;
+
             }
         }
         function onDocumentKeyUp(event) {
@@ -213,6 +226,18 @@
                     break;
                 case 77: //M
                     keyM = false;
+                    break;
+                case 38: // ArrowUp
+                    keyArrowUp = false;
+                    break;
+                case 40: // ArrowDown
+                    keyArrowDown = false;
+                    break;
+                case 37: // ArrowLeft
+                    keyArrowLeft = false;
+                    break;
+                case 39: // ArrowRight
+                    keyArrowRight = false;
                     break;
             }
     }
@@ -1413,6 +1438,27 @@ function createMaze() {
         mazeObject.rotation.y = Math.PI/2 * m;
         sceneGraph.add(mazeObject);
     }
+
+    // Create object to move around the maze
+    var cylinderTop =  1.5;  
+    var cylinderBottom =  1.5;  
+    var cylinderHeight = 5;  
+    var cylinderSegments = 12;  
+    var cylinderGeometry = new THREE.CylinderGeometry(cylinderTop, cylinderBottom, cylinderHeight, cylinderSegments);
+
+    for (var j = 1; j < 5; j++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var cylinderMaterial = new THREE.MeshBasicMaterial({color: randomColor});
+        var cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+        cylinder.position.set(0, 2.5, 148);
+        cylinder.name = "cylinder" + i;
+        var cylinderObject3D = new THREE.Object3D();
+        cylinderObject3D.add(cylinder);
+        sceneGraph.add(cylinderObject3D);
+        cylinderObject3D.rotation.y = Math.PI/2 * j;
+        cylinderObject3D.name = "cylinderObject3D" + j;
+        console.log("name: " + cylinderObject3D.name);
+    }
 }
     
 
@@ -1484,10 +1530,6 @@ function createMaze() {
                 }
                 countReduceSpeed = countReduceSpeed/4;
              } 
-             
-
-        
-
             /*
             var zerotwo2 = sceneElements.sceneGraph.getObjectByName("zerotwo2");
             zerotwo2.rotation.y += 0.05;
@@ -1535,6 +1577,47 @@ function createMaze() {
             }
             
         }
+    }
+
+    // move cylinder with arrows
+
+    var cylinderArray1 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D1").children;
+    var cylinder1 = cylinderArray1[0];
+
+    var cylinderArray2 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D2").children;
+    var cylinder2 = cylinderArray2[0];
+
+    var cylinderArray3 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D3").children;
+    var cylinder3 = cylinderArray3[0];
+
+    var cylinderArray4 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D4").children;
+    var cylinder4 = cylinderArray4[0];
+
+    if (keyArrowUp && cylinder4.position.z >= 52) {
+        cylinder4.position.z -= 1;
+        cylinder1.position.z -= 1;
+        cylinder2.position.z -= 1;
+        cylinder3.position.z -= 1;
+    }
+    if (keyArrowDown && cylinder4.position.z <= 145) {
+        cylinder4.position.z += 1;
+        cylinder1.position.z += 1;
+        cylinder2.position.z += 1;
+        cylinder3.position.z += 1;
+    }
+
+    if (keyArrowLeft && cylinder4.position.x >= -48) {
+        cylinder4.position.x -= 1;
+        cylinder1.position.x -= 1;
+        cylinder2.position.x -= 1;
+        cylinder3.position.x -= 1;
+    }
+
+    if (keyArrowRight && cylinder4.position.x <= 48) {
+        cylinder4.position.x += 1;
+        cylinder1.position.x += 1;
+        cylinder2.position.x += 1;
+        cylinder3.position.x += 1;
     }
         
 
