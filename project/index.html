@@ -977,9 +977,78 @@ function makeStone() {
     const stone = new THREE.Mesh(meshGeometry, material2);
     return stone;
 }
+
+function createMaze() {
+    var maze = new THREE.Group();
+    var planeGeometry = new THREE.PlaneGeometry( 100, 100, 32 );
+    var planeMaterial = new THREE.MeshBasicMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
+    var plane1 = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane1.position.set(0, 0, 100);
+    plane1.rotation.x = Math.PI/2;
+
+    var wall1 = new THREE.Mesh(planeGeometry, planeMaterial);
+    wall1.position.set(50, 15, 100);
+    wall1.scale.set(1, 0.3, 1);
+    wall1.rotation.y = Math.PI/2;
+
+    var boxGeometry = new THREE.BoxGeometry( 10, 10, 10);
+    
+    
+    var usedXValues = [];
+    var usedZValues = [];
+
+    var xPossibleValues = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var zPossibleValues = [55, 65, 75, 85, 95, 105, 115, 125, 135, 145];
+
+    // Math.floor(Math.random() * 10)
+    var count = 0;
+    while (count <= 8) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+
+        console.log(xPossibleValues);
+        var itemX = xPossibleValues[Math.floor(Math.random() * xPossibleValues.length)];
+        var indexOfItemX = xPossibleValues.indexOf(itemX);
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 55);
+        for( var i = 0; i < xPossibleValues.length; i++){ 
+            if ( xPossibleValues[i] === itemX) { 
+                xPossibleValues.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+        count = count + 1;
+    }
+        
+    /*
+    for (var i=0; i<15; i++) {
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        var xValue = Math.pow(-1, i) * Math.floor(Math.random() * 49.5);
+        while (usedXValues.includes(xValue)) {
+            xValue = Math.pow(-1, i) * Math.floor(Math.random() * 49.5);
+        }
+        usedXValues.push(xValue);
+        var zValue = Math.floor(Math.random() * 100) + 49.5;
+        while (usedZValues.includes(zValue)) {
+            zValue = Math.floor(Math.random() * 100) + 49.5;
+        }
+        usedZValues.push(zValue);
+
+        box.position.set(xValue, 5, zValue);
+        maze.add(box);
+    }
+    */
+
+    maze.add(wall1);
+    maze.add(plane1);
+
+    return maze;
+}
         
     var existingZeroTwoObjects = [];
     var removedZeroTwoObjects = [];
+
         // Create and insert in the scene graph the models of the 3D scene
     function load3DObjects(sceneGraph) {
 
@@ -1157,7 +1226,11 @@ function makeStone() {
     sceneGraph.add(center);
     
     console.log(existingZeroTwoObjects);
-    }
+
+    // Create Mazes
+    var maze1 = createMaze();
+    sceneGraph.add(maze1);
+}
     
 
         // ANIMATING
