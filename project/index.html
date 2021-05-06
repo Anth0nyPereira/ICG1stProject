@@ -997,29 +997,211 @@ function createMaze() {
     var usedXValues = [];
     var usedZValues = [];
 
-    var xPossibleValues = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var xPossibleValues1stRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
     var zPossibleValues = [55, 65, 75, 85, 95, 105, 115, 125, 135, 145];
 
-    // Math.floor(Math.random() * 10)
+    // 
+
+    // 1st row of the maze
     var count = 0;
     while (count <= 8) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
         var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
 
-        console.log(xPossibleValues);
-        var itemX = xPossibleValues[Math.floor(Math.random() * xPossibleValues.length)];
-        var indexOfItemX = xPossibleValues.indexOf(itemX);
+        console.log(xPossibleValues1stRow);
+        var itemX = xPossibleValues1stRow[Math.floor(Math.random() * xPossibleValues1stRow.length)];
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         box.position.set(itemX, 5, 55);
-        for( var i = 0; i < xPossibleValues.length; i++){ 
-            if ( xPossibleValues[i] === itemX) { 
-                xPossibleValues.splice(i, 1); 
+        for( var i = 0; i < xPossibleValues1stRow.length; i++){ 
+            if ( xPossibleValues1stRow[i] === itemX) { 
+                xPossibleValues1stRow.splice(i, 1); 
                 i--; 
             }
         }
         maze.add(box);
         count = count + 1;
     }
+
+    var xPossibleValues2ndRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    // 2nd row
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues2ndRow[Math.floor(Math.random() * xPossibleValues2ndRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 65);
+        for( var i = 0; i < xPossibleValues2ndRow.length; i++){ 
+            if ( xPossibleValues2ndRow[i] === itemX) { 
+                xPossibleValues2ndRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues3rdRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 3rd row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues3rdRow[Math.floor(Math.random() * xPossibleValues3rdRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 75);
+        for( var i = 0; i < xPossibleValues3rdRow.length; i++){ 
+            if ( xPossibleValues3rdRow[i] === itemX) { 
+                xPossibleValues3rdRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues4thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 4th row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues4thRow[Math.floor(Math.random() * xPossibleValues4thRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 85);
+        for( var i = 0; i < xPossibleValues4thRow.length; i++){ 
+            if ( xPossibleValues4thRow[i] === itemX) { 
+                xPossibleValues4thRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues5thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 5th row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues5thRow[Math.floor(Math.random() * xPossibleValues5thRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 95);
+        for( var i = 0; i < xPossibleValues5thRow.length; i++){ 
+            if ( xPossibleValues5thRow[i] === itemX) { 
+                xPossibleValues5thRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues6thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 6th row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues6thRow[Math.floor(Math.random() * xPossibleValues6thRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 105);
+        for( var i = 0; i < xPossibleValues6thRow.length; i++){ 
+            if ( xPossibleValues6thRow[i] === itemX) { 
+                xPossibleValues6thRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues7thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 7th row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues7thRow[Math.floor(Math.random() * xPossibleValues7thRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 115);
+        for( var i = 0; i < xPossibleValues7thRow.length; i++){ 
+            if ( xPossibleValues7thRow[i] === itemX) { 
+                xPossibleValues7thRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues8thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 8th row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues8thRow[Math.floor(Math.random() * xPossibleValues8thRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 125);
+        for( var i = 0; i < xPossibleValues8thRow.length; i++){ 
+            if ( xPossibleValues8thRow[i] === itemX) { 
+                xPossibleValues8thRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues9thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 9th row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues9thRow[Math.floor(Math.random() * xPossibleValues9thRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 135);
+        for( var i = 0; i < xPossibleValues9thRow.length; i++){ 
+            if ( xPossibleValues9thRow[i] === itemX) { 
+                xPossibleValues9thRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+    var xPossibleValues10thRow = [-45, -35, -25, -15, -5, 5, 15, 25, 35, 45];
+    // 10th row
+    var possibleNumberBoxes = [4, 5, 6, 7, 8];
+    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+    for (var k=0; k < numberBoxes; k++) {
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var boxMaterial = new THREE.MeshBasicMaterial( {color: randomColor} );
+        var itemX = xPossibleValues10thRow[Math.floor(Math.random() * xPossibleValues10thRow.length)];
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(itemX, 5, 145);
+        for( var i = 0; i < xPossibleValues10thRow.length; i++){ 
+            if ( xPossibleValues10thRow[i] === itemX) { 
+                xPossibleValues10thRow.splice(i, 1); 
+                i--; 
+            }
+        }
+        maze.add(box);
+    }
+
+
+
+
+
+    
+
+    
+
+
         
     /*
     for (var i=0; i<15; i++) {
