@@ -1255,6 +1255,98 @@ function createMaze() {
 
     return maze;
 }
+
+function createCelticCross() {
+    var cross = new THREE.Group();
+    cross.position.set(0, 20, 0);
+
+    // circle
+    var circleRadius =  7.5;  
+    var circleTubeRadius =  2.0;  
+    var circleRadialSegments = 30;  
+    var circleTubularSegments = 100;  
+
+    var circleGeometry = new THREE.TorusGeometry(circleRadius, circleTubeRadius, circleRadialSegments, circleTubularSegments);;
+    var crossMaterial = new THREE.MeshBasicMaterial({color: 0x49311d});
+    var circle = new THREE.Mesh(circleGeometry, crossMaterial);
+    circle.position.y = 36;
+    cross.add(circle);
+
+    // cross in the middle
+    var middleCrossShape = new THREE.Shape();
+    middleCrossShape.moveTo(-2, 0);
+    middleCrossShape.lineTo(2, 0);
+    middleCrossShape.lineTo(4, 5);
+    middleCrossShape.lineTo(-4, 5);
+    middleCrossShape.lineTo(-2, 0);
+
+    var middleCrossSettings = {
+        steps: 2,
+        depth: 2,
+        bevelEnabled: false,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+    };
+
+    var middleCrossGeometry = new THREE.ExtrudeGeometry(middleCrossShape, middleCrossSettings);
+    var middleCross1 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+    middleCross1.scale.set(0.7, 1, 1);
+    middleCross1.position.y = 1;
+    var middleCross2 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+    middleCross2.scale.set(0.7, 1, 1);
+    middleCross2.position.x = -1;
+    var middleCross3 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+    middleCross3.scale.set(0.7, 1, 1);
+    middleCross3.position.y = -1;
+    var middleCross4 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+    middleCross4.scale.set(0.7, 1, 1);
+    middleCross4.position.x = 1;
+    var middleCross5 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+    middleCross5.scale.set(0.4, 0.7, 1);
+    middleCross5.position.y = -1.7;
+
+    middleCross2.rotation.z = Math.PI/2;
+    middleCross3.rotation.z = Math.PI;
+    middleCross4.rotation.z = -Math.PI/2;
+
+    var middleCross = new THREE.Group();
+    middleCross.position.y = 36;
+    middleCross.add(middleCross1);
+    middleCross.add(middleCross2);
+    middleCross.add(middleCross3);
+    middleCross.add(middleCross4);
+    middleCross.add(middleCross5);
+
+    cross.add(middleCross);
+
+    // base
+    var baseShape = new THREE.Shape();
+    baseShape.moveTo(-2, 0);
+    baseShape.lineTo(2, 0);
+    baseShape.bezierCurveTo(1.8, 3, 1.5, 5, 1, 8);
+    baseShape.lineTo(-1, 8);
+    baseShape.bezierCurveTo(-1.5, 5, -1.8, 3, -2, 0);
+
+    var baseGeometry = new THREE.ExtrudeGeometry(baseShape, middleCrossSettings);
+    var base = new THREE.Mesh(baseGeometry, crossMaterial);
+    base.position.set(0, -20, -1);
+    base.scale.set(2.5, 6, 1);
+
+    cross.add(base);
+
+    // top (reusing base and scale it)
+    var top = new THREE.Mesh(baseGeometry, crossMaterial);
+    top.rotation.z = Math.PI;
+    top.position.y = 50;
+    top.scale.set(1.5, 2, 1);
+
+    cross.add(top);
+    
+
+    return cross;
+}
         
     var existingZeroTwoObjects = [];
     var removedZeroTwoObjects = [];
@@ -1375,11 +1467,13 @@ function createMaze() {
     center.position.set(-45, 0, -45);
     center.scale.set(2, 2 , 2);
 
+    /*
     var lathe1 = createLathe(0x000000);
     sceneGraph.add(lathe1);
     lathe1.position.x = -2;
     lathe1.position.y = 10;
     lathe1.name = "lathe1";
+    */
 
     // Make zero two character
 
@@ -1459,6 +1553,10 @@ function createMaze() {
         cylinderObject3D.name = "cylinderObject3D" + j;
         console.log("name: " + cylinderObject3D.name);
     }
+
+    // Create celtic cross in the middle of the scene
+    var cross1 = createCelticCross();
+    sceneGraph.add(cross1);
 }
     
 
@@ -1477,8 +1575,10 @@ function createMaze() {
         var countReduceSpeed = 0.01;
         function computeFrame(time) {
 
+            /*
             var lathe1 = sceneElements.sceneGraph.getObjectByName("lathe1");
             lathe1.rotation.y += 0.05;
+            */
 
 
             // dynamically remove zero twos
