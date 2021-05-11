@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<!--
-
-		Example adapted for Daniel Rohmer tutorial
-
-		https://imagecomputing.net/damien.rohmer/teaching/2019_2020/semester_1/MPRI_2-39/practice/threejs/content/000_threejs_tutorial/index.html
-
-		J. Madeira - April 2021
-
--->
 
 <head>
     <meta charset="utf-8">
@@ -132,7 +123,7 @@
         window.addEventListener('resize', resizeWindow);
 
         //To keep track of the keyboard - WASD
-        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false;
+        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -198,8 +189,11 @@
                 case 39: // ArrowRight
                     keyArrowRight = true;
                     break;
-
-            }
+                case 16: // Shift (right one)
+                    keyShift = true;
+                case 13: // Enter
+                    keyEnter = true;
+                }
         }
         function onDocumentKeyUp(event) {
             switch (event.keyCode) {
@@ -239,6 +233,10 @@
                 case 39: // ArrowRight
                     keyArrowRight = false;
                     break;
+                case 16: // Shift (right one)
+                    keyShift = false;
+                case 13: // Enter
+                    keyEnter = false;
             }
     }
 function makeCircle(color) {
@@ -1361,7 +1359,7 @@ function createCelticCross() {
         const pmaterial = new THREE.MeshBasicMaterial( {color: 0x567d46, side: THREE.DoubleSide} );
         const plane = new THREE.Mesh( pgeometry, pmaterial );
         plane.rotation.x = Math.PI / 2;
-        sceneGraph.add( plane );
+        sceneGraph.add(plane);
 
         var axes = new THREE.AxisHelper(500);  
         sceneGraph.add(axes);
@@ -1402,15 +1400,16 @@ function createCelticCross() {
             center.name = "center" + i;
             center.add(stone);
             sceneGraph.add(center);
-            stone.position.x = 30;
-            center.rotation.y = Math.PI/4 + i*(Math.PI/2);
+            //stone.position.x = 30;
+            stone.position.set(30*Math.cos(Math.PI/4 + i*(Math.PI/2)), 0, 30*Math.sin(Math.PI/4 + i*(Math.PI/2)))
+            //center.rotation.y = Math.PI/4 + i*(Math.PI/2);
         }
     
 
 
 
         var center = new THREE.Object3D();
-    center.name = "center";
+        center.name = "center";
 
     for (var i=0; i<100; i++) {
         var piece = createPiece(0x00472a);
@@ -1486,13 +1485,18 @@ function createCelticCross() {
     for (var i = 1; i < 9; i++) {
         var zerotwo = createZeroTwo();
         var rotateZeroTwo = new THREE.Object3D();
+
         rotateZeroTwo.add(zerotwo);
+
         zerotwo.scale.set(0.2, 0.2, 0.2);
         zerotwo.position.set(20, 13.5, 0);
+
         zerotwo.name = "zerotwo" + i;
         rotateZeroTwo.name = "rotateZeroTwo" + i;
+
         rotateZeroTwo.rotation.y = i*(Math.PI/4);
         sceneGraph.add(rotateZeroTwo);
+        //console.log("POSITIONÉ: " + rotateZeroTwo.position.x);
 
         existingZeroTwoObjects.push(rotateZeroTwo);
     }
@@ -1590,7 +1594,7 @@ function createCelticCross() {
                 console.log(existingZeroTwoObjects);
             }
 
-            if (keyPlus && existingZeroTwoObjects.length <=8 && removedZeroTwoObjects.length != 0) {
+            else if (keyPlus && existingZeroTwoObjects.length <=8 && removedZeroTwoObjects.length != 0) {
                 var object = removedZeroTwoObjects[removedZeroTwoObjects.length - 1];
                 console.log(removedZeroTwoObjects[0]);
                 console.log("keyplus: " + object);
@@ -1620,7 +1624,7 @@ function createCelticCross() {
                 countSpeed = countSpeed + 1;
              }
 
-             if (keyM) {
+             else if (keyM) {
                  console.log("here!");
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
@@ -1630,6 +1634,29 @@ function createCelticCross() {
                 }
                 countReduceSpeed = countReduceSpeed/4;
              } 
+
+            // make each zero two turn into a stone when pressing Shift
+            if (keyShift) {
+                var stoneNumber = 1;
+                for (var z2 = 0; z2 < existingZeroTwoObjects.length; z2++) {
+                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[z2].name);
+                    var stone = sceneElements.sceneGraph.getObjectByName("center" + stoneNumber).children[0];
+                    zerotwoObject.position.set(stone.position.x, 0, stone.position.z);
+                    var zerotwo = zerotwoObject.children[0];
+                    zerotwo.position.set(8.5, 13.5, 0);
+                    stoneNumber++;
+                }
+            }
+
+            else  if (keyEnter) {
+                for (var z2=0; z2<existingZeroTwoObjects.length; z2++) {
+                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[z2].name);
+                    zerotwoObject.position.set(0, 0, 0);
+                    var zerotwo = zerotwoObject.children[0];
+                    zerotwo.position.set(20, 13.5, 0);
+                }
+             }
+
             /*
             var zerotwo2 = sceneElements.sceneGraph.getObjectByName("zerotwo2");
             zerotwo2.rotation.y += 0.05;
