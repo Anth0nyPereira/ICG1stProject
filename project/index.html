@@ -1370,14 +1370,14 @@ function createRain(min, max) {
 
 function createFire() {
     var fireElements = new THREE.Group();
-    for (var i = 0; i < 300; i++) {
-        var fireGeometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+    for (var i = 0; i < 100; i++) {
+        var fireGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
         var fireMaterial = new THREE.MeshBasicMaterial({color: 0xff7700});
         var fire = new THREE.Mesh(fireGeometry, fireMaterial);
         fire.position.set(randomIntFromInterval(0, 12), randomIntFromInterval(1, 45), 2);
         fireElements.add(fire);
         
-        if (i>=200) {
+        if (i>=50) {
             fire.visible = false;
         }
         
@@ -1619,22 +1619,6 @@ function createFire() {
         fireObject.add(fire);
         fireObject.rotation.y = f * Math.PI/2;
     }
-    
-
-    /*
-    var fire2 = createFire();
-    fire2.name = "fire2";
-    sceneGraph.add(fire2);
-
-    var fire3 = createFire();
-    fire3.name = "fire3";
-    sceneGraph.add(fire3);
-
-    var fire4 = createFire();
-    fire4.name = "fire4";
-    sceneGraph.add(fire4);
-    */
-    
 
 }
     
