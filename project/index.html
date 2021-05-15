@@ -8,8 +8,6 @@
 
     <title> 3D scene </title>
 
-    <link rel="stylesheet" href="style.css">
-
     <script type="module">
 
         import * as THREE from "https://threejs.org/build/three.module.js";
@@ -1394,6 +1392,7 @@ function createFire() {
             // ************************** //
             // Create a ground plane
             // ************************** //
+
         const pgeometry = new THREE.PlaneGeometry( 100, 100, 32 );
         const pmaterial = new THREE.MeshBasicMaterial( {color: 0x567d46, side: THREE.DoubleSide} );
         const plane = new THREE.Mesh( pgeometry, pmaterial );
@@ -1730,25 +1729,25 @@ function createFire() {
             if (!keyAlt && !keyAltGr) {
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                 var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
-                zerotwoObject.rotation.y -= 0.01;
+                zerotwoObject.rotation.y -= 0.02;
                 var zerotwo = zerotwoObject.children[0];
-                zerotwo.rotation.y -= 0.05;
+                zerotwo.rotation.y -= 0.1;
                 }
             } else if (keyAlt) {
                 keyAltGr = false;
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
-                    zerotwoObject.rotation.y -= 0.02;
+                    zerotwoObject.rotation.y -= 0.06;
                     var zerotwo = zerotwoObject.children[0];
-                    zerotwo.rotation.y -= 0.1;
+                    zerotwo.rotation.y -= 0.3;
                 } 
             } 
             else if (keyAltGr) {
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
-                    zerotwoObject.rotation.y += 0.02;
+                    zerotwoObject.rotation.y += 0.04;
                     var zerotwo = zerotwoObject.children[0];
-                    zerotwo.rotation.y += 0.1;
+                    zerotwo.rotation.y += 0.2;
                 }
             } 
 
@@ -1903,7 +1902,9 @@ function createFire() {
 </head>
 
 <body>
+    <audio id="player" autoplay loop>
+        <source src="resources/danceOfTheDruids.mp3" type="audio/mp3">
+    </audio>
     <div id="Tag3DScene"> </div>
 </body>
-
 </html>
