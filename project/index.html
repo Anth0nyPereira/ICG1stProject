@@ -1367,6 +1367,23 @@ function createRain(min, max) {
     }
     return rainElements;
 }
+
+function createFire() {
+    var fireElements = new THREE.Group();
+    for (var i = 0; i < 300; i++) {
+        var fireGeometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+        var fireMaterial = new THREE.MeshBasicMaterial({color: 0xff7700});
+        var fire = new THREE.Mesh(fireGeometry, fireMaterial);
+        fire.position.set(randomIntFromInterval(0, 12), randomIntFromInterval(1, 45), 2);
+        fireElements.add(fire);
+        
+        if (i>=200) {
+            fire.visible = false;
+        }
+        
+    }
+    return fireElements;
+}
         
     var existingZeroTwoObjects = [];
     var removedZeroTwoObjects = [];
@@ -1591,6 +1608,32 @@ function createRain(min, max) {
         console.log(rainObject3D.name);
     }
 
+    // Create fire
+    for (var f = 1; f < 5; f++) {
+        var fireObject = new THREE.Object3D();
+        fireObject.name = "fireObject" + f;
+        var fire = createFire();
+        fire.position.set(-6, 0, 6);
+        fire.name = "fire" + f;
+        sceneGraph.add(fireObject);
+        fireObject.add(fire);
+        fireObject.rotation.y = f * Math.PI/2;
+    }
+    
+
+    /*
+    var fire2 = createFire();
+    fire2.name = "fire2";
+    sceneGraph.add(fire2);
+
+    var fire3 = createFire();
+    fire3.name = "fire3";
+    sceneGraph.add(fire3);
+
+    var fire4 = createFire();
+    fire4.name = "fire4";
+    sceneGraph.add(fire4);
+    */
     
 
 }
@@ -1616,7 +1659,6 @@ function createRain(min, max) {
             
 
         var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
-        console.log("bigrain: " + bigRain1.name);
         var rainElementsArray = bigRain1.children;
         for (var j = 0; j < rainElementsArray.length; j++) {
             var element = rainElementsArray[j];
@@ -1626,10 +1668,9 @@ function createRain(min, max) {
                 element.position.y = 65;
             }  
         }
-
+        
         var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
         bigRain1.rotation.y = Math.PI/2;
-        console.log("bigrain: " + bigRain1.name);
         var rainElementsArray = bigRain1.children;
         for (var j = 0; j < rainElementsArray.length; j++) {
             var element = rainElementsArray[j];
@@ -1642,7 +1683,6 @@ function createRain(min, max) {
 
         var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
         bigRain1.rotation.y = Math.PI;
-        console.log("bigrain: " + bigRain1.name);
         var rainElementsArray = bigRain1.children;
         for (var j = 0; j < rainElementsArray.length; j++) {
             var element = rainElementsArray[j];
@@ -1655,7 +1695,6 @@ function createRain(min, max) {
 
         var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
         bigRain1.rotation.y = 3*Math.PI/2;
-        console.log("bigrain: " + bigRain1.name);
         var rainElementsArray = bigRain1.children;
         for (var j = 0; j < rainElementsArray.length; j++) {
             var element = rainElementsArray[j];
@@ -1664,6 +1703,21 @@ function createRain(min, max) {
             } else {
                 element.position.y = 65;
             }  
+        }
+
+        // Animate fire (at the center)
+
+        for (var f = 1; f < 5; f++) {
+            var fire1 = sceneElements.sceneGraph.getObjectByName("fireObject" + f).children[0];
+            var fireElementsArray = fire1.children;
+            for (var j = 0; j < fireElementsArray.length; j++) {
+                var fireElement = fireElementsArray[j];
+                if (fireElement.visible == true) {
+                    fireElement.visible = false;
+                } else {
+                    fireElement.visible = true;
+                }
+            }
         }
 
 
