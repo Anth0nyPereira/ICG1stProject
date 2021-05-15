@@ -471,7 +471,6 @@ function createBody() {
     arm2.scale.set(1, 0.3, 1);
     arm2.rotation.z = Math.PI/2;
     arm2.position.set(-7, 6, 0);
-    console.log(arm2);
     body.add(arm2);
 
     // 1st sphere arm
@@ -520,8 +519,6 @@ function createBody() {
     //shape.lineTo(3, 0);
     shape.bezierCurveTo(-0.5, 0.25, 0.5, 0.25, 1, 0);
     shape.lineTo(-1, 0);
-    console.log(shape);
-    //
 
     var extrudeSettings = {
         steps: 20,
@@ -822,8 +819,6 @@ function createComplexLeaf(color1, color2) {
     completeLeaf1.add(leaf2);
     completeLeaf1.add(leaf1);
 
-    console.log("leaf pos " + completeLeaf1.position.x);
-
     // BEAUTIFUL EFFECT TBH completeLeaf1.translateX(-80);
     completeLeaf1.rotation.y = Math.PI/2;
     return completeLeaf1;
@@ -863,9 +858,6 @@ function createLathe(color) {
     points.push(new THREE.Vector3(5, 25.75, 0));
     points.push(new THREE.Vector3(4.5, 26.125, 0));
     points.push(new THREE.Vector3(4, 26.25, 0));
-
-    
-    //console.log(points);
 
     const segments = 50;  
     const phiStart = Math.PI * 2.00;  
@@ -967,7 +959,6 @@ document.body.appendChild( renderer.domElement );
 renderer.render(  sceneElements.sceneGraph, sceneElements.camera );
 
 } );
-console.log(loader);
 }
         function generatePoints() {    
         var points = [];
@@ -977,7 +968,6 @@ console.log(loader);
         var randomZ = Math.round(Math.random() * 4);
         
         points.push(new THREE.Vector3(randomX, randomY, randomZ));
-        //console.log(new THREE.Vector3(randomX, randomY, randomZ));
     }
     return points;
 }
@@ -1040,7 +1030,6 @@ function createMaze() {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
         var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
 
-        console.log(xPossibleValues1stRow);
         var itemX = xPossibleValues1stRow[Math.floor(Math.random() * xPossibleValues1stRow.length)];
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         var edges = new THREE.EdgesGeometry(boxGeometry);
@@ -1361,6 +1350,23 @@ function createCelticCross() {
 
     return cross;
 }
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function createRain(min, max) {
+    var rainElements = new THREE.Group();
+    for (var i = 1; i < 1250 ; i++) {
+        var rainGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
+        var rain = new THREE.Mesh(rainGeometry, rainMaterial);
+        rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+        rainElements.add(rain);
+    }
+    return rainElements;
+}
         
     var existingZeroTwoObjects = [];
     var removedZeroTwoObjects = [];
@@ -1433,7 +1439,6 @@ function createCelticCross() {
         piece.position.y = 1;
         piece.position.x = Math.cos(1 + i*0.1);
         piece.position.z = Math.sin(1 + i*0.1);
-        //console.log(piece);
     }
     var randomNumber = Math.random();
     for (var i=0; i<100; i++) {
@@ -1512,7 +1517,6 @@ function createCelticCross() {
 
         rotateZeroTwo.rotation.y = i*(Math.PI/4);
         sceneGraph.add(rotateZeroTwo);
-        //console.log("POSITIONÉ: " + rotateZeroTwo.position.x);
 
         existingZeroTwoObjects.push(rotateZeroTwo);
     }
@@ -1541,8 +1545,6 @@ function createCelticCross() {
 
 
     sceneGraph.add(center);
-    
-    console.log(existingZeroTwoObjects);
 
     // Create Mazes
     for (var m = 0; m < 4; m++) {
@@ -1571,12 +1573,26 @@ function createCelticCross() {
         sceneGraph.add(cylinderObject3D);
         cylinderObject3D.rotation.y = Math.PI/2 * j;
         cylinderObject3D.name = "cylinderObject3D" + j;
-        console.log("name: " + cylinderObject3D.name);
     }
 
     // Create celtic cross in the middle of the scene
     var cross1 = createCelticCross();
     sceneGraph.add(cross1);
+
+    // Create rain
+
+    for (var j = 1; j < 5; j++) {
+        var bigRain = createRain(1, 150);
+        var rainObject3D = new THREE.Object3D();
+        rainObject3D.add(bigRain);
+        sceneGraph.add(rainObject3D);
+        rainObject3D.name = "rainObject3D" + j;
+        rainObject3D.rotation.y = (i-1) * Math.PI/2;
+        console.log(rainObject3D.name);
+    }
+
+    
+
 }
     
 
@@ -1596,6 +1612,61 @@ function createCelticCross() {
 
         function computeFrame(time) {
 
+            // Animate rain
+            
+
+        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
+        console.log("bigrain: " + bigRain1.name);
+        var rainElementsArray = bigRain1.children;
+        for (var j = 0; j < rainElementsArray.length; j++) {
+            var element = rainElementsArray[j];
+            if (element.position.y > -1) {
+                element.position.y -= 0.2;
+            } else {
+                element.position.y = 65;
+            }  
+        }
+
+        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
+        bigRain1.rotation.y = Math.PI/2;
+        console.log("bigrain: " + bigRain1.name);
+        var rainElementsArray = bigRain1.children;
+        for (var j = 0; j < rainElementsArray.length; j++) {
+            var element = rainElementsArray[j];
+            if (element.position.y > -1) {
+                element.position.y -= 0.2;
+            } else {
+                element.position.y = 65;
+            }  
+        }
+
+        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
+        bigRain1.rotation.y = Math.PI;
+        console.log("bigrain: " + bigRain1.name);
+        var rainElementsArray = bigRain1.children;
+        for (var j = 0; j < rainElementsArray.length; j++) {
+            var element = rainElementsArray[j];
+            if (element.position.y > -1) {
+                element.position.y -= 0.2;
+            } else {
+                element.position.y = 65;
+            }  
+        }
+
+        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
+        bigRain1.rotation.y = 3*Math.PI/2;
+        console.log("bigrain: " + bigRain1.name);
+        var rainElementsArray = bigRain1.children;
+        for (var j = 0; j < rainElementsArray.length; j++) {
+            var element = rainElementsArray[j];
+            if (element.position.y > -1) {
+                element.position.y -= 0.2;
+            } else {
+                element.position.y = 65;
+            }  
+        }
+
+
             /*
             var lathe1 = sceneElements.sceneGraph.getObjectByName("lathe1");
             lathe1.rotation.y += 0.05;
@@ -1608,13 +1679,10 @@ function createCelticCross() {
                 removedZeroTwoObjects.push(randomItem);
                 sceneElements.sceneGraph.remove(randomItem);
                 existingZeroTwoObjects.pop(randomItem);
-                console.log(existingZeroTwoObjects);
             }
 
             else if (keyPlus && existingZeroTwoObjects.length <=8 && removedZeroTwoObjects.length != 0) {
                 var object = removedZeroTwoObjects[removedZeroTwoObjects.length - 1];
-                console.log(removedZeroTwoObjects[0]);
-                console.log("keyplus: " + object);
                 sceneElements.sceneGraph.add(object);
                 removedZeroTwoObjects.pop(object);
                 existingZeroTwoObjects.push(object);
@@ -1624,7 +1692,6 @@ function createCelticCross() {
             if (!keyAlt && !keyAltGr) {
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                 var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
-                console.log("Zero Two Object:" + zerotwoObject);
                 zerotwoObject.rotation.y -= 0.01;
                 var zerotwo = zerotwoObject.children[0];
                 zerotwo.rotation.y -= 0.05;
@@ -1646,8 +1713,6 @@ function createCelticCross() {
                     zerotwo.rotation.y += 0.1;
                 }
             } 
-            
-            console.log("keyalt: " + keyAlt + " ; keyaltgr: " + keyAltGr);
 
              // upgrade speed of zero two's rotations
 
@@ -1662,7 +1727,6 @@ function createCelticCross() {
              }
 
              else if (keyM) {
-                 console.log("here!");
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
                     zerotwoObject.rotation.y -= countReduceSpeed/100;
@@ -1707,10 +1771,7 @@ function createCelticCross() {
     
     // for (var i = 0; i < array.length; )
 
-    var intersects = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center").children);
-    //console.log(intersects);
-
-        
+    var intersects = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center").children);        
 
     if ( intersects.length > 0 && array.includes(intersects[0].object)) {
         intersects[0].object.material.color.set(0xadff2f);
@@ -1730,8 +1791,6 @@ function createCelticCross() {
         var intersectsStone = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center" + i).children);
         
         if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y <= 1.7) {
-            console.log("scale: " + intersectsStone[0].object.scale.y);
-            console.log("intersectStone: " + intersectsStone[0].object);
             intersectsStone[0].object.scale.y += 0.2;
         } else if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y > 1.7) {
             intersectsStone[0].object.scale.y = 2.0;
