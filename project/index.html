@@ -56,12 +56,21 @@
                 // ***************************** //
                 // lights
                 // ***************************** //
-                var light = new THREE.DirectionalLight( 0xffffff );
+        var light = new THREE.DirectionalLight( 0xffffff );
         light.position.set( 0, 1, 1 ).normalize();
         sceneElements.sceneGraph.add(light);
 
         const alight = new THREE.AmbientLight( 0x404040 ); // soft white light
         sceneElements.sceneGraph.add( alight );
+        /*
+        var dLight1 = new THREE.DirectionalLight(0xffffbb, 5);
+        dLight1.position.set(100, 0, 0).normalize();
+        sceneElements.sceneGraph.add(dLight1);
+        */
+
+        // Hemisphere Light
+        //const hLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 5);
+        //sceneElements.sceneGraph.add(hLight);
 
                 // *********************************** //
                 // Create renderer (with shadow map)
@@ -69,7 +78,7 @@
                 const renderer = new THREE.WebGLRenderer({ antialias: true });
                 sceneElements.renderer = renderer;
                 renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.setClearColor('rgb(255, 255, 150)', 1.0);
+                renderer.setClearColor('rgb(0,51,102)', 1.0);
                 renderer.setSize(width, height);
 
                 // Setup shadowMap property
@@ -1026,7 +1035,7 @@ function createMaze() {
     var count = 0;
     while (count < 8) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
+        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
 
         var itemX = xPossibleValues1stRow[Math.floor(Math.random() * xPossibleValues1stRow.length)];
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
@@ -1074,7 +1083,7 @@ function createMaze() {
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
     for (var k=0; k < numberBoxes; k++) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
+        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
         var itemX = xPossibleValues3rdRow[Math.floor(Math.random() * xPossibleValues3rdRow.length)];
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         var edges = new THREE.EdgesGeometry(boxGeometry);
@@ -1120,7 +1129,7 @@ function createMaze() {
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
     for (var k=0; k < numberBoxes; k++) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
+        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
         var itemX = xPossibleValues5thRow[Math.floor(Math.random() * xPossibleValues5thRow.length)];
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         var edges = new THREE.EdgesGeometry(boxGeometry);
@@ -1166,7 +1175,7 @@ function createMaze() {
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
     for (var k=0; k < numberBoxes; k++) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
+        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
         var itemX = xPossibleValues7thRow[Math.floor(Math.random() * xPossibleValues7thRow.length)];
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         var edges = new THREE.EdgesGeometry(boxGeometry);
@@ -1212,7 +1221,7 @@ function createMaze() {
     var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
     for (var k=0; k < numberBoxes; k++) {
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
+        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
         var itemX = xPossibleValues9thRow[Math.floor(Math.random() * xPossibleValues9thRow.length)];
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         var edges = new THREE.EdgesGeometry(boxGeometry);
@@ -1358,7 +1367,8 @@ function createRain(min, max) {
     for (var i = 1; i < 1250 ; i++) {
         var rainGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
+        //var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
+        var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
         var rain = new THREE.Mesh(rainGeometry, rainMaterial);
         rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
         rainElements.add(rain);
