@@ -57,13 +57,13 @@
                 // lights
                 // ***************************** //
                 
-        var light = new THREE.DirectionalLight( 0xffffff );
-        light.position.set( 0, 1, 1 ).normalize();
+        var light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 1, 1).normalize();
         sceneElements.sceneGraph.add(light);
         
 
-        const alight = new THREE.AmbientLight( 0x404040 ); // soft white light
-        sceneElements.sceneGraph.add( alight );
+        const alight = new THREE.AmbientLight(0x404040); // soft white light
+        sceneElements.sceneGraph.add(alight);
         
         var pLight1 = new THREE.PointLight(0xffffbb, 25, 70);
         pLight1.position.set(115, 20, 0);
@@ -82,9 +82,17 @@
         sceneElements.sceneGraph.add(pLight4);
         
 
-        // Hemisphere Light
-        //const hLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 5);
-        //sceneElements.sceneGraph.add(hLight);
+        // Hemisphere Light 1
+        var hLight1 = new THREE.HemisphereLight(0xffffbb, 0x080820, 5); // "white light"
+        sceneElements.sceneGraph.add(hLight1);
+        hLight1.visible = false;
+        hLight1.name = "hLight1";
+
+        // Hemisphere Light 2
+        var hLight2 = new THREE.HemisphereLight(0xff0000, 0x000000, 100); // "red light"
+        sceneElements.sceneGraph.add(hLight2);
+        hLight2.visible = false;
+        hLight2.name = "hLight2";
 
                 // *********************************** //
                 // Create renderer (with shadow map)
@@ -144,7 +152,7 @@
         window.addEventListener('resize', resizeWindow);
 
         //To keep track of the keyboard - WASD
-        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false;
+        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -222,7 +230,21 @@
                 case 225: // AltGr
                     keyAltGr = true;
                     break;
-                }
+                case 87: // W
+                    keyW = true;
+                    break;
+                case 82: // R
+                    keyR = true;
+                    break;
+                case 32: // Space
+                    keySpace = true;
+                    break;
+                case 83: // S
+                    keyS = true;
+                    break;
+                case 88: // X
+                    keyX = true;
+            }
         }
         function onDocumentKeyUp(event) {
             switch (event.keyCode) {
@@ -274,6 +296,20 @@
                 case 225: // AltGr
                     keyAltGr = false;
                     break;
+                case 87: // W
+                    keyW = false;
+                    break;
+                case 82: // R
+                    keyR = false;
+                    break;
+                case 32: // Space
+                    keySpace = false;
+                    break;
+                case 83: // S
+                    keyS = false;
+                    break;
+                case 88: // X
+                    keyX = false;
             }
     }
 function makeCircle(color) {
@@ -1667,6 +1703,7 @@ function createFire() {
         var countSpeed = 0;
         var countReduceSpeed = 0.01;
 
+        var flag = true;
         function computeFrame(time) {
 
             // Animate rain
@@ -1717,6 +1754,27 @@ function createFire() {
             } else {
                 element.position.y = 65;
             }  
+        }
+
+        // Enable/disable rain
+        if (keyS) {
+            var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
+            bigRain1.visible = false;
+            var bigRain2 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
+            bigRain2.visible = false;
+            var bigRain3 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
+            bigRain3.visible = false;
+            var bigRain4 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
+            bigRain4.visible = false;
+        } else if (keyX) {
+            var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
+            bigRain1.visible = true;
+            var bigRain2 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
+            bigRain2.visible = true;
+            var bigRain3 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
+            bigRain3.visible = true;
+            var bigRain4 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
+            bigRain4.visible = true;
         }
 
         // Animate fire (at the center)
@@ -1824,12 +1882,23 @@ function createFire() {
                     var zerotwo = zerotwoObject.children[0];
                     zerotwo.position.set(20, 13.5, 0);
                 }
-             }
+            }
 
-            /*
-            var zerotwo2 = sceneElements.sceneGraph.getObjectByName("zerotwo2");
-            zerotwo2.rotation.y += 0.05;
-            */
+            // make each zero two "jump"
+            if (keySpace) {
+                for (var z2=0; z2<existingZeroTwoObjects.length; z2++) {
+                    var zerotwo = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[z2].name).children[0];
+                    zerotwo.position.y += 1;
+                    if (zerotwo.position.y > 18) {
+                        zerotwo.position.y = 13.5;
+                    }  
+                }
+            } else if (!keySpace) {
+                for (var z2=0; z2<existingZeroTwoObjects.length; z2++) {
+                    var zerotwo = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[z2].name).children[0];
+                    zerotwo.position.y = 13.5;
+                }
+            }
 
     // Change color of tree when mouse hover
     raycaster.setFromCamera( mouse, sceneElements.camera );
@@ -1910,6 +1979,27 @@ function createFire() {
         cylinder2.position.x += 1;
         cylinder3.position.x += 1;
     }
+
+    // Add/remove lights
+
+    if (keyR) {
+        var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
+        redLight.visible = true;
+        var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
+        whiteLight.visible = false;
+    } else if (keyW) {
+        var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
+        redLight.visible = false;
+        var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
+        whiteLight.visible = true;
+    } else if (!keyR && !keyW) {
+        var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
+        redLight.visible = false;
+        var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
+        whiteLight.visible = false;
+    }
+
+
         
 
             // Rendering
