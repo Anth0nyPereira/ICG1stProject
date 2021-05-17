@@ -66,19 +66,19 @@
         sceneElements.sceneGraph.add( alight );
         
         var pLight1 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight1.position.set(105, 20, 0);
+        pLight1.position.set(115, 20, 0);
         sceneElements.sceneGraph.add(pLight1);
 
         var pLight2 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight2.position.set(-105, 20, 0);
+        pLight2.position.set(-115, 20, 0);
         sceneElements.sceneGraph.add(pLight2);
 
         var pLight3 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight3.position.set(0, 20, 105);
+        pLight3.position.set(0, 20, 115);
         sceneElements.sceneGraph.add(pLight3);
 
         var pLight4 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight4.position.set(0, 20, -105);
+        pLight4.position.set(0, 20, -115);
         sceneElements.sceneGraph.add(pLight4);
         
 
@@ -604,7 +604,7 @@ function createBody() {
     flashlight1.position.set(23, 26, 0);
     body.add(flashlight1);
 
-    var pointLight = new THREE.PointLight(0xffff00, 2, 22);
+    var pointLight = new THREE.PointLight(0xffff00, 2, 25);
     pointLight.castShadow = true;
     pointLight.position.set(23, 26, 0);
     body.add(pointLight);
@@ -889,7 +889,7 @@ function createLathe(color) {
     const phiStart = Math.PI * 2.00;  
     const phiLength = Math.PI * 2.00;  
     const geometry = new THREE.LatheGeometry(points, segments, phiStart, phiLength);
-    var material = new THREE.MeshBasicMaterial( { color: color, wireframe: true} );
+    var material = new THREE.MeshPhongMaterial( { color: color, wireframe: true} );
     const lathe = new THREE.Mesh( geometry, material );
     return lathe;
 
