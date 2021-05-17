@@ -605,6 +605,7 @@ function createBody() {
     body.add(flashlight1);
 
     var pointLight = new THREE.PointLight(0xffff00, 2, 22);
+    pointLight.castShadow = true;
     pointLight.position.set(23, 26, 0);
     body.add(pointLight);
 
@@ -1029,6 +1030,7 @@ function makeStone() {
     const meshGeometry = new ConvexGeometry(points);
 
     const stone = new THREE.Mesh(meshGeometry, material2);
+    stone.castShadow = true;
     return stone;
 }
 
@@ -1432,7 +1434,6 @@ function createFire() {
         sceneGraph.add(axes);
 
         var stone1 = makeStone();
-        stone1.castShadow = true;
         var center1 = new THREE.Object3D();
         center1.name = "center1";
         center1.add(stone1);
