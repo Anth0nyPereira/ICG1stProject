@@ -1295,7 +1295,7 @@ function createCelticCross() {
     var circleTubularSegments = 100;  
 
     var circleGeometry = new THREE.TorusGeometry(circleRadius, circleTubeRadius, circleRadialSegments, circleTubularSegments);;
-    var crossMaterial = new THREE.MeshBasicMaterial({color: 0x49311d});
+    var crossMaterial = new THREE.MeshToonMaterial({color: 0x49311d});
     var circle = new THREE.Mesh(circleGeometry, crossMaterial);
     circle.position.y = 36;
     cross.add(circle);
