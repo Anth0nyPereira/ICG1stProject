@@ -38,9 +38,7 @@
                 
 
                 // position and point the camera to the center of the scene
-        camera.position.x = -30;
-        camera.position.y = 40;
-        camera.position.z = 50;
+        camera.position.set(-30, 40, 50);
         camera.lookAt(new THREE.Vector3(0, 5, 10));
 
                 // ************************** //
@@ -152,7 +150,7 @@
         window.addEventListener('resize', resizeWindow);
 
         //To keep track of the keyboard - WASD
-        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false;
+        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false, keyEsc = false, keyTab = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -244,6 +242,13 @@
                     break;
                 case 88: // X
                     keyX = true;
+                    break;
+                case 9: // Tab
+                    keyTab = true;
+                    break;
+                case 27: // Esc
+                    keyEsc = true;
+                    break;
             }
         }
         function onDocumentKeyUp(event) {
@@ -310,6 +315,13 @@
                     break;
                 case 88: // X
                     keyX = false;
+                    break;
+                case 9: // Tab
+                    keyTab = false;
+                    break;
+                case 27: // Esc
+                    keyEsc = false;
+                    break;
             }
     }
 function makeCircle(color) {
@@ -1703,7 +1715,8 @@ function createFire() {
         var countSpeed = 0;
         var countReduceSpeed = 0.01;
 
-        var flag = true;
+        var cameraFlag = true;
+
         function computeFrame(time) {
 
             // Animate rain
@@ -1953,32 +1966,53 @@ function createFire() {
     var cylinderArray4 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D4").children;
     var cylinder4 = cylinderArray4[0];
 
-    if (keyArrowUp && cylinder4.position.z >= 52) {
-        cylinder4.position.z -= 1;
-        cylinder1.position.z -= 1;
-        cylinder2.position.z -= 1;
-        cylinder3.position.z -= 1;
+    var camera = sceneElements.camera;
+    if (keyTab) {
+        if (cameraFlag) {
+            camera.position.set(0, 5, 149);
+            cameraFlag = false;
+        }
+        if (keyArrowUp && cylinder4.position.z >= 52) {
+            cylinder4.position.z -= 1;
+            cylinder1.position.z -= 1;
+            cylinder2.position.z -= 1;
+            cylinder3.position.z -= 1;
+            camera.position.z -= 1;
+            //camera.lookAt(cylinder4.position);
     }
-    if (keyArrowDown && cylinder4.position.z <= 145) {
-        cylinder4.position.z += 1;
-        cylinder1.position.z += 1;
-        cylinder2.position.z += 1;
-        cylinder3.position.z += 1;
-    }
+        if (keyArrowDown && cylinder4.position.z <= 145) {
+            cylinder4.position.z += 1;
+            cylinder1.position.z += 1;
+            cylinder2.position.z += 1;
+            cylinder3.position.z += 1;
+            camera.position.z += 1;
+            //camera.lookAt(cylinder4.position);
+        }
 
-    if (keyArrowLeft && cylinder4.position.x >= -48) {
-        cylinder4.position.x -= 1;
-        cylinder1.position.x -= 1;
-        cylinder2.position.x -= 1;
-        cylinder3.position.x -= 1;
-    }
+        if (keyArrowLeft && cylinder4.position.x >= -48) {
+            cylinder4.position.x -= 1;
+            cylinder1.position.x -= 1;
+            cylinder2.position.x -= 1;
+            cylinder3.position.x -= 1;
+            camera.position.x -= 1;
+            //camera.lookAt(cylinder4.position);
+        }
 
-    if (keyArrowRight && cylinder4.position.x <= 48) {
-        cylinder4.position.x += 1;
-        cylinder1.position.x += 1;
-        cylinder2.position.x += 1;
-        cylinder3.position.x += 1;
+        if (keyArrowRight && cylinder4.position.x <= 48) {
+            cylinder4.position.x += 1;
+            cylinder1.position.x += 1;
+            cylinder2.position.x += 1;
+            cylinder3.position.x += 1;
+            camera.position.x += 1;
+            //camera.lookAt(cylinder4.position);
+        }
     }
+    
+    /*
+    console.log(camera.position.x);
+    console.log(camera.position.y);
+    console.log(camera.position.z);
+    */
 
     // Add/remove lights
 
@@ -1998,9 +2032,14 @@ function createFire() {
         var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
         whiteLight.visible = false;
     }
-
-
-        
+    
+    // Update camera
+    var camera = sceneElements.camera;
+    if (keyEsc) {
+        camera.position.set(-30, 40, 50);
+        camera.lookAt(new THREE.Vector3(0, 5, 10));
+        sceneElements.control.update();
+    }
 
             // Rendering
             helper.render(sceneElements);
