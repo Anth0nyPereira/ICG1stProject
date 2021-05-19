@@ -1432,13 +1432,16 @@ function randomIntFromInterval(min, max) { // min and max included
 
 function createRain(min, max) {
     var rainElements = new THREE.Group();
-    for (var i = 1; i < 1250 ; i++) {
+    for (var i = 1; i < 800; i++) {
         var rainGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
         var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
         //var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
         var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
         var rain = new THREE.Mesh(rainGeometry, rainMaterial);
         rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+        while (rain.position.x > 50 && rain.position.z > 50) {
+            rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+        }
         rainElements.add(rain);
     }
     return rainElements;
@@ -1863,9 +1866,9 @@ function createFire() {
                     zerotwo.rotation.y -= 0.05 * countSpeed;
                 }
                 countSpeed = countSpeed + 1;
-             }
+            }
 
-             else if (keyM) {
+            else if (keyM) {
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
                     zerotwoObject.rotation.y -= countReduceSpeed/100;
