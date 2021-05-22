@@ -16,105 +16,82 @@
 
         import { ConvexGeometry } from "https://threejs.org/examples/jsm/geometries/ConvexGeometry.js";
 
-        // TO INITIALIZE
+        // HELPER
 
         const helper = {
 
             initEmptyScene: function (sceneElements) {
 
-                // ************************** //
-                // Create the 3D scene
-                // ************************** //
+                // initialize scene
                 sceneElements.sceneGraph = new THREE.Scene();
 
 
-                // ************************** //
-                // Add camera
-                // ************************** //
+                // initialize camera
                 const width = window.innerWidth;
                 const height = window.innerHeight;
                 const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 500);
                 sceneElements.camera = camera;
                 
 
-                // position and point the camera to the center of the scene
-        camera.position.set(-30, 40, 50);
-        camera.lookAt(new THREE.Vector3(0, 5, 10));
+                // set camera position and look into the direction of the center of the scene
+                camera.position.set(-30, 40, 50);
+                camera.lookAt(new THREE.Vector3(0, 5, 10));
 
-                // ************************** //
-                // Illumination
-                // ************************** //
+                // LIGHTS
 
-                // ************************** //
-                // Add ambient light
-                // ************************** //
-                const ambientLight = new THREE.AmbientLight('rgb(255, 255, 255)', 0.2);
+                // ambient light
+                
+                var ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
                 sceneElements.sceneGraph.add(ambientLight);
 
-                // ***************************** //
-                // lights
-                // ***************************** //
-                
-        var light = new THREE.DirectionalLight(0xffffff);
-        light.position.set(0, 1, 1).normalize();
-        sceneElements.sceneGraph.add(light);
-        
+                // directional light (to give some color to the stones)
+                var dLight1 = new THREE.DirectionalLight(0xffffff);
+                dLight1.name = "dLight1";
+                dLight1.position.set(0, 1, 1).normalize;
+                sceneElements.sceneGraph.add(dLight1);
+            
+                // pointlights (to illuminate each maze and give some blue-neon vibes)
+                var pLight1 = new THREE.PointLight(0xffffbb, 25, 70);
+                pLight1.position.set(115, 20, 0);
+                sceneElements.sceneGraph.add(pLight1);
 
-        const alight = new THREE.AmbientLight(0x404040); // soft white light
-        sceneElements.sceneGraph.add(alight);
-        
-        var pLight1 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight1.position.set(115, 20, 0);
-        sceneElements.sceneGraph.add(pLight1);
+                var pLight2 = new THREE.PointLight(0xffffbb, 25, 70);
+                pLight2.position.set(-115, 20, 0);
+                sceneElements.sceneGraph.add(pLight2);
 
-        var pLight2 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight2.position.set(-115, 20, 0);
-        sceneElements.sceneGraph.add(pLight2);
+                var pLight3 = new THREE.PointLight(0xffffbb, 25, 70);
+                pLight3.position.set(0, 20, 115);
+                sceneElements.sceneGraph.add(pLight3);
 
-        var pLight3 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight3.position.set(0, 20, 115);
-        sceneElements.sceneGraph.add(pLight3);
+                var pLight4 = new THREE.PointLight(0xffffbb, 25, 70);
+                pLight4.position.set(0, 20, -115);
+                sceneElements.sceneGraph.add(pLight4);
 
-        var pLight4 = new THREE.PointLight(0xffffbb, 25, 70);
-        pLight4.position.set(0, 20, -115);
-        sceneElements.sceneGraph.add(pLight4);
-        
+                // hemisphere lights
+                var hLight1 = new THREE.HemisphereLight(0xffffbb, 0x080820, 5); // "white light" (press W)
+                sceneElements.sceneGraph.add(hLight1);
+                hLight1.visible = false;
+                hLight1.name = "hLight1";
 
-        // Hemisphere Light 1
-        var hLight1 = new THREE.HemisphereLight(0xffffbb, 0x080820, 5); // "white light"
-        sceneElements.sceneGraph.add(hLight1);
-        hLight1.visible = false;
-        hLight1.name = "hLight1";
+                var hLight2 = new THREE.HemisphereLight(0xff0000, 0x000000, 100); // "red light" (press R)
+                sceneElements.sceneGraph.add(hLight2);
+                hLight2.visible = false;
+                hLight2.name = "hLight2";
 
-        // Hemisphere Light 2
-        var hLight2 = new THREE.HemisphereLight(0xff0000, 0x000000, 100); // "red light"
-        sceneElements.sceneGraph.add(hLight2);
-        hLight2.visible = false;
-        hLight2.name = "hLight2";
-
-                // *********************************** //
-                // Create renderer (with shadow map)
-                // *********************************** //
+                // initialize renderer
                 const renderer = new THREE.WebGLRenderer({ antialias: true });
                 sceneElements.renderer = renderer;
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setClearColor('rgb(0,51,102)', 1.0);
                 renderer.setSize(width, height);
-
-                // Setup shadowMap property
                 renderer.shadowMap.enabled = true;
                 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-
-                // **************************************** //
-                // Add the rendered image in the HTML DOM
-                // **************************************** //
+                // add the rendered image in the HTML DOM
                 const htmlElement = document.querySelector("#Tag3DScene");
                 htmlElement.appendChild(renderer.domElement);
 
-                // ************************** //
-                // NEW --- Control for the camera
-                // ************************** //
+                // initialize orbitcontrols
                 sceneElements.control = new OrbitControls(camera, renderer.domElement);
                 sceneElements.control.screenSpacePanning = true;
 
@@ -125,59 +102,52 @@
             },
         };
 
-        // BUILDING THE SCENE
-        // To store the scene graph, and elements usefull to rendering the scene
+        // SCENE
+        
+        // store elements so that we can use them later in the animate function
         const sceneElements = {
             sceneGraph: null,
             camera: null,
-            control: null,  // NEW
+            control: null,
             renderer: null,
         };
 
-
-        // Functions are called
-        //  1. Initialize the empty scene
-        //  2. Add elements within the scene
-        //  3. Animate
+        // init function - it creates a new scene, creates each object and then renders the scene and its objects basically
         function init() {
             helper.initEmptyScene(sceneElements);
             load3DObjects(sceneElements.sceneGraph);
             requestAnimationFrame(computeFrame);
         }
 
-        // HANDLING EVENTS
-
+        // handling events 
         window.addEventListener('resize', resizeWindow);
 
-        //To keep track of the keyboard - WASD
+        // available keys and added events
         var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false, keyEsc = false, keyTab = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
 
-        function onDocumentMouseMove(event)
-{
-    // the following line would stop any other event handler from firing
-    // (such as the mouse's TrackballControls)
-    event.preventDefault();
+        // get mouse positions
+        function onDocumentMouseMove(event) {
+            event.preventDefault();
 
-    // update the mouse variable
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            // update the mouse variable
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
 
-}
-
-        // Update render image size and camera aspect when the window is resized
+        // update render image size and camera aspect when the window is resized
         function resizeWindow(eventParam) {
             const width = window.innerWidth;
             const height = window.innerHeight;
 
             sceneElements.camera.aspect = width / height;
             sceneElements.camera.updateProjectionMatrix();
-
             sceneElements.renderer.setSize(width, height);
         }
 
+        // case when keys are pressed
         function onDocumentKeyDown(event) {
             switch (event.keyCode) {
                 case 68: //d
@@ -251,6 +221,8 @@
                     break;
             }
         }
+
+        // case when keys are not pressed
         function onDocumentKeyUp(event) {
             switch (event.keyCode) {
                 case 68: //d
@@ -323,1016 +295,717 @@
                     keyEsc = false;
                     break;
             }
-    }
-function makeCircle(color) {
-    var radius =  1.0;  
-    var tubeRadius =  5.0;  
-    var radialSegments = 30;  
-    var tubularSegments = 100;  
-    var geometry = new THREE.TorusGeometry(radius, tubeRadius,radialSegments, tubularSegments);
-    var material = new THREE.MeshBasicMaterial({color: color});
-    var mesh = new THREE.Mesh(geometry, material);
-    //mesh.scale.set(0.1, 0.1, 0.1);
-    return mesh;
-}
-
-function makeSemiSphere() {
-    const midSphereRadius =  5.8;  
-    const widthSegments = 30;  
-    const heightSegments = 30;  
-    const phiStart = Math.PI * 0.68;  
-    const phiLength = Math.PI * 1.06;  
-    const thetaStart = Math.PI * 1.00;  
-    const thetaLength = Math.PI * 0.46; 
-
-    var midSphereGeometry = new THREE.SphereGeometry(
-        midSphereRadius,
-        widthSegments, heightSegments,
-        phiStart, phiLength,
-        thetaStart, thetaLength);
-    
-    var material = new THREE.MeshBasicMaterial({color: 0xffc0cb});
-    var mesh = new THREE.Mesh(midSphereGeometry, material);
-    return mesh;
-    
-}
-
-function makeHair() {
-    var hair = new THREE.Group();
-    var geometry = new THREE.BoxGeometry( 0.5, 20, 8);
-    var material = new THREE.MeshBasicMaterial( {color: 0xffc0cb} );
-    var hair1 = new THREE.Mesh( geometry, material );
-
-    var shape = new THREE.Shape();
-    shape.moveTo(5,0);
-    shape.lineTo(0, 10);
-    shape.lineTo(-5, 0);
-    shape.lineTo(5, 0);
-
-    const extrudeSettings = {
-        steps: 2,
-        depth: 0.01,
-        bevelEnabled: true,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelOffset: 0,
-        bevelSegments: 1
-};
-
-var shapeGeometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-var shapeMaterial = new THREE.MeshBasicMaterial( { color: 0xffc0cb } );
-var shapeHair = new THREE.Mesh( shapeGeometry, shapeMaterial ) ;
-shapeHair.rotation.y = Math.PI/2;
-shapeHair.scale.set(1, 1.8, 1.3);
-shapeHair.position.y = -10;
-
-hair.add(hair1);
-hair.add(shapeHair);
-
-
-    return hair;
-}
-
-function createHead() {
-    var head = new THREE.Group();
-    var circle = makeCircle(0xf7e7ce);
-    var beginHair = makeCircle(0xffc0cb);
-    beginHair.scale.set(0.9, 0.2, 1);
-    beginHair.position.set(0, 5, -1);
-    beginHair.rotation.x = -0.2;
-    /*
-    var beginHair = makeSemiSphere();
-    beginHair.rotation.z = 3*Math.PI/2 + 0.2;
-    beginHair.position.y = 10;
-    beginHair.position.z = -4;
-    */
-    var hair = makeHair();
-    hair.rotation.y = Math.PI/2;
-    hair.position.z = -4.8;
-    hair.position.y = -6;
-
-    // eyebrows
-    var eyeBrowsShape = new THREE.Shape();
-    eyeBrowsShape.moveTo( 0,0 );
-    eyeBrowsShape.lineTo(0.5, 1);
-    eyeBrowsShape.lineTo(1.5, 3);
-    eyeBrowsShape.lineTo(3.5, 3);
-    eyeBrowsShape.lineTo(5, 1);
-    eyeBrowsShape.lineTo(5.5, 0);
-    eyeBrowsShape.lineTo(3.5, 3);
-    eyeBrowsShape.lineTo(1.5, 3);
-    eyeBrowsShape.lineTo(0, 0);
-
-    var extrudeSettings = {
-        steps: 2,
-        depth: 0.01,
-        bevelEnabled: true,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelOffset: 0,
-        bevelSegments: 1
-    };
-
-    var eyeBrowsGeometry = new THREE.ExtrudeGeometry( eyeBrowsShape, extrudeSettings );
-    var eyeBrowsMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
-    var eyeBrow1 = new THREE.Mesh( eyeBrowsGeometry, eyeBrowsMaterial ) ;
-    eyeBrow1.position.set(-4, 2.5, 4);
-    eyeBrow1.rotation.y = -0.2;
-    eyeBrow1.scale.set(0.3, 0.3, 0.3);
-
-    var eyeBrow2 = new THREE.Mesh( eyeBrowsGeometry, eyeBrowsMaterial ) ;
-    eyeBrow2.position.set(3, 2.5, 4);
-    eyeBrow2.rotation.y = 0.2;
-    eyeBrow2.scale.set(0.3, 0.3, 0.3);
-
-    // mouth
-    var mouthShape = new THREE.Shape();
-    mouthShape.moveTo(-1, 0);
-    mouthShape.lineTo(1, 0);
-    mouthShape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -1, 0);
-
-    var mouthGeometry = new THREE.ExtrudeGeometry( mouthShape, extrudeSettings );
-    var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-    var mouthMaterial = new THREE.MeshBasicMaterial({color: randomColor})
-    var mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
-    mouth.scale.set(0.5, 2, 0.5);
-    mouth.position.set(0, 0, 5);
-
-    // band
-    var bandGeometry = new THREE.BoxGeometry(8, 0.5, 1);
-    var bandMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-    var band1 = new THREE.Mesh(bandGeometry, bandMaterial);
-    band1.position.y = 6.2;
-
-    // horns
-    var hornRadius =  1.0;  
-    var hornHeight = 10.0;  
-    var hornRadialSegments =  3;  
-    var hornGeometry = new THREE.ConeGeometry(hornRadius, hornHeight, hornRadialSegments);
-    var hornMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
-    var horn1 = new THREE.Mesh(hornGeometry, hornMaterial);
-    horn1.scale.set(1, 0.5, 1);
-    horn1.position.set(2, 7, 0);
-
-    var horn2 = new THREE.Mesh(hornGeometry, hornMaterial);
-    horn2.scale.set(1, 0.5, 1);
-    horn2.position.set(-2, 7, 0);
-
-    head.add(horn2);
-    head.add(horn1);
-    head.add(band1);
-    head.add(mouth);
-    head.add(eyeBrow1);
-    head.add(eyeBrow2);
-    head.add(circle);
-    head.add(beginHair);
-    head.add(hair);
-    return head;
-}
-
-function createBody() {
-    var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-    var body = new THREE.Group();
-
-    // torse
-    var geometry = new THREE.BoxGeometry( 8, 4, 4);
-    var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-    var torse = new THREE.Mesh( geometry, material );
-    torse.rotation.z = Math.PI/2;
-    torse.scale.set(2,2,2);
-    body.add(torse);
-
-    // dress
-    var points = [];
-    for (var i = 0; i < 10; i++) {
-    points.push(new THREE.Vector2(Math.cos(i * 0.2) * 3 + 3, (i - 5) * 0.8));
-    }
-    var latheGeometry = new THREE.LatheGeometry(points);
-    var dress = new THREE.Mesh( latheGeometry, material );
-    dress.scale.set(1.5, 3.5, 1.5);
-    dress.position.y = -10;
-    body.add(dress);
-
-    // 1st forearm
-    var forearmGeometry = new THREE.CylinderGeometry( 2, 2, 20, 50 );
-    var forearm1 = new THREE.Mesh( forearmGeometry, material );
-    forearm1.scale.set(1, 0.7, 1);
-    forearm1.position.set(16, 13, 0);
-    forearm1.rotation.z = -0.6;
-    body.add(forearm1);
-
-    // 2nd forearm
-    var forearm2 = new THREE.Mesh( forearmGeometry, material );
-    forearm2.scale.set(1, 0.7, 1);
-    forearm2.position.set(-16, 13, 0);
-    forearm2.rotation.z = 0.6;
-    body.add(forearm2);
-
-    // 1st arm
-    var arm1 = new THREE.Mesh( forearmGeometry, material );
-    arm1.scale.set(1, 0.3, 1);
-    arm1.rotation.z = Math.PI/2;
-    arm1.position.set(7, 6, 0);
-    body.add(arm1);
-
-    // 2nd arm
-    var arm2 = new THREE.Mesh( forearmGeometry, material );
-    arm2.scale.set(1, 0.3, 1);
-    arm2.rotation.z = Math.PI/2;
-    arm2.position.set(-7, 6, 0);
-    body.add(arm2);
-
-    // 1st sphere arm
-    var sphereGeometry = new THREE.SphereGeometry( 2, 32, 32 );
-    var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x808080} );
-    var sphere1 = new THREE.Mesh( sphereGeometry, sphereMaterial );
-    sphere1.position.set(11, 6, 0);
-    body.add(sphere1);
-
-    // 2nd sphere arm
-    var sphere2 = new THREE.Mesh( sphereGeometry, sphereMaterial );
-    sphere2.position.set(-11, 6, 0);
-    body.add(sphere2);
-
-    // 1st leg
-    var legGeometry = new THREE.CylinderGeometry( 1, 2, 30, 32 );
-    var legMaterial = new THREE.MeshBasicMaterial( {color: 0x000000} );
-    var leg1 = new THREE.Mesh( legGeometry, legMaterial );
-    leg1.position.set(-4, -30, 0);
-    body.add(leg1);
-
-    // 2nd leg
-    var leg2 = new THREE.Mesh( legGeometry, legMaterial );
-    leg2.position.set(4, -30, 0);
-    body.add(leg2);
-
-    // 1st boot
-    var whiteMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-    var bootPoints = [];
-    for ( var i = 0; i < 5; i ++ ) {
-	    bootPoints.push(new THREE.Vector2( 2, i));
-    }
-    var bootGeometry = new THREE.LatheGeometry(bootPoints);
-    var boot1 = new THREE.Mesh(bootGeometry, whiteMaterial);
-    boot1.position.set(4, -45, 0);
-    body.add(boot1);
-
-    // 2nd boot
-    var boot2 = new THREE.Mesh(bootGeometry, whiteMaterial);
-    boot2.position.set(-4, -45, 0);
-    body.add(boot2);
-
-    // 1st foot
-    var shape = new THREE.Shape();
-    shape.moveTo(-1, 0);
-    //shape.lineTo(3, 0);
-    shape.bezierCurveTo(-0.5, 0.25, 0.5, 0.25, 1, 0);
-    shape.lineTo(-1, 0);
-
-    var extrudeSettings = {
-        steps: 20,
-        depth: 3,
-        bevelEnabled: true,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelOffset: 0,
-        bevelSegments: 1
-    }
-
-    var footGeometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-    var wireframeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-    var foot1 = new THREE.Mesh(footGeometry, wireframeMaterial);
-    foot1.scale.set(1, 2, 1.8);
-    foot1.position.set(4, -47, -1);
-    body.add(foot1);
-
-    // 2nd foot
-    var foot2 = new THREE.Mesh(footGeometry, wireframeMaterial);
-    foot2.scale.set(1, 2, 1.8);
-    foot2.position.set(-4, -47, -1);
-    body.add(foot2);
-
-    // HANDS
-
-    // 1st wrist
-    var skinMaterial = new THREE.MeshBasicMaterial({color: 0xf7e7ce});
-    var wrist1 = new THREE.Mesh( forearmGeometry, skinMaterial );
-    wrist1.scale.set(0.7, 0.2, 0.7);
-    wrist1.position.set(21, 20, 0);
-    wrist1.rotation.z = -0.6;
-    body.add(wrist1);
-
-    // 1st palm
-    var palmRadius = 1.5;  
-    var palmTubeRadius = 1.5;  
-    var palmRadialSegments = 8;  
-    var palmTubularSegments = 24;  
-    var palmGeometry = new THREE.TorusGeometry(palmRadius, palmTubeRadius, palmRadialSegments, palmTubularSegments);
-    var palm1 = new THREE.Mesh(palmGeometry, skinMaterial);
-    palm1.position.set(23, 22, 0);
-    palm1.rotation.x = Math.PI/2;
-    body.add(palm1);
-
-    // 2nd wrist
-    var wrist2 = new THREE.Mesh( forearmGeometry, skinMaterial );
-    wrist2.scale.set(0.7, 0.2, 0.7);
-    wrist2.position.set(-21, 20, 0);
-    wrist2.rotation.z = 0.6;
-    body.add(wrist2);
-
-    // 2nd palm
-    var palm2 = new THREE.Mesh(palmGeometry, skinMaterial);
-    palm2.position.set(-23, 22, 0);
-    palm2.rotation.x = Math.PI/2;
-    body.add(palm2);
-
-    // Flashlight
-    var flashlight1 = createLathe(0xffcc00);
-    flashlight1.scale.set(0.4, 0.4, 0.4);
-    flashlight1.position.set(23, 26, 0);
-    body.add(flashlight1);
-
-    var pointLight = new THREE.PointLight(0xffff00, 2, 25);
-    pointLight.castShadow = true;
-    pointLight.position.set(23, 26, 0);
-    body.add(pointLight);
-
-    // Holder
-    var holderRadiusTop =  1.3;  
-    var holderRadiusBottom =  0.7;  
-    var holderHeight = 12;  
-    var holderRadialSegments = 12;  
-    var holderGeometry = new THREE.CylinderGeometry(holderRadiusTop, holderRadiusBottom, holderHeight, holderRadialSegments);
-    var holderMaterial = new THREE.MeshBasicMaterial({color: 0x312113});
-    var holder1 = new THREE.Mesh(holderGeometry, holderMaterial);
-    holder1.position.set(23, 20, 0);
-    body.add(holder1);
-
-    // Neck
-    var neck1 = new THREE.Mesh( forearmGeometry, skinMaterial );
-    neck1.position.set(0, 5, 0);
-    body.add(neck1);
-
-    // Arrows (dress)
-    var arrowShape = new THREE.Shape();
-    arrowShape.moveTo(1, 0);
-    arrowShape.lineTo(2, 0);
-    arrowShape.lineTo(1.5, 1.5);
-    arrowShape.lineTo(2, 3);
-    arrowShape.lineTo(1, 3);
-    arrowShape.lineTo(0.5, 1.5);
-    arrowShape.lineTo(1, 0);
-
-    var ArrowExtrudeSettings = {
-        steps: 2,
-        depth: 0.5,
-        bevelEnabled: false,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelOffset: 0,
-        bevelSegments: 1
-    };
-
-    var arrowGeometry = new THREE.ExtrudeGeometry( arrowShape, ArrowExtrudeSettings);
-    var arrowMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-    var arrow1 = new THREE.Mesh( arrowGeometry, arrowMaterial );
-    arrow1.scale.set(1, 0.5, 1);
-    arrow1.position.set(1, -1, 3.7);
-
-    var arrowEdges = new THREE.EdgesGeometry(arrowGeometry);
-    var arrowLine1 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-    arrowLine1.scale.set(1, 0.5, 1);
-    arrowLine1.position.set(1, -1, 3.7);
-
-    body.add(arrow1);
-    body.add(arrowLine1);
-
-    var arrow2 = new THREE.Mesh( arrowGeometry, arrowMaterial );
-    arrow2.scale.set(1, 0.5, 1);
-    arrow2.position.set(-1, -1, 4.2);
-    arrow2.rotation.y = Math.PI;
-    var arrowLine2 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-    arrowLine2.scale.set(1, 0.5, 1);
-    arrowLine2.position.set(-1, -1, 4.2);
-    arrowLine2.rotation.y = Math.PI;
-
-    body.add(arrow2);
-    body.add(arrowLine2);
-
-    var arrowMaterial2 = new THREE.MeshBasicMaterial({color: 0xb8860b});
-    var arrow3 = new THREE.Mesh( arrowGeometry, arrowMaterial2 );
-    arrow3.scale.set(0.8, 0.4, 1);
-    arrow3.position.set(0, -1, 3.7);
-    var arrowLine3 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-    arrowLine3.scale.set(0.8, 0.4, 1);
-    arrowLine3.position.set(0, -1, 3.7);
-
-    var arrow4 = new THREE.Mesh( arrowGeometry, arrowMaterial2 );
-    arrow4.scale.set(0.8, 0.4, 1);
-    arrow4.rotation.y = Math.PI;
-    arrow4.position.set(0, -1, 4.2);
-    var arrowLine4 = new THREE.LineSegments( arrowEdges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-    arrowLine4.scale.set(0.8, 0.4, 1);
-    arrowLine4.rotation.y = Math.PI;
-    arrowLine4.position.set(0, -1, 4.2);
-
-    body.add(arrow3);
-    body.add(arrow4);
-    body.add(arrowLine3);
-    body.add(arrowLine4);
-
-    // belt
-
-    var beltPoints = [];
-    for (let i = 4; i < 6; ++i) {
-        beltPoints.push(new THREE.Vector2(7, i));
-    }
-    var beltGeometry = new THREE.LatheGeometry(beltPoints);
-    var beltMaterial = new THREE.MeshBasicMaterial({color: 0x654321});
-    var belt1 = new THREE.Mesh(beltGeometry, beltMaterial);
-    belt1.scale.set(0.85, 0.85, 0.6);
-    belt1.position.set(0, -4.3, -0.7);
-    body.add(belt1);
-
-    // collar
-    var collarGeometry = new THREE.BoxGeometry(5, 5, 5);
-    var collarMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-    var collar1 = new THREE.Mesh(collarGeometry, collarMaterial);
-    body.add(collar1);
-    collar1.position.set(0, 10, 0);
-
-    // tie
-    var tieShape = new THREE.Shape();
-    tieShape.moveTo(2, 2);
-    tieShape.lineTo(3, 1);
-    tieShape.lineTo(4, 2);
-    tieShape.lineTo(3, 5);
-    tieShape.lineTo(3.5, 5.5);
-    tieShape.lineTo(3, 6);
-    tieShape.lineTo(2.5, 5.5);
-    tieShape.lineTo(3, 5);
-    tieShape.lineTo(2, 2);
-    
-
-    var tieSettings = {
-        steps: 2,
-        depth: 0.5,
-        bevelEnabled: false,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelOffset: 0,
-        bevelSegments: 1
-    };
-
-    var tieGeometry = new THREE.ExtrudeGeometry(tieShape, tieSettings);
-    var tieMaterial = new THREE.MeshBasicMaterial({color: 0xffa500});
-    var tie1 = new THREE.Mesh(tieGeometry, tieMaterial);
-    tie1.scale.set(0.9, 0.9, 0.9);
-    tie1.position.set(-2.75, 7.1, 2.5);
-
-    body.add(tie1);
-
-    // COMPLETE LEAF
-    
-    var completeLeaf1 = createComplexLeaf(0x006400, 0x149414);
-    completeLeaf1.position.set(0, 0, 0);
-    completeLeaf1.scale.set(0.7, 0.7, 0.7);
-    completeLeaf1.rotateOnWorldAxis(new THREE.Vector3(0,0,1), -0.9);
-    completeLeaf1.position.set(9, 12.5, 0);
-    // completeLeaf1.rotation.z = -0.3;
-    
-    var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-    var completeLeaf2 = createComplexLeaf(randomColor, randomColor);
-    completeLeaf2.translateZ(-100).translateY(-10);
-    completeLeaf2.rotation.z = -0.6;
-    completeLeaf2.rotation.y = Math.PI/2;
-
-    body.add(completeLeaf2);
-    body.add(completeLeaf1);
-
-    return body;
-}
-
-function createComplexLeaf(color1, color2) {
-
-    var completeLeaf1 = new THREE.Group();
-
-    // stem
-
-    var stemGeometry = new THREE.CylinderGeometry(0.2, 0.2, 10, 50);
-    var stemMaterial = new THREE.MeshBasicMaterial( {color: color1} );
-    var stem1 = new THREE.Mesh(stemGeometry, stemMaterial);
-
-    stem1.position.y = 30;
-    completeLeaf1.add(stem1);
-
-    // leaves
-    var leafShape = new THREE.Shape();
-    leafShape.moveTo(0, 0);
-    leafShape.bezierCurveTo(1, 2, 1, 3, 0, 4);
-    leafShape.bezierCurveTo(-1, 3, -1, 2, 0, 0);
-
-    var leafSettings = {
-        steps: 2,
-        depth: 0.5,
-        bevelEnabled: false,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelOffset: 0,
-        bevelSegments: 1
-    };
-
-    var leafGeometry = new THREE.ExtrudeGeometry(leafShape, leafSettings);
-    var leafMaterial = new THREE.MeshBasicMaterial({color: color2});
-    var leaf1 = new THREE.Mesh(leafGeometry, leafMaterial);
-    leaf1.scale.set(1, 2, 1);
-    leaf1.position.y = 34;
-
-    // right side
-
-    var leaf2 = new THREE.Mesh(leafGeometry, leafMaterial);
-    leaf2.scale.set(1, 1.5, 1);
-    leaf2.position.set(0, 34, 0);
-    leaf2.rotation.z = -0.6;
-
-    var leaf3 = new THREE.Mesh(leafGeometry, leafMaterial);
-    leaf3.scale.set(1, 1.5, 1);
-    leaf3.position.set(0, 32, 0);
-    leaf3.rotation.z = -0.8;
-
-    var leaf4 = new THREE.Mesh(leafGeometry, leafMaterial);
-    leaf4.scale.set(1, 1.5, 1);
-    leaf4.position.set(0, 29.5, 0);
-    leaf4.rotation.z = -0.8;
-
-    // left side
-
-    var leaf5 = new THREE.Mesh(leafGeometry, leafMaterial);
-    leaf5.scale.set(1, 1.5, 1);
-    leaf5.position.set(0, 34, 0);
-    leaf5.rotation.y = Math.PI;
-    leaf5.rotation.z = -0.6;
-
-    var leaf6 = new THREE.Mesh(leafGeometry, leafMaterial);
-    leaf6.scale.set(1, 1.5, 1);
-    leaf6.position.set(0, 32, 0);
-    leaf6.rotation.y = Math.PI;
-    leaf6.rotation.z = -0.8;
-
-    var leaf7 = new THREE.Mesh(leafGeometry, leafMaterial);
-    leaf7.scale.set(1, 1.5, 1);
-    leaf7.position.set(0, 29.5, 0);
-    leaf7.rotation.y = Math.PI;
-    leaf7.rotation.z = -0.8;
-
-    completeLeaf1.add(leaf7);
-    completeLeaf1.add(leaf6);
-    completeLeaf1.add(leaf5);
-    completeLeaf1.add(leaf4);
-    completeLeaf1.add(leaf3);
-    completeLeaf1.add(leaf2);
-    completeLeaf1.add(leaf1);
-
-    // BEAUTIFUL EFFECT TBH completeLeaf1.translateX(-80);
-    completeLeaf1.rotation.y = Math.PI/2;
-    return completeLeaf1;
-}
-
-function createZeroTwo() {
-    var zerotwo1 = new THREE.Group();
-    var head1 = createHead();
-    head1.position.x = 0;
-
-    var body1 = createBody();
-    body1.position.x = 0;
-    body1.position.y = -20;
-    
-    zerotwo1.add(head1);
-    zerotwo1.add(body1);
-    return zerotwo1;
-}
-
-function createLathe(color) {
-    const points = [];
-    for (var i = 0; i < 5; i+=0.5) {
-        points.push(new THREE.Vector3(i + 4, 0.5*i*i, 0));
-    }
-
-    for (var i = 11.125; i < 16; i++ ) {
-        points.push(new THREE.Vector3(8.5, i + 0.1*i, 0));
-    }
-
-    
-    points.push(new THREE.Vector3(8, 18.25, 0));
-    points.push(new THREE.Vector3(7.5, 20.125, 0));
-    points.push(new THREE.Vector3(7, 21.75, 0));
-    points.push(new THREE.Vector3(6.5, 23.125, 0));
-    points.push(new THREE.Vector3(6, 24.25, 0));
-    points.push(new THREE.Vector3(5.5, 25.125, 0));
-    points.push(new THREE.Vector3(5, 25.75, 0));
-    points.push(new THREE.Vector3(4.5, 26.125, 0));
-    points.push(new THREE.Vector3(4, 26.25, 0));
-
-    const segments = 50;  
-    const phiStart = Math.PI * 2.00;  
-    const phiLength = Math.PI * 2.00;  
-    const geometry = new THREE.LatheGeometry(points, segments, phiStart, phiLength);
-    var material = new THREE.MeshPhongMaterial( { color: color, wireframe: true} );
-    const lathe = new THREE.Mesh( geometry, material );
-    return lathe;
-
-}
-
-function createEdges(geometry) {
-    const edges = new THREE.EdgesGeometry( geometry );
-    const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-    return line;
-}
-
-function createPiece(color) {
-    const shape = new THREE.Shape();
-    const x = -0.5;
-    const y = 0;
-    shape.moveTo(-0.5, 0);
-    shape.lineTo(0, 1);
-    shape.lineTo(0.5, 0);
-    shape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -0.5, 0);
-    
-    const extrudeSettings = {
-        steps: 2,  
-        depth: 0.05,  
-        bevelEnabled: true,  
-        bevelThickness: 0.1,  
-        bevelSize: 0.1,  
-        bevelSegments: 0,  
-    };
-
-    var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-    var material = new THREE.MeshBasicMaterial( {color: color} );
-    var mesh = new THREE.Mesh( geometry, material);
-    return mesh;
-}
-
-function loadFont(url) {
-    const loader = new THREE.FontLoader();
-    return new Promise((resolve, reject) => {
-    loader.load(url, resolve, undefined, reject);
-    });
-}
-
-async function doit() {
-    const font = await loadFont('https://threejsfundamentals.org/threejs/resources/threejs/fonts/helvetiker_regular.typeface.json');  
-    const geometry = new THREE.TextGeometry('three.js', {
-    font: font,
-    size: 3.0,
-    height: .2,
-    curveSegments: 12,
-    bevelEnabled: true,
-    bevelThickness: 0.15,
-    bevelSize: .3,
-    bevelSegments: 5,
-    });
-    const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x00ff00}));
-    geometry.computeBoundingBox();
-    geometry.boundingBox.getCenter(mesh.position).multiplyScalar(-1);
-    sceneElements.sceneGraph.add(mesh);
-}
-
-function createText() {
-    
-var loader = new THREE.FontLoader();
-
-loader.load( 'fonts/helvetiker_regular.typeface.js', function ( font ) {
-
-var material = new THREE.MeshPhongMaterial( { color: 0x0033ff, specular: 0x555555, shininess: 30 } );
-
-var geometry = new THREE.TextGeometry( 'Hello three.js!', {
-    font: font,
-    size: 20000000000,
-    height: 5,
-    curveSegments: 12,
-    bevelEnabled: true,
-    bevelThickness: 10,
-    bevelSize: 8,
-    bevelSegments: 5
-} );
-
-var mesh = new THREE.Mesh( geometry, material );
-
-sceneElements.sceneGraph.add(mesh);
-
-var light = new THREE.DirectionalLight( 0xffffff );
-light.position.set( 0, 1, 1 ).normalize();
-sceneElements.sceneGraph.add(light);
-
-
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
-renderer.render(  sceneElements.sceneGraph, sceneElements.camera );
-
-} );
-}
+        }   
+        // auxiliary functions to create a Zero Two Object
+
+        function makeHeadSkeleton(color) { // the "head" of the puppet
+            var radius =  1.0, tubeRadius =  5.0, radialSegments = 30, tubularSegments = 100;  
+            var geometry = new THREE.TorusGeometry(radius, tubeRadius,radialSegments, tubularSegments);
+            var material = new THREE.MeshBasicMaterial({color: color});
+            var mesh = new THREE.Mesh(geometry, material);
+            return mesh;
+        }
+
+        function makeHair() { // the hair
+            var hair = new THREE.Group();
+            var geometry = new THREE.BoxGeometry(0.5, 20, 8);
+            var material = new THREE.MeshBasicMaterial({color: 0xffc0cb});
+            var hair1 = new THREE.Mesh(geometry, material); // the big pink rectangle
+
+            var shape = new THREE.Shape();
+            shape.moveTo(5,0);
+            shape.lineTo(0, 10);
+            shape.lineTo(-5, 0);
+            shape.lineTo(5, 0);
+
+            var extrudeSettings = {steps: 2, depth: 0.01, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1}
+
+            var shapeGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            var shapeMaterial = new THREE.MeshBasicMaterial({ color: 0xffc0cb });
+            var shapeHair = new THREE.Mesh(shapeGeometry, shapeMaterial); // hair tips (the triangle)
+            shapeHair.rotation.y = Math.PI/2;
+            shapeHair.scale.set(1, 1.8, 1.3);
+            shapeHair.position.y = -10;
+
+            hair.add(hair1);
+            hair.add(shapeHair);
+
+            return hair;
+        }
+
+        // head function
+        function createHead() {
+            var head = new THREE.Group();
+
+            // head/face
+            var circle = makeHeadSkeleton(0xf7e7ce);
+
+            // part of the hair on top of the head
+            var beginHair = makeHeadSkeleton(0xffc0cb);
+            beginHair.scale.set(0.9, 0.2, 1);
+            beginHair.position.set(0, 5, -1);
+            beginHair.rotation.x = -0.2;
+            
+            // hair
+            var hair = makeHair();
+            hair.rotation.y = Math.PI/2;
+            hair.position.z = -4.8;
+            hair.position.y = -6;
+
+            // eyes
+            var eyeShape = new THREE.Shape();
+            eyeShape.moveTo( 0,0 );
+            eyeShape.lineTo(0.5, 1);
+            eyeShape.lineTo(1.5, 3);
+            eyeShape.lineTo(3.5, 3);
+            eyeShape.lineTo(5, 1);
+            eyeShape.lineTo(5.5, 0);
+            eyeShape.lineTo(3.5, 3);
+            eyeShape.lineTo(1.5, 3);
+            eyeShape.lineTo(0, 0);
+
+            var extrudeSettings = {steps: 2, depth: 0.01, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+
+            var eyeGeometry = new THREE.ExtrudeGeometry(eyeShape, extrudeSettings);
+            var eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            var eye1 = new THREE.Mesh(eyeGeometry, eyeMaterial) ;
+            eye1.position.set(-4, 2.5, 4);
+            eye1.rotation.y = -0.2;
+            eye1.scale.set(0.3, 0.3, 0.3);
+
+            var eye2 = new THREE.Mesh(eyeGeometry, eyeMaterial) ;
+            eye2.position.set(3, 2.5, 4);
+            eye2.rotation.y = 0.2;
+            eye2.scale.set(0.3, 0.3, 0.3);
+
+            // mouth
+            var mouthShape = new THREE.Shape();
+            mouthShape.moveTo(-1, 0);
+            mouthShape.lineTo(1, 0);
+            mouthShape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -1, 0);
+
+            var mouthGeometry = new THREE.ExtrudeGeometry(mouthShape, extrudeSettings);
+            var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}); // each mouth will have a different/random color
+            var mouthMaterial = new THREE.MeshBasicMaterial({color: randomColor})
+            var mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+            mouth.scale.set(0.5, 2, 0.5);
+            mouth.position.set(0, 0, 5);
+
+            // band on top of the head
+            var bandGeometry = new THREE.BoxGeometry(8, 0.5, 1);
+            var bandMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+            var band1 = new THREE.Mesh(bandGeometry, bandMaterial);
+            band1.position.y = 6.2;
+
+            // horns on top of the had, above the band
+            var hornRadius =  1.0, hornHeight = 10.0, hornRadialSegments =  3;  
+            var hornGeometry = new THREE.ConeGeometry(hornRadius, hornHeight, hornRadialSegments);
+            var hornMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+            var horn1 = new THREE.Mesh(hornGeometry, hornMaterial);
+            horn1.scale.set(1, 0.5, 1);
+            horn1.position.set(2, 7, 0);
+
+            var horn2 = new THREE.Mesh(hornGeometry, hornMaterial);
+            horn2.scale.set(1, 0.5, 1);
+            horn2.position.set(-2, 7, 0);
+            
+            // add every mesh to a group
+            head.add(horn2);
+            head.add(horn1);
+            head.add(band1);
+            head.add(mouth);
+            head.add(eye1);
+            head.add(eye2);
+            head.add(circle);
+            head.add(beginHair);
+            head.add(hair);
+            return head;
+        }
+
+        function createLathe(color) {
+            var points = [];
+            for (var i = 0; i < 5; i+=0.5) {
+                points.push(new THREE.Vector3(i + 4, 0.5*i*i, 0));
+            }
+
+            for (var i = 11.125; i < 16; i++ ) {
+                points.push(new THREE.Vector3(8.5, i + 0.1*i, 0));
+            }
+
+            points.push(new THREE.Vector3(8, 18.25, 0));
+            points.push(new THREE.Vector3(7.5, 20.125, 0));
+            points.push(new THREE.Vector3(7, 21.75, 0));
+            points.push(new THREE.Vector3(6.5, 23.125, 0));
+            points.push(new THREE.Vector3(6, 24.25, 0));
+            points.push(new THREE.Vector3(5.5, 25.125, 0));
+            points.push(new THREE.Vector3(5, 25.75, 0));
+            points.push(new THREE.Vector3(4.5, 26.125, 0));
+            points.push(new THREE.Vector3(4, 26.25, 0));
+
+            var segments = 50, phiStart = Math.PI * 2.00, phiLength = Math.PI * 2.00;  
+            var geometry = new THREE.LatheGeometry(points, segments, phiStart, phiLength);
+            var material = new THREE.MeshPhongMaterial({color: color, wireframe: true});
+            var lathe = new THREE.Mesh(geometry, material);
+            return lathe;
+        }
+
+        function createComplexLeaf(color1, color2) {
+
+            // initialize group
+            var completeLeaf1 = new THREE.Group();
+
+            // stem
+            var stemGeometry = new THREE.CylinderGeometry(0.2, 0.2, 10, 50);
+            var stemMaterial = new THREE.MeshBasicMaterial( {color: color1} );
+            var stem1 = new THREE.Mesh(stemGeometry, stemMaterial);
+
+            stem1.position.y = 30;
+            completeLeaf1.add(stem1);
+
+            // small leaves
+            var leafShape = new THREE.Shape();
+            leafShape.moveTo(0, 0);
+            leafShape.bezierCurveTo(1, 2, 1, 3, 0, 4);
+            leafShape.bezierCurveTo(-1, 3, -1, 2, 0, 0);
+
+            var leafSettings = {steps: 2, depth: 0.5, bevelEnabled: false, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+
+            var leafGeometry = new THREE.ExtrudeGeometry(leafShape, leafSettings);
+            var leafMaterial = new THREE.MeshBasicMaterial({color: color2});
+            var leaf1 = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf1.scale.set(1, 2, 1);
+            leaf1.position.y = 34;
+
+            // right side
+            var leaf2 = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf2.scale.set(1, 1.5, 1);
+            leaf2.position.set(0, 34, 0);
+            leaf2.rotation.z = -0.6;
+
+            var leaf3 = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf3.scale.set(1, 1.5, 1);
+            leaf3.position.set(0, 32, 0);
+            leaf3.rotation.z = -0.8;
+
+            var leaf4 = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf4.scale.set(1, 1.5, 1);
+            leaf4.position.set(0, 29.5, 0);
+            leaf4.rotation.z = -0.8;
+
+            // left side
+            var leaf5 = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf5.scale.set(1, 1.5, 1);
+            leaf5.position.set(0, 34, 0);
+            leaf5.rotation.y = Math.PI;
+            leaf5.rotation.z = -0.6;
+
+            var leaf6 = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf6.scale.set(1, 1.5, 1);
+            leaf6.position.set(0, 32, 0);
+            leaf6.rotation.y = Math.PI;
+            leaf6.rotation.z = -0.8;
+
+            var leaf7 = new THREE.Mesh(leafGeometry, leafMaterial);
+            leaf7.scale.set(1, 1.5, 1);
+            leaf7.position.set(0, 29.5, 0);
+            leaf7.rotation.y = Math.PI;
+            leaf7.rotation.z = -0.8;
+
+            completeLeaf1.add(leaf7);
+            completeLeaf1.add(leaf6);
+            completeLeaf1.add(leaf5);
+            completeLeaf1.add(leaf4);
+            completeLeaf1.add(leaf3);
+            completeLeaf1.add(leaf2);
+            completeLeaf1.add(leaf1);
+
+            completeLeaf1.rotation.y = Math.PI/2;
+            return completeLeaf1;
+        }
+
+        // Zero Two's body function (torso, dress, legs, arms, feet, flashlight, ...)
+        function createBody() {
+            // initialize body group
+            var body = new THREE.Group();
+
+            // torso
+            var geometry = new THREE.BoxGeometry(8, 4, 4);
+            var material = new THREE.MeshBasicMaterial({color: 0xff0000});
+            var torso = new THREE.Mesh(geometry, material);
+            torso.rotation.z = Math.PI/2;
+            torso.scale.set(2,2,2);
+            body.add(torso);
+
+            // dress - lathe geometry
+            var points = [];
+            for (var i = 0; i < 10; i++) {
+                points.push(new THREE.Vector2(Math.cos(i * 0.2) * 3 + 3, (i - 5) * 0.8));
+            }
+            var latheGeometry = new THREE.LatheGeometry(points);
+            var dress = new THREE.Mesh(latheGeometry, material);
+            dress.scale.set(1.5, 3.5, 1.5);
+            dress.position.y = -10;
+            body.add(dress);
+
+            // 1st forearm
+            var forearmGeometry = new THREE.CylinderGeometry(2, 2, 20, 50);
+            var forearm1 = new THREE.Mesh(forearmGeometry, material);
+            forearm1.scale.set(1, 0.7, 1);
+            forearm1.position.set(16, 13, 0);
+            forearm1.rotation.z = -0.6;
+            body.add(forearm1);
+
+            // 2nd forearm
+            var forearm2 = new THREE.Mesh(forearmGeometry, material);
+            forearm2.scale.set(1, 0.7, 1);
+            forearm2.position.set(-16, 13, 0);
+            forearm2.rotation.z = 0.6;
+            body.add(forearm2);
+
+            // 1st arm
+            var arm1 = new THREE.Mesh(forearmGeometry, material);
+            arm1.scale.set(1, 0.3, 1);
+            arm1.rotation.z = Math.PI/2;
+            arm1.position.set(7, 6, 0);
+            body.add(arm1);
+
+            // 2nd arm
+            var arm2 = new THREE.Mesh(forearmGeometry, material);
+            arm2.scale.set(1, 0.3, 1);
+            arm2.rotation.z = Math.PI/2;
+            arm2.position.set(-7, 6, 0);
+            body.add(arm2);
+
+            // 1st sphere arm
+            var sphereGeometry = new THREE.SphereGeometry(2, 32, 32);
+            var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x808080});
+            var sphere1 = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            sphere1.position.set(11, 6, 0);
+            body.add(sphere1);
+
+            // 2nd sphere arm
+            var sphere2 = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            sphere2.position.set(-11, 6, 0);
+            body.add(sphere2);
+
+            // 1st leg
+            var legGeometry = new THREE.CylinderGeometry(1, 2, 30, 32);
+            var legMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
+            var leg1 = new THREE.Mesh(legGeometry, legMaterial);
+            leg1.position.set(-4, -30, 0);
+            body.add(leg1);
+
+            // 2nd leg
+            var leg2 = new THREE.Mesh(legGeometry, legMaterial);
+            leg2.position.set(4, -30, 0);
+            body.add(leg2);
+
+            // 1st boot
+            var whiteMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+            var bootPoints = [];
+            for ( var i = 0; i < 5; i ++ ) {
+                bootPoints.push(new THREE.Vector2( 2, i));
+            }
+            var bootGeometry = new THREE.LatheGeometry(bootPoints);
+            var boot1 = new THREE.Mesh(bootGeometry, whiteMaterial);
+            boot1.position.set(4, -45, 0);
+            body.add(boot1);
+
+            // 2nd boot
+            var boot2 = new THREE.Mesh(bootGeometry, whiteMaterial);
+            boot2.position.set(-4, -45, 0);
+            body.add(boot2);
+
+            // 1st foot
+            var shape = new THREE.Shape();
+            shape.moveTo(-1, 0);
+            shape.bezierCurveTo(-0.5, 0.25, 0.5, 0.25, 1, 0);
+            shape.lineTo(-1, 0);
+
+            var extrudeSettings = {steps: 20, depth: 3, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+
+            var footGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            var wireframeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+            var foot1 = new THREE.Mesh(footGeometry, wireframeMaterial);
+            foot1.scale.set(1, 2, 1.8);
+            foot1.position.set(4, -47, -1);
+            body.add(foot1);
+
+            // 2nd foot
+            var foot2 = new THREE.Mesh(footGeometry, wireframeMaterial);
+            foot2.scale.set(1, 2, 1.8);
+            foot2.position.set(-4, -47, -1);
+            body.add(foot2);
+
+            // HANDS
+            // 1st wrist
+            var skinMaterial = new THREE.MeshBasicMaterial({color: 0xf7e7ce});
+            var wrist1 = new THREE.Mesh( forearmGeometry, skinMaterial );
+            wrist1.scale.set(0.7, 0.2, 0.7);
+            wrist1.position.set(21, 20, 0);
+            wrist1.rotation.z = -0.6;
+            body.add(wrist1);
+
+            // 1st palm
+            var palmRadius = 1.5, palmTubeRadius = 1.5, palmRadialSegments = 8, palmTubularSegments = 24;  
+            var palmGeometry = new THREE.TorusGeometry(palmRadius, palmTubeRadius, palmRadialSegments, palmTubularSegments);
+            var palm1 = new THREE.Mesh(palmGeometry, skinMaterial);
+            palm1.position.set(23, 22, 0);
+            palm1.rotation.x = Math.PI/2;
+            body.add(palm1);
+
+            // 2nd wrist
+            var wrist2 = new THREE.Mesh( forearmGeometry, skinMaterial );
+            wrist2.scale.set(0.7, 0.2, 0.7);
+            wrist2.position.set(-21, 20, 0);
+            wrist2.rotation.z = 0.6;
+            body.add(wrist2);
+
+            // 2nd palm
+            var palm2 = new THREE.Mesh(palmGeometry, skinMaterial);
+            palm2.position.set(-23, 22, 0);
+            palm2.rotation.x = Math.PI/2;
+            body.add(palm2);
+
+            // Flashlight
+            var flashlight1 = createLathe(0xffcc00);
+            flashlight1.scale.set(0.4, 0.4, 0.4);
+            flashlight1.position.set(23, 26, 0);
+            body.add(flashlight1);
+
+            var pointLight = new THREE.PointLight(0xffff00, 2, 25);
+            pointLight.castShadow = true;
+            pointLight.position.set(23, 26, 0);
+            body.add(pointLight);
+
+            // Holder
+            var holderRadiusTop =  1.3, holderRadiusBottom =  0.7, holderHeight = 12, holderRadialSegments = 12;  
+            var holderGeometry = new THREE.CylinderGeometry(holderRadiusTop, holderRadiusBottom, holderHeight, holderRadialSegments);
+            var holderMaterial = new THREE.MeshBasicMaterial({color: 0x312113});
+            var holder1 = new THREE.Mesh(holderGeometry, holderMaterial);
+            holder1.position.set(23, 20, 0);
+            body.add(holder1);
+
+            // Neck
+            var neck1 = new THREE.Mesh(forearmGeometry, skinMaterial);
+            neck1.position.set(0, 5, 0);
+            body.add(neck1);
+
+            // Arrows (dress)
+            var arrowShape = new THREE.Shape();
+            arrowShape.moveTo(1, 0);
+            arrowShape.lineTo(2, 0);
+            arrowShape.lineTo(1.5, 1.5);
+            arrowShape.lineTo(2, 3);
+            arrowShape.lineTo(1, 3);
+            arrowShape.lineTo(0.5, 1.5);
+            arrowShape.lineTo(1, 0);
+
+            var ArrowExtrudeSettings = {steps: 2, depth: 0.5, bevelEnabled: false, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+
+            var arrowGeometry = new THREE.ExtrudeGeometry(arrowShape, ArrowExtrudeSettings);
+            var arrowMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            var arrow1 = new THREE.Mesh(arrowGeometry, arrowMaterial);
+            arrow1.scale.set(1, 0.5, 1);
+            arrow1.position.set(1, -1, 3.7);
+
+            var arrowEdges = new THREE.EdgesGeometry(arrowGeometry);
+            var arrowLine1 = new THREE.LineSegments(arrowEdges, new THREE.LineBasicMaterial({color: 0x000000}));
+            arrowLine1.scale.set(1, 0.5, 1);
+            arrowLine1.position.set(1, -1, 3.7);
+
+            body.add(arrow1);
+            body.add(arrowLine1);
+
+            var arrow2 = new THREE.Mesh(arrowGeometry, arrowMaterial);
+            arrow2.scale.set(1, 0.5, 1);
+            arrow2.position.set(-1, -1, 4.2);
+            arrow2.rotation.y = Math.PI;
+            var arrowLine2 = new THREE.LineSegments(arrowEdges, new THREE.LineBasicMaterial({color: 0x000000}));
+            arrowLine2.scale.set(1, 0.5, 1);
+            arrowLine2.position.set(-1, -1, 4.2);
+            arrowLine2.rotation.y = Math.PI;
+
+            body.add(arrow2);
+            body.add(arrowLine2);
+
+            var arrowMaterial2 = new THREE.MeshBasicMaterial({color: 0xb8860b});
+            var arrow3 = new THREE.Mesh(arrowGeometry, arrowMaterial2);
+            arrow3.scale.set(0.8, 0.4, 1);
+            arrow3.position.set(0, -1, 3.7);
+            var arrowLine3 = new THREE.LineSegments(arrowEdges, new THREE.LineBasicMaterial({color: 0x000000}));
+            arrowLine3.scale.set(0.8, 0.4, 1);
+            arrowLine3.position.set(0, -1, 3.7);
+
+            var arrow4 = new THREE.Mesh(arrowGeometry, arrowMaterial2);
+            arrow4.scale.set(0.8, 0.4, 1);
+            arrow4.rotation.y = Math.PI;
+            arrow4.position.set(0, -1, 4.2);
+            var arrowLine4 = new THREE.LineSegments(arrowEdges, new THREE.LineBasicMaterial({color:0x000000}));
+            arrowLine4.scale.set(0.8, 0.4, 1);
+            arrowLine4.rotation.y = Math.PI;
+            arrowLine4.position.set(0, -1, 4.2);
+
+            body.add(arrow3);
+            body.add(arrow4);
+            body.add(arrowLine3);
+            body.add(arrowLine4);
+
+            // belt
+            var beltPoints = [];
+            for (let i = 4; i < 6; ++i) {
+                beltPoints.push(new THREE.Vector2(7, i));
+            }
+            var beltGeometry = new THREE.LatheGeometry(beltPoints);
+            var beltMaterial = new THREE.MeshBasicMaterial({color: 0x654321});
+            var belt1 = new THREE.Mesh(beltGeometry, beltMaterial);
+            belt1.scale.set(0.85, 0.85, 0.6);
+            belt1.position.set(0, -4.3, -0.7);
+            body.add(belt1);
+
+            // collar
+            var collarGeometry = new THREE.BoxGeometry(5, 5, 5);
+            var collarMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+            var collar1 = new THREE.Mesh(collarGeometry, collarMaterial);
+            body.add(collar1);
+            collar1.position.set(0, 10, 0);
+
+            // tie
+            var tieShape = new THREE.Shape();
+            tieShape.moveTo(2, 2);
+            tieShape.lineTo(3, 1);
+            tieShape.lineTo(4, 2);
+            tieShape.lineTo(3, 5);
+            tieShape.lineTo(3.5, 5.5);
+            tieShape.lineTo(3, 6);
+            tieShape.lineTo(2.5, 5.5);
+            tieShape.lineTo(3, 5);
+            tieShape.lineTo(2, 2);
+            
+
+            var tieSettings = {steps: 2, depth: 0.5, bevelEnabled: false, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+
+            var tieGeometry = new THREE.ExtrudeGeometry(tieShape, tieSettings);
+            var tieMaterial = new THREE.MeshBasicMaterial({color: 0xffa500});
+            var tie1 = new THREE.Mesh(tieGeometry, tieMaterial);
+            tie1.scale.set(0.9, 0.9, 0.9);
+            tie1.position.set(-2.75, 7.1, 2.5);
+
+            body.add(tie1);
+
+            // COMPLETE LEAF
+            var completeLeaf1 = createComplexLeaf(0x006400, 0x149414); // green leaf at the base of the flashlight
+            completeLeaf1.position.set(0, 0, 0);
+            completeLeaf1.scale.set(0.7, 0.7, 0.7);
+            completeLeaf1.rotateOnWorldAxis(new THREE.Vector3(0,0,1), -0.9);
+            completeLeaf1.position.set(9, 12.5, 0);
+            
+            var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}); // each flying leaf will have a random color too!
+            var completeLeaf2 = createComplexLeaf(randomColor, randomColor);
+            completeLeaf2.translateZ(-100).translateY(-10);
+            completeLeaf2.rotation.z = -0.6;
+            completeLeaf2.rotation.y = Math.PI/2;
+
+            body.add(completeLeaf2);
+            body.add(completeLeaf1);
+
+            return body;
+        }
+
+
+        // create the whole Zero Two's puppet (head + body)
+        function createZeroTwo() {
+            var zerotwo1 = new THREE.Group();
+            var head1 = createHead();
+            head1.position.x = 0;
+
+            var body1 = createBody();
+            body1.position.x = 0;
+            body1.position.y = -20;
+            
+            zerotwo1.add(head1);
+            zerotwo1.add(body1);
+            return zerotwo1;
+        }
+
+        // multiple pieces make a tree
+        function createPiece(color) {
+            var shape = new THREE.Shape();
+            shape.moveTo(-0.5, 0);
+            shape.lineTo(0, 1);
+            shape.lineTo(0.5, 0);
+            shape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -0.5, 0);
+            
+            var extrudeSettings = {steps: 2, depth: 0.05, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1, bevelSegments: 0};
+
+            var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            var material = new THREE.MeshBasicMaterial({color: color});
+            var mesh = new THREE.Mesh(geometry, material);
+            return mesh;
+        }
+
+        // Auxiliary functions to make a stone 
+
+        // function that generates multiple points that will be necessary to make a ConvexGeometry
         function generatePoints() {    
-        var points = [];
-        for (var i = 0; i < 25; i++) {
-        var randomX = Math.round(Math.random() * 4);
-        var randomY = Math.round(Math.random() * 25);
-        var randomZ = Math.round(Math.random() * 4);
-        
-        points.push(new THREE.Vector3(randomX, randomY, randomZ));
-    }
-    return points;
-}
+            var points = [];
+            for (var i = 0; i < 25; i++) {
+                var randomX = Math.round(Math.random() * 4), randomY = Math.round(Math.random() * 25), randomZ = Math.round(Math.random() * 4);
+                points.push(new THREE.Vector3(randomX, randomY, randomZ));
+            }
+            return points;
+        }
 
-function goodPointsArray(array) {
-    var count = 0;
-    for (var i = 0; i < array.length; i++) {
-    var point = array[i];
-    if (point.y == 0) {
-        count = count + 1;
-    }
-    }
-    if (count >= 3) {
-    return true;
-    } else {
-    return false;
-    }
-}
+        // function that checks if at least 3 points have y coordinate = 0 (so that there is a plane on the ground - with at least 3 points it's possible to make a plane)
+        function goodPointsArray(array) {
+            var count = 0;
+            for (var i = 0; i < array.length; i++) {
+                var point = array[i];
+                if (point.y == 0) {
+                    count = count + 1;
+                }
+            }
 
-function makeStone() {
-
-    var points = generatePoints();
-
-    var bool = goodPointsArray(points);
-    while (!bool) {
-    points = generatePoints();
-    bool = goodPointsArray(points);
-    }
-
-    var material2 = new THREE.MeshLambertMaterial({
-                color: "rgb(128,128,128)",
-                transparent: true
-            });
-    const meshGeometry = new ConvexGeometry(points);
-
-    const stone = new THREE.Mesh(meshGeometry, material2);
-    stone.castShadow = true;
-    return stone;
-}
-
-function createMaze() {
-    var maze = new THREE.Group();
-    var planeGeometry = new THREE.PlaneGeometry( 100, 100, 32 );
-    var planeMaterial = new THREE.MeshBasicMaterial( {color: 0x567d46, side: THREE.DoubleSide} );
-    var plane1 = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane1.position.set(0, -0.1, 100);
-    plane1.rotation.x = Math.PI/2;
-
-
-    var boxGeometry = new THREE.BoxGeometry( 10, 10, 10);
-    
-    
-    var usedXValues = [];
-    var usedZValues = [];
-
-    var xPossibleValues1stRow = [-45, -35, -25, -15, 15, 25, 35, 45];
-
-    // 1st row of the maze
-    var count = 0;
-    while (count < 8) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
-
-        var itemX = xPossibleValues1stRow[Math.floor(Math.random() * xPossibleValues1stRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 55);
-        line.position.set(itemX, 5, 55);
-        for( var i = 0; i < xPossibleValues1stRow.length; i++){ 
-            if ( xPossibleValues1stRow[i] === itemX) { 
-                xPossibleValues1stRow.splice(i, 1); 
-                i--; 
+            if (count >= 3) {
+                return true;
+            } else {
+                return false;
             }
         }
-        maze.add(box);
-        maze.add(line);
-        count = count + 1;
-    }
 
-    var xPossibleValues2ndRow = [-45, -35, -25, -15, 15, 25, 35, 45];
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    // 2nd row
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues2ndRow[Math.floor(Math.random() * xPossibleValues2ndRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 65);
-        line.position.set(itemX, 5, 65);
-        for( var i = 0; i < xPossibleValues2ndRow.length; i++){ 
-            if ( xPossibleValues2ndRow[i] === itemX) { 
-                xPossibleValues2ndRow.splice(i, 1); 
-                i--; 
+        // function that makes a stone
+        function makeStone() {
+
+            var points = generatePoints();
+            var bool = goodPointsArray(points);
+
+            while (!bool) {
+            points = generatePoints();
+            bool = goodPointsArray(points);
+            }
+
+            var material = new THREE.MeshLambertMaterial({color: "rgb(128,128,128)", transparent: true});
+            var meshGeometry = new ConvexGeometry(points);
+
+            var stone = new THREE.Mesh(meshGeometry, material);
+            stone.castShadow = true;
+            return stone;
+        }
+
+        function createMazeRowsFirstLast(possibleValuesRow, maze, position) {
+            var boxGeometry = new THREE.BoxGeometry(10, 10, 10);
+            var count = 0;
+            while (count < 8) {
+                var boxMaterial = new THREE.MeshPhongMaterial({color: 0x0B5345});
+                var itemX = possibleValuesRow[Math.floor(Math.random() * possibleValuesRow.length)];
+                var box = new THREE.Mesh(boxGeometry, boxMaterial);
+                var edges = new THREE.EdgesGeometry(boxGeometry);
+                var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
+                box.position.set(itemX, 5, position);
+                line.position.set(itemX, 5, position);
+                for(var i = 0; i < possibleValuesRow.length; i++){ 
+                    if (possibleValuesRow[i] === itemX) { 
+                        possibleValuesRow.splice(i, 1); 
+                        i--; 
+                    }
+                }
+                maze.add(box);
+                maze.add(line);
+                count = count + 1;
             }
         }
-        maze.add(box);
-        maze.add(line);
-    }
-
-    var xPossibleValues3rdRow = [-45, -35, -25, 25, 35, 45];
-    // 3rd row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues3rdRow[Math.floor(Math.random() * xPossibleValues3rdRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 75);
-        line.position.set(itemX, 5, 75);
-        for( var i = 0; i < xPossibleValues3rdRow.length; i++){ 
-            if ( xPossibleValues3rdRow[i] === itemX) { 
-                xPossibleValues3rdRow.splice(i, 1); 
-                i--; 
+        function createMazeRows(possibleValuesRow, possibleNumberBoxes, maze, position, phongmaterial=false) {
+            // instantiate box geometry
+            if (!phongmaterial) {
+                var boxMaterial = new THREE.MeshBasicMaterial({color: 0x0B5345});
+            } else {
+                var boxMaterial = new THREE.MeshPhongMaterial({color: 0x0B5345});
+            }
+            var boxGeometry = new THREE.BoxGeometry(10, 10, 10);
+            var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
+            for (var k=0; k < numberBoxes; k++) {
+                var itemX = possibleValuesRow[Math.floor(Math.random() * possibleValuesRow.length)];
+                var box = new THREE.Mesh(boxGeometry, boxMaterial);
+                var edges = new THREE.EdgesGeometry(boxGeometry);
+                var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
+                box.position.set(itemX, 5, position);
+                line.position.set(itemX, 5, position);
+                for( var i = 0; i < possibleValuesRow.length; i++){ 
+                    if (possibleValuesRow[i] === itemX) { 
+                        possibleValuesRow.splice(i, 1); 
+                        i--; 
+                    }
+                }
+                maze.add(box);
+                maze.add(line);
             }
         }
-        maze.add(box);
-        maze.add(line);
-    }
 
-    var xPossibleValues4thRow = [-45, -35, -25, -5, 5, 25, 35, 45];
-    // 4th row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues4thRow[Math.floor(Math.random() * xPossibleValues4thRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 85);
-        line.position.set(itemX, 5, 85);
-        for( var i = 0; i < xPossibleValues4thRow.length; i++){ 
-            if ( xPossibleValues4thRow[i] === itemX) { 
-                xPossibleValues4thRow.splice(i, 1); 
-                i--; 
-            }
+        // function that creates a maze
+        function createMaze() {
+
+            // initialize group
+            var maze = new THREE.Group();
+
+            // make a plane/ground
+            var planeGeometry = new THREE.PlaneGeometry( 100, 100, 32 );
+            var planeMaterial = new THREE.MeshBasicMaterial( {color: 0x567d46, side: THREE.DoubleSide} );
+            var plane1 = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane1.position.set(0, -0.1, 100);
+            plane1.rotation.x = Math.PI/2;
+            
+            // 1st row
+            var xPossibleValues1stRow = [-45, -35, -25, -15, 15, 25, 35, 45];
+            createMazeRowsFirstLast(xPossibleValues1stRow, maze, 55);
+            
+            // 2nd row
+            var xPossibleValues2ndRow = [-45, -35, -25, -15, 15, 25, 35, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues2ndRow, possibleNumberBoxes, maze, 65);
+
+            // 3rd row
+            var xPossibleValues3rdRow = [-45, -35, -25, 25, 35, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues3rdRow, possibleNumberBoxes, maze, 75, true);
+
+            // 4th row
+            var xPossibleValues4thRow = [-45, -35, -25, -5, 5, 25, 35, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues4thRow, possibleNumberBoxes, maze, 85);
+
+            // 5th row
+            var xPossibleValues5thRow = [-45, -5, 5, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues5thRow, possibleNumberBoxes, maze, 95, true);
+
+            // 6th row
+            var xPossibleValues6thRow = [-45, -25, -15, -5, 5, 15, 25, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues6thRow, possibleNumberBoxes, maze, 105);
+
+            // 7th row
+            var xPossibleValues7thRow = [-45, -5, 5, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues7thRow, possibleNumberBoxes, maze, 115, true);
+
+            // 8th row
+            var xPossibleValues8thRow = [-45, -35, -25, -5, 5, 25, 35, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues8thRow, possibleNumberBoxes, maze, 125);
+
+            // 9th row
+            var xPossibleValues9thRow = [-45, -35, -25, 25, 35, 45];
+            var possibleNumberBoxes = [4, 5, 6, 7, 8];
+            createMazeRows(xPossibleValues9thRow, possibleNumberBoxes, maze, 135, true);
+
+            // 10th row
+            var xPossibleValues10thRow = [-45, -35, -25, -15, 15, 25, 35, 45];
+            createMazeRowsFirstLast(xPossibleValues10thRow, maze, 145);
+
+            maze.add(plane1);
+
+            return maze;
         }
-        maze.add(box);
-        maze.add(line);
-    }
-
-    var xPossibleValues5thRow = [-45, -5, 5, 45];
-    // 5th row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues5thRow[Math.floor(Math.random() * xPossibleValues5thRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 95);
-        line.position.set(itemX, 5, 95);
-        for( var i = 0; i < xPossibleValues5thRow.length; i++){ 
-            if ( xPossibleValues5thRow[i] === itemX) { 
-                xPossibleValues5thRow.splice(i, 1); 
-                i--; 
-            }
-        }
-        maze.add(box);
-        maze.add(line);
-    }
-
-    var xPossibleValues6thRow = [-45, -25, -15, -5, 5, 15, 25, 45];
-    // 6th row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues6thRow[Math.floor(Math.random() * xPossibleValues6thRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 105);
-        line.position.set(itemX, 5, 105);
-        for( var i = 0; i < xPossibleValues6thRow.length; i++){ 
-            if ( xPossibleValues6thRow[i] === itemX) { 
-                xPossibleValues6thRow.splice(i, 1); 
-                i--; 
-            }
-        }
-        maze.add(box);
-        maze.add(line);
-    }
-
-    var xPossibleValues7thRow = [-45, -5, 5, 45];
-    // 7th row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues7thRow[Math.floor(Math.random() * xPossibleValues7thRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 115);
-        line.position.set(itemX, 5, 115);
-        for( var i = 0; i < xPossibleValues7thRow.length; i++){ 
-            if ( xPossibleValues7thRow[i] === itemX) { 
-                xPossibleValues7thRow.splice(i, 1); 
-                i--; 
-            }
-        }
-        maze.add(box);
-        maze.add(line);
-    }
-
-    var xPossibleValues8thRow = [-45, -35, -25, -5, 5, 25, 35, 45];
-    // 8th row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues8thRow[Math.floor(Math.random() * xPossibleValues8thRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 125);
-        line.position.set(itemX, 5, 125);
-        for( var i = 0; i < xPossibleValues8thRow.length; i++){ 
-            if ( xPossibleValues8thRow[i] === itemX) { 
-                xPossibleValues8thRow.splice(i, 1); 
-                i--; 
-            }
-        }
-        maze.add(box);
-        maze.add(line);
-    }
-
-    var xPossibleValues9thRow = [-45, -35, -25, 25, 35, 45];
-    // 9th row
-    var possibleNumberBoxes = [4, 5, 6, 7, 8];
-    var numberBoxes = possibleNumberBoxes[Math.floor(Math.random() * possibleNumberBoxes.length)];
-    for (var k=0; k < numberBoxes; k++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshPhongMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues9thRow[Math.floor(Math.random() * xPossibleValues9thRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 135);
-        line.position.set(itemX, 5, 135);
-        for( var i = 0; i < xPossibleValues9thRow.length; i++){ 
-            if ( xPossibleValues9thRow[i] === itemX) { 
-                xPossibleValues9thRow.splice(i, 1); 
-                i--; 
-            }
-        }
-        maze.add(box);
-        maze.add(line);
-    }
-
-    var xPossibleValues10thRow = [-45, -35, -25, -15, 15, 25, 35, 45];
-    // 10th row
-    var count = 0;
-    while (count < 8) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var boxMaterial = new THREE.MeshBasicMaterial( {color: 0x0B5345} );
-        var itemX = xPossibleValues10thRow[Math.floor(Math.random() * xPossibleValues10thRow.length)];
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var edges = new THREE.EdgesGeometry(boxGeometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
-        box.position.set(itemX, 5, 145);
-        line.position.set(itemX, 5, 145);
-        for( var i = 0; i < xPossibleValues10thRow.length; i++){ 
-            if ( xPossibleValues10thRow[i] === itemX) { 
-                xPossibleValues10thRow.splice(i, 1); 
-                i--; 
-            }
-        }
-        maze.add(box);
-        maze.add(line);
-        count = count + 1;
-    }
-
-    maze.add(plane1);
-
-    return maze;
-}
 
 function createCelticCross() {
     var cross = new THREE.Group();
@@ -1463,6 +1136,65 @@ function createFire() {
     }
     return fireElements;
 }
+
+function createTree() {
+    var center = new THREE.Object3D();
+
+    for (var i=0; i<100; i++) {
+        var piece = createPiece(0x00472a);
+        center.add(piece);
+        piece.position.y = 1;
+        piece.position.x = Math.cos(1 + i*0.1);
+        piece.position.z = Math.sin(1 + i*0.1);
+    }
+    for (var i=0; i<100; i++) {
+        var piece = createPiece(0x00472a);
+        center.add(piece);
+        piece.position.y = 2;
+        piece.position.x = Math.cos(1 + i*0.1)/1.1;
+        piece.position.z = Math.sin(1 + i*0.1)/1.1;
+    }
+
+    for (var i=0; i<100; i++) {
+        var piece = createPiece(0x00472a);
+        center.add(piece);
+        piece.position.y = 3;
+        piece.position.x = Math.cos(1 + i*0.1)/1.2;
+        piece.position.z = Math.sin(1 + i*0.1)/1.2;
+    }
+
+    for (var i=0; i<100; i++) {
+        var piece = createPiece(0x00472a);
+        center.add(piece);
+        piece.position.y = 4;
+        piece.position.x = Math.cos(1 + i*0.1)/1.3;
+        piece.position.z = Math.sin(1 + i*0.1)/1.3;
+    }
+
+    for (var i=0; i<400; i++) {;
+        var piece = createPiece(0x00472a);
+        piece.scale.set(1.3, 1.3, 1.3);
+        center.add(piece);
+        piece.position.y = 5.2;
+        piece.rotation.y = THREE.Math.degToRad(i);
+    }
+
+    center.scale.set(2, 2 , 2);
+    return center;
+}
+function createTreeSecondType() {
+    // NICE IDEA TO MAKE A NEW KIND OF TREE!! :)
+    var center = new THREE.Object3D();
+    for (var i=0; i<100; i++) {
+        var piece = createPiece(0x00472a);
+        center.add(piece);
+        piece.position.y = 4;
+        piece.position.x = Math.cos(1 + i*0.1)/1.3;
+        piece.rotation.y = Math.PI * Math.random() * 10;
+        piece.position.z = Math.sin(1 + i*0.1)/1.3;
+    }
+    return center;
+}
         
     var existingZeroTwoObjects = [];
     var removedZeroTwoObjects = [];
@@ -1525,66 +1257,6 @@ function createFire() {
             //center.rotation.y = Math.PI/4 + i*(Math.PI/2);
         }
     
-
-
-
-        var center = new THREE.Object3D();
-        center.name = "center";
-
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        center.add(piece);
-        piece.position.y = 1;
-        piece.position.x = Math.cos(1 + i*0.1);
-        piece.position.z = Math.sin(1 + i*0.1);
-    }
-    var randomNumber = Math.random();
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        //piece.scale.set(0.5,0.5,0.5);
-        center.add(piece);
-        piece.position.y = 2;
-        piece.position.x = Math.cos(1 + i*0.1)/1.1;
-        //piece.rotation.y = Math.PI * randomNumber;
-        piece.position.z = Math.sin(1 + i*0.1)/1.1;
-    }
-
-    var randomNumber = Math.random();
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        //piece.scale.set(0.5,0.5,0.5);
-        center.add(piece);
-        piece.position.y = 3;
-        piece.position.x = Math.cos(1 + i*0.1)/1.2;
-        //piece.rotation.y = Math.PI * randomNumber;
-        piece.position.z = Math.sin(1 + i*0.1)/1.2;
-    }
-    var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-    var randomNumber = Math.random();
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        //piece.scale.set(0.5,0.5,0.5);
-        center.add(piece);
-        piece.position.y = 4;
-        piece.position.x = Math.cos(1 + i*0.1)/1.3;
-        //piece.rotation.y = Math.PI * randomNumber;
-        piece.position.z = Math.sin(1 + i*0.1)/1.3;
-    }
-    var randomNumber = Math.random();
-    for (var i=0; i<400; i++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var piece = createPiece(randomColor);
-        piece.scale.set(1.3, 1.3, 1.3);
-        center.add(piece);
-        piece.position.y = 5.2;
-        //piece.position.x = Math.cos(i)/3;
-        piece.rotation.y = THREE.Math.degToRad(i);
-        //piece.position.z = Math.sin(i)/3;
-    }
-
-    center.position.set(-45, 0, -45);
-    center.scale.set(2, 2 , 2);
-
     /*
     var lathe1 = createLathe(0x000000);
     sceneGraph.add(lathe1);
@@ -1628,21 +1300,23 @@ function createFire() {
 
 
 
-    /*
-        NICE IDEA TO MAKE A NEW KIND OF TREE!! :)
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x000000);
-        //piece.scale.set(0.5,0.5,0.5);
-        center.add(piece);
-        piece.position.y = 4;
-        piece.position.x = Math.cos(1 + i*0.1)/1.3;
-        piece.rotation.y = Math.PI * Math.random() * 10;
-        piece.position.z = Math.sin(1 + i*0.1)/1.3;
-    }
-    */
+    // Create trees
+    var tree1 = createTree();
+    tree1.name = "center";
+    tree1.scale.set(5, 5, 5);
+    tree1.position.set(-35, 0, -35);
+    sceneGraph.add(tree1);
+
+    var tree2 = createTreeSecondType();
+    tree2.name = "tree2";
+    tree2.position.set(35, -80, -35);
+    tree2.scale.set(7, 20, 7);
+    sceneGraph.add(tree2);
+    
+    
 
 
-    sceneGraph.add(center);
+    
 
     // Create Mazes
     for (var m = 0; m < 4; m++) {
@@ -1722,9 +1396,11 @@ function createFire() {
 
         function computeFrame(time) {
 
-            // Animate rain
-            
+            // Rotate directional light
+            var dLight1 = sceneElements.sceneGraph.getObjectByName("dLight1");
+            console.log(dLight1.position.x, dLight1.position.y, dLight1.position.z);
 
+            // Animate rain
         var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
         var rainElementsArray = bigRain1.children;
         for (var j = 0; j < rainElementsArray.length; j++) {
