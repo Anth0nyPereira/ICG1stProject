@@ -1519,28 +1519,37 @@
             raycaster.setFromCamera(mouse, sceneElements.camera);
             
             // calculate objects intersecting the picking ray
-
             for (var t = 1; t < 5; t++) {
                 var array = sceneElements.sceneGraph.getObjectByName("tree" + t).children;
                 var intersects = raycaster.intersectObjects(array);        
 
                 if (intersects.length > 0 && array.includes(intersects[0].object)) {
-                    if (t == 1) {
-                        intersects[0].object.material.color.set(0xadff2f);
-                    } else if (t == 2) {
-                        intersects[0].object.material.color.set(0xfb33db);
-                    } else if (t == 3) {
-                        intersects[0].object.material.color.set(0xff6600);
-                    } else {
-                        intersects[0].object.material.color.set(0xe92efb);
+                    for (var i=0; i<array.length; i++) {
+                        if (array[i].position.y == intersects[0].object.position.y) {
+                            if (t == 1) {
+                                intersects[0].object.material.color.set(0xadff2f);
+                                array[i].material.color.set(0xfb33db);
+                            } else if (t == 2) {
+                                intersects[0].object.material.color.set(0xfb33db);
+                                array[i].material.color.set(0xadff2f);
+                            } else if (t == 3) {
+                            intersects[0].object.material.color.set(0xe92efb);
+                            array[i].material.color.set(0xff6600);
+                            } else {
+                            intersects[0].object.material.color.set(0xff6600);
+                            array[i].material.color.set(0xe92efb);
+                            }
+                        }
                     }
-                    
+
                 } else {
                     for (var k = 0; k < array.length; k++) {
                         array[k].material.color.set( 0x00472a);
                     }
                 }
             }
+
+
             
 
             // ANIMATE MAZES
