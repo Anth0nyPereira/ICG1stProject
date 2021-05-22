@@ -116,7 +116,7 @@
         function init() {
             helper.initEmptyScene(sceneElements);
             load3DObjects(sceneElements.sceneGraph);
-            requestAnimationFrame(computeFrame);
+            requestAnimationFrame(animate);
         }
 
         // handling events 
@@ -1007,489 +1007,399 @@
             return maze;
         }
 
-function createCelticCross() {
-    var cross = new THREE.Group();
-    cross.position.set(0, 20, 0);
+        // function that creates the cross at the center of the scene
+        function createCelticCross() {
+            // initialize group
+            var cross = new THREE.Group();
+            cross.position.set(0, 20, 0);
 
-    // circle
-    var circleRadius =  7.5;  
-    var circleTubeRadius =  2.0;  
-    var circleRadialSegments = 30;  
-    var circleTubularSegments = 100;  
+            // circle
+            var circleRadius =  7.5, circleTubeRadius =  2.0, circleRadialSegments = 30, circleTubularSegments = 100;  
+            var circleGeometry = new THREE.TorusGeometry(circleRadius, circleTubeRadius, circleRadialSegments, circleTubularSegments);;
+            var crossMaterial = new THREE.MeshToonMaterial({color: 0x49311d});
+            var circle = new THREE.Mesh(circleGeometry, crossMaterial);
+            circle.position.y = 36;
+            cross.add(circle);
 
-    var circleGeometry = new THREE.TorusGeometry(circleRadius, circleTubeRadius, circleRadialSegments, circleTubularSegments);;
-    var crossMaterial = new THREE.MeshToonMaterial({color: 0x49311d});
-    var circle = new THREE.Mesh(circleGeometry, crossMaterial);
-    circle.position.y = 36;
-    cross.add(circle);
+            // cross in the middle
+            var middleCrossShape = new THREE.Shape();
+            middleCrossShape.moveTo(-2, 0);
+            middleCrossShape.lineTo(2, 0);
+            middleCrossShape.lineTo(4, 5);
+            middleCrossShape.lineTo(-4, 5);
+            middleCrossShape.lineTo(-2, 0);
 
-    // cross in the middle
-    var middleCrossShape = new THREE.Shape();
-    middleCrossShape.moveTo(-2, 0);
-    middleCrossShape.lineTo(2, 0);
-    middleCrossShape.lineTo(4, 5);
-    middleCrossShape.lineTo(-4, 5);
-    middleCrossShape.lineTo(-2, 0);
+            var middleCrossSettings = {steps: 2, depth: 2, bevelEnabled: false, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
 
-    var middleCrossSettings = {
-        steps: 2,
-        depth: 2,
-        bevelEnabled: false,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelOffset: 0,
-        bevelSegments: 1
-    };
+            var middleCrossGeometry = new THREE.ExtrudeGeometry(middleCrossShape, middleCrossSettings);
 
-    var middleCrossGeometry = new THREE.ExtrudeGeometry(middleCrossShape, middleCrossSettings);
-    var middleCross1 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
-    middleCross1.scale.set(0.7, 1, 1);
-    middleCross1.position.y = 1;
-    var middleCross2 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
-    middleCross2.scale.set(0.7, 1, 1);
-    middleCross2.position.x = -1;
-    var middleCross3 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
-    middleCross3.scale.set(0.7, 1, 1);
-    middleCross3.position.y = -1;
-    var middleCross4 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
-    middleCross4.scale.set(0.7, 1, 1);
-    middleCross4.position.x = 1;
-    var middleCross5 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
-    middleCross5.scale.set(0.4, 0.7, 1);
-    middleCross5.position.y = -1.7;
+            // creating the components of the cross in the middle of the circle/ring
+            var middleCross1 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+            middleCross1.scale.set(0.7, 1, 1);
+            middleCross1.position.y = 1;
+            var middleCross2 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+            middleCross2.scale.set(0.7, 1, 1);
+            middleCross2.position.x = -1;
+            var middleCross3 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+            middleCross3.scale.set(0.7, 1, 1);
+            middleCross3.position.y = -1;
+            var middleCross4 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+            middleCross4.scale.set(0.7, 1, 1);
+            middleCross4.position.x = 1;
+            var middleCross5 = new THREE.Mesh(middleCrossGeometry, crossMaterial);
+            middleCross5.scale.set(0.4, 0.7, 1);
+            middleCross5.position.y = -1.7;
 
-    middleCross2.rotation.z = Math.PI/2;
-    middleCross3.rotation.z = Math.PI;
-    middleCross4.rotation.z = -Math.PI/2;
+            middleCross2.rotation.z = Math.PI/2;
+            middleCross3.rotation.z = Math.PI;
+            middleCross4.rotation.z = -Math.PI/2;
 
-    var middleCross = new THREE.Group();
-    middleCross.position.y = 36;
-    middleCross.add(middleCross1);
-    middleCross.add(middleCross2);
-    middleCross.add(middleCross3);
-    middleCross.add(middleCross4);
-    middleCross.add(middleCross5);
+            // adding all this pieces to a major group
+            var middleCross = new THREE.Group();
+            middleCross.position.y = 36;
+            middleCross.add(middleCross1);
+            middleCross.add(middleCross2);
+            middleCross.add(middleCross3);
+            middleCross.add(middleCross4);
+            middleCross.add(middleCross5);
 
-    cross.add(middleCross);
+            cross.add(middleCross);
 
-    // base
-    var baseShape = new THREE.Shape();
-    baseShape.moveTo(-2, 0);
-    baseShape.lineTo(2, 0);
-    baseShape.bezierCurveTo(1.8, 3, 1.5, 5, 1, 8);
-    baseShape.lineTo(-1, 8);
-    baseShape.bezierCurveTo(-1.5, 5, -1.8, 3, -2, 0);
+            // base
+            var baseShape = new THREE.Shape();
+            baseShape.moveTo(-2, 0);
+            baseShape.lineTo(2, 0);
+            baseShape.bezierCurveTo(1.8, 3, 1.5, 5, 1, 8);
+            baseShape.lineTo(-1, 8);
+            baseShape.bezierCurveTo(-1.5, 5, -1.8, 3, -2, 0);
 
-    var baseGeometry = new THREE.ExtrudeGeometry(baseShape, middleCrossSettings);
-    var base = new THREE.Mesh(baseGeometry, crossMaterial);
-    base.position.set(0, -20, -1);
-    base.scale.set(2.5, 6, 1);
+            var baseGeometry = new THREE.ExtrudeGeometry(baseShape, middleCrossSettings);
+            var base = new THREE.Mesh(baseGeometry, crossMaterial);
+            base.position.set(0, -20, -1);
+            base.scale.set(2.5, 6, 1);
 
-    cross.add(base);
+            cross.add(base);
 
-    // top (reusing base and scale it)
-    var top = new THREE.Mesh(baseGeometry, crossMaterial);
-    top.rotation.z = Math.PI;
-    top.position.y = 50;
-    top.scale.set(1.5, 2, 1);
+            // top (reusing base and scaling it)
+            var top = new THREE.Mesh(baseGeometry, crossMaterial);
+            top.rotation.z = Math.PI;
+            top.position.y = 50;
+            top.scale.set(1.5, 2, 1);
 
-    cross.add(top);
-    
-
-    return cross;
-}
-
-function randomIntFromInterval(min, max) { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function createRain(min, max) {
-    var rainElements = new THREE.Group();
-    for (var i = 1; i < 800; i++) {
-        var rainGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        //var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
-        var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-        var rain = new THREE.Mesh(rainGeometry, rainMaterial);
-        rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
-        while (rain.position.x > 50 && rain.position.z > 50) {
-            rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+            cross.add(top);
+            return cross;
         }
-        rainElements.add(rain);
-    }
-    return rainElements;
-}
 
-function createFire() {
-    var fireElements = new THREE.Group();
-    for (var i = 0; i < 100; i++) {
-        var fireGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-        var fireMaterial = new THREE.MeshBasicMaterial({color: 0xff7700});
-        var fire = new THREE.Mesh(fireGeometry, fireMaterial);
-        fire.position.set(randomIntFromInterval(0, 12), randomIntFromInterval(1, 45), 2);
-        fireElements.add(fire);
-        
-        if (i>=50) {
-            fire.visible = false;
+        // auxiliary function for creating rain
+        function randomIntFromInterval(min, max) { // min and max included 
+        return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+
+        // function that creates multiple little boxes that reproduce rain
+        function createRain(min, max) {
+            var rainElements = new THREE.Group();
+            for (var i = 1; i < 800; i++) {
+                var rainGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+                var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+                var rain = new THREE.Mesh(rainGeometry, rainMaterial);
+                rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+                while (rain.position.x > 50 && rain.position.z > 50) {
+                    rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+                }
+                rainElements.add(rain);
+            }
+            return rainElements;
+        }
+
+        // function similar to createRain, but in this one, we're creating little boxes to reproduce fire sparkles
+        function createFire() {
+            var fireElements = new THREE.Group();
+
+            // creating 100 blocks/boxes
+            for (var i = 0; i < 100; i++) {
+                var fireGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+                var fireMaterial = new THREE.MeshBasicMaterial({color: 0xff7700});
+                var fire = new THREE.Mesh(fireGeometry, fireMaterial);
+                fire.position.set(randomIntFromInterval(0, 12), randomIntFromInterval(1, 45), 2); //more than half the height of the cross, width of the cross
+                fireElements.add(fire);
+
+                // half of the blocks are invisible, and these are where the visibility of the blocks will be constantly changing between visible and invisible
+                if (i>=50) {
+                    fire.visible = false;
+                }   
+            }
+            return fireElements;
+        }
+
+        // create tree function (with multiple pieces created with an extrude)
+        function createTree() {
+            var center = new THREE.Object3D();
+
+            // create 100 pieces for 4 floors and "rotate" them
+            for (var i=0; i<100; i++) {
+                var piece = createPiece(0x00472a);
+                center.add(piece);
+                piece.position.set(Math.cos(1 + i*0.1), 1, Math.sin(1 + i*0.1))
+
+                var piece2 = createPiece(0x00472a);
+                center.add(piece2);
+                piece2.position.set(Math.cos(1 + i*0.1)/1.1, 2, Math.sin(1 + i*0.1)/1.1);
+
+                var piece3 = createPiece(0x00472a);
+                center.add(piece3);
+                piece3.position.set(Math.cos(1 + i*0.1)/1.2, 3, Math.sin(1 + i*0.1)/1.2);
+
+                var piece4 = createPiece(0x00472a);
+                center.add(piece4);
+                piece4.position.set(Math.cos(1 + i*0.1)/1.3, 4, Math.sin(1 + i*0.1)/1.3);
+            }
+
+            // top of tree (cone)
+            for (var i=0; i<400; i++) {;
+                var piece = createPiece(0x00472a);
+                piece.scale.set(1.3, 1.3, 1.3);
+                center.add(piece);
+                piece.position.y = 5.2;
+                piece.rotation.y = THREE.Math.degToRad(i);
+            }
+
+            center.scale.set(2, 2 , 2);
+            return center;
+        }
+
+        // function that creates another type of tree
+        function createTreeSecondType() {
+            // NICE IDEA TO MAKE A NEW KIND OF TREE!! :)
+            var center = new THREE.Object3D();
+            for (var i=0; i<100; i++) {
+                var piece = createPiece(0x00472a);
+                center.add(piece);
+                piece.position.y = 4;
+                piece.position.x = Math.cos(1 + i*0.1)/1.3;
+                piece.rotation.y = Math.PI * Math.random() * 10;
+                piece.position.z = Math.sin(1 + i*0.1)/1.3;
+            }
+            return center;
         }
         
-    }
-    return fireElements;
-}
-
-function createTree() {
-    var center = new THREE.Object3D();
-
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        center.add(piece);
-        piece.position.y = 1;
-        piece.position.x = Math.cos(1 + i*0.1);
-        piece.position.z = Math.sin(1 + i*0.1);
-    }
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        center.add(piece);
-        piece.position.y = 2;
-        piece.position.x = Math.cos(1 + i*0.1)/1.1;
-        piece.position.z = Math.sin(1 + i*0.1)/1.1;
-    }
-
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        center.add(piece);
-        piece.position.y = 3;
-        piece.position.x = Math.cos(1 + i*0.1)/1.2;
-        piece.position.z = Math.sin(1 + i*0.1)/1.2;
-    }
-
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        center.add(piece);
-        piece.position.y = 4;
-        piece.position.x = Math.cos(1 + i*0.1)/1.3;
-        piece.position.z = Math.sin(1 + i*0.1)/1.3;
-    }
-
-    for (var i=0; i<400; i++) {;
-        var piece = createPiece(0x00472a);
-        piece.scale.set(1.3, 1.3, 1.3);
-        center.add(piece);
-        piece.position.y = 5.2;
-        piece.rotation.y = THREE.Math.degToRad(i);
-    }
-
-    center.scale.set(2, 2 , 2);
-    return center;
-}
-function createTreeSecondType() {
-    // NICE IDEA TO MAKE A NEW KIND OF TREE!! :)
-    var center = new THREE.Object3D();
-    for (var i=0; i<100; i++) {
-        var piece = createPiece(0x00472a);
-        center.add(piece);
-        piece.position.y = 4;
-        piece.position.x = Math.cos(1 + i*0.1)/1.3;
-        piece.rotation.y = Math.PI * Math.random() * 10;
-        piece.position.z = Math.sin(1 + i*0.1)/1.3;
-    }
-    return center;
-}
-        
-    var existingZeroTwoObjects = [];
-    var removedZeroTwoObjects = [];
+        var existingZeroTwoObjects = [];
+        var removedZeroTwoObjects = [];
 
         // Create and insert in the scene graph the models of the 3D scene
-    function load3DObjects(sceneGraph) {
+        function load3DObjects(sceneGraph) {
 
-            // ************************** //
-            // Create a ground plane
-            // ************************** //
+            // plane at the center of the scene
+            const pgeometry = new THREE.PlaneGeometry(100, 100, 32);
+            const pmaterial = new THREE.MeshPhongMaterial({color: 0x567d46, side: THREE.DoubleSide});
+            const plane = new THREE.Mesh(pgeometry, pmaterial);
+            plane.rotation.x = Math.PI / 2;
+            plane.receiveShadow = true;
+            sceneGraph.add(plane);
 
-        const pgeometry = new THREE.PlaneGeometry( 100, 100, 32 );
-        const pmaterial = new THREE.MeshPhongMaterial( {color: 0x567d46, side: THREE.DoubleSide} );
-        const plane = new THREE.Mesh(pgeometry, pmaterial);
-        plane.rotation.x = Math.PI / 2;
-        plane.receiveShadow = true;
-        sceneGraph.add(plane);
+            // initialize axisHelper
+            var axes = new THREE.AxisHelper(500);  
+            sceneGraph.add(axes);
 
-        var axes = new THREE.AxisHelper(500);  
-        sceneGraph.add(axes);
+            // Create stones
+            for (var st=1; st < 5; st++) {
+                var stone = makeStone();
+                var center = new THREE.Object3D();
+                center.name = "center" + st;
+                center.add(stone);
+                sceneGraph.add(center);
+                if (st == 1) {
+                    stone.position.x = 30;
+                } else if (st == 2) {
+                    stone.position.x = -30;
+                } else if (st == 3) {
+                    stone.position.z = 30;
+                } else {
+                    stone.position.z = -30;
+                }
+                
+            }
 
-        var stone1 = makeStone();
-        var center1 = new THREE.Object3D();
-        center1.name = "center1";
-        center1.add(stone1);
-        sceneGraph.add(center1);
-        stone1.position.x = 30;
+            // Rotated stones (midpoints)
+            for (var i = 5; i < 9; i++) {
+                var stone = makeStone();
+                stone.name = "stone" + i;
+                var center = new THREE.Object3D();
+                center.name = "center" + i;
+                center.add(stone);
+                sceneGraph.add(center);
+                stone.position.set(30*Math.cos(Math.PI/4 + i*(Math.PI/2)), 0, 30*Math.sin(Math.PI/4 + i*(Math.PI/2)))
+            }
+        
+        // Make zero two character
 
-        var stone2 = makeStone();
-        var center2 = new THREE.Object3D();
-        center2.name = "center2";
-        center2.add(stone2);
-        sceneGraph.add(center2);
-        stone2.position.x = -30;
+        // Create and rotate 8 zero twos
+        for (var i = 1; i < 9; i++) {
+            var zerotwo = createZeroTwo();
+            var rotateZeroTwo = new THREE.Object3D();
 
-        var stone3 = makeStone();
-        var center3 = new THREE.Object3D();
-        center3.name = "center3";
-        center3.add(stone3);
-        sceneGraph.add(center3);
-        stone3.position.z = 30;
+            rotateZeroTwo.add(zerotwo);
 
-        var stone4 = makeStone();
-        var center4 = new THREE.Object3D();
-        center4.name = "center4";
-        center4.add(stone4);
-        sceneGraph.add(center4);
-        stone4.position.z = -30;
+            zerotwo.scale.set(0.2, 0.2, 0.2);
+            zerotwo.position.set(20, 13.5, 0);
 
-        // Rotated stones (midpoints)
-        for (var i = 5; i < 9; i++) {
-            var stone = makeStone();
-            stone.name = "stone" + i;
-            var center = new THREE.Object3D();
-            center.name = "center" + i;
-            center.add(stone);
-            sceneGraph.add(center);
-            //stone.position.x = 30;
-            stone.position.set(30*Math.cos(Math.PI/4 + i*(Math.PI/2)), 0, 30*Math.sin(Math.PI/4 + i*(Math.PI/2)))
-            //center.rotation.y = Math.PI/4 + i*(Math.PI/2);
+            zerotwo.name = "zerotwo" + i;
+            rotateZeroTwo.name = "rotateZeroTwo" + i;
+
+            rotateZeroTwo.rotation.y = i*(Math.PI/4);
+            sceneGraph.add(rotateZeroTwo);
+
+            existingZeroTwoObjects.push(rotateZeroTwo);
         }
-    
-    /*
-    var lathe1 = createLathe(0x000000);
-    sceneGraph.add(lathe1);
-    lathe1.position.x = -2;
-    lathe1.position.y = 10;
-    lathe1.name = "lathe1";
-    */
 
-    // Make zero two character
+        // Create trees
+        var tree1 = createTree();
+        tree1.name = "tree1";
+        tree1.scale.set(5, 5, 5);
+        tree1.position.set(-35, 0, -35);
+        sceneGraph.add(tree1);
 
-    var zerotwoOriginal = createZeroTwo();
-    // sceneGraph.add(zerotwoOriginal);
-    zerotwoOriginal.position.set(100, 0, 0);
-    zerotwoOriginal.name = "zerotwoOriginal";
+        var tree2 = createTreeSecondType();
+        tree2.name = "tree2";
+        tree2.position.set(35, -80, -35);
+        tree2.scale.set(7, 20, 7);
+        sceneGraph.add(tree2);
 
-    // Create and rotate zero twos
-    for (var i = 1; i < 9; i++) {
-        var zerotwo = createZeroTwo();
-        var rotateZeroTwo = new THREE.Object3D();
+        // Create celtic cross in the middle of the scene
+        var cross1 = createCelticCross();
+        sceneGraph.add(cross1);
 
-        rotateZeroTwo.add(zerotwo);
+        // Initialize cylinder parameters (object that will move around the maze)
+        var cylinderTop =  1.5, cylinderBottom =  1.5, cylinderHeight = 5, cylinderSegments = 12;  
+        var cylinderGeometry = new THREE.CylinderGeometry(cylinderTop, cylinderBottom, cylinderHeight, cylinderSegments);
 
-        zerotwo.scale.set(0.2, 0.2, 0.2);
-        zerotwo.position.set(20, 13.5, 0);
+        // Create rain and fire objects
+        for (var j = 1; j < 5; j++) {
+            // create mazes
+            var maze = createMaze();
+            var mazeObject = new THREE.Object3D();
+            mazeObject.add(maze);
+            mazeObject.rotation.y = Math.PI/2 * (j-1);
+            sceneGraph.add(mazeObject);
 
-        zerotwo.name = "zerotwo" + i;
-        rotateZeroTwo.name = "rotateZeroTwo" + i;
+            // create cylinders that will move around the mazes
+            var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}); // each cylinder will have a different and random color
+            var cylinderMaterial = new THREE.MeshBasicMaterial({color: randomColor});
+            var cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+            cylinder.position.set(0, 2.5, 148);
+            cylinder.name = "cylinder" + i;
+            var cylinderObject3D = new THREE.Object3D();
+            cylinderObject3D.add(cylinder);
+            sceneGraph.add(cylinderObject3D);
+            cylinderObject3D.rotation.y = Math.PI/2 * j;
+            cylinderObject3D.name = "cylinderObject3D" + j;
 
-        rotateZeroTwo.rotation.y = i*(Math.PI/4);
-        sceneGraph.add(rotateZeroTwo);
-
-        existingZeroTwoObjects.push(rotateZeroTwo);
+            // rain
+            var bigRain = createRain(1, 150);
+            var rainObject3D = new THREE.Object3D();
+            rainObject3D.add(bigRain);
+            sceneGraph.add(rainObject3D);
+            rainObject3D.name = "rainObject3D" + j;
+            rainObject3D.rotation.y = (i-1) * Math.PI/2;
+            
+            // fire
+            var fireObject = new THREE.Object3D();
+            fireObject.name = "fireObject" + j;
+            var fire = createFire();
+            fire.position.set(-6, 0, 6);
+            fire.name = "fire" + j;
+            sceneGraph.add(fireObject);
+            fireObject.add(fire);
+            fireObject.rotation.y = j * Math.PI/2;
+        }
     }
-    //var centerZeroTwo2 = new THREE.Object3D();
-    //centerZeroTwo2.position.set(0, 0, 5);
-    //centerZeroTwo2.add(zerotwo2);
-
-    //sceneGraph.add(centerZeroTwo2);
-    //centerZeroTwo2.name = "centerzerotwo2";
-
-
-
-
-    // Create trees
-    var tree1 = createTree();
-    tree1.name = "center";
-    tree1.scale.set(5, 5, 5);
-    tree1.position.set(-35, 0, -35);
-    sceneGraph.add(tree1);
-
-    var tree2 = createTreeSecondType();
-    tree2.name = "tree2";
-    tree2.position.set(35, -80, -35);
-    tree2.scale.set(7, 20, 7);
-    sceneGraph.add(tree2);
-    
-    
-
-
-    
-
-    // Create Mazes
-    for (var m = 0; m < 4; m++) {
-        var maze = createMaze();
-        var mazeObject = new THREE.Object3D();
-        mazeObject.add(maze);
-        mazeObject.rotation.y = Math.PI/2 * m;
-        sceneGraph.add(mazeObject);
-    }
-
-    // Create object to move around the maze
-    var cylinderTop =  1.5;  
-    var cylinderBottom =  1.5;  
-    var cylinderHeight = 5;  
-    var cylinderSegments = 12;  
-    var cylinderGeometry = new THREE.CylinderGeometry(cylinderTop, cylinderBottom, cylinderHeight, cylinderSegments);
-
-    for (var j = 1; j < 5; j++) {
-        var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
-        var cylinderMaterial = new THREE.MeshBasicMaterial({color: randomColor});
-        var cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-        cylinder.position.set(0, 2.5, 148);
-        cylinder.name = "cylinder" + i;
-        var cylinderObject3D = new THREE.Object3D();
-        cylinderObject3D.add(cylinder);
-        sceneGraph.add(cylinderObject3D);
-        cylinderObject3D.rotation.y = Math.PI/2 * j;
-        cylinderObject3D.name = "cylinderObject3D" + j;
-    }
-
-    // Create celtic cross in the middle of the scene
-    var cross1 = createCelticCross();
-    sceneGraph.add(cross1);
-
-    // Create rain
-
-    for (var j = 1; j < 5; j++) {
-        var bigRain = createRain(1, 150);
-        var rainObject3D = new THREE.Object3D();
-        rainObject3D.add(bigRain);
-        sceneGraph.add(rainObject3D);
-        rainObject3D.name = "rainObject3D" + j;
-        rainObject3D.rotation.y = (i-1) * Math.PI/2;
-        console.log(rainObject3D.name);
-    }
-
-    // Create fire
-    for (var f = 1; f < 5; f++) {
-        var fireObject = new THREE.Object3D();
-        fireObject.name = "fireObject" + f;
-        var fire = createFire();
-        fire.position.set(-6, 0, 6);
-        fire.name = "fire" + f;
-        sceneGraph.add(fireObject);
-        fireObject.add(fire);
-        fireObject.rotation.y = f * Math.PI/2;
-    }
-
-}
     
 
         // ANIMATING
-        // Displacement value
+        var delta = 0.1, dispX = 0.2, dispZ = 0.2, countSpeed = 0, countReduceSpeed = 0.01, cameraFlag = true;
 
-        var delta = 0.1;
-
-        var dispX = 0.2, dispZ = 0.2;
-
+        // initialize raycaster and "mouse coordinates"
         var raycaster = new THREE.Raycaster();
-        var mouse = new THREE.Vector2(0.01, 0.01);
+        var mouse = new THREE.Vector2(0.1, 0.1); 
 
-        //var quaternion = new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
-        var countSpeed = 0;
-        var countReduceSpeed = 0.01;
+        function animateRain(rainName, rotation) {
+            var bigRain1 = sceneElements.sceneGraph.getObjectByName(rainName).children[0];
+            bigRain1.rotation.y = rotation;
+        var rainElementsArray = bigRain1.children;
+        for (var j = 0; j < rainElementsArray.length; j++) {
+            var element = rainElementsArray[j];
+            if (element.position.y > -1) {
+                element.position.y -= 0.2;
+            } else {
+                element.position.y = 65;
+            }  
+        }
+        }
 
-        var cameraFlag = true;
-
-        function computeFrame(time) {
-
-            // Rotate directional light
-            var dLight1 = sceneElements.sceneGraph.getObjectByName("dLight1");
-            console.log(dLight1.position.x, dLight1.position.y, dLight1.position.z);
+        // animate function
+        function animate(time) {
 
             // Animate rain
-        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
-        var rainElementsArray = bigRain1.children;
-        for (var j = 0; j < rainElementsArray.length; j++) {
-            var element = rainElementsArray[j];
-            if (element.position.y > -1) {
-                element.position.y -= 0.2;
-            } else {
-                element.position.y = 65;
-            }  
-        }
-        
-        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
-        bigRain1.rotation.y = Math.PI/2;
-        var rainElementsArray = bigRain1.children;
-        for (var j = 0; j < rainElementsArray.length; j++) {
-            var element = rainElementsArray[j];
-            if (element.position.y > -1) {
-                element.position.y -= 0.2;
-            } else {
-                element.position.y = 65;
-            }  
-        }
+            animateRain("rainObject3D1", 0);
+            animateRain("rainObject3D2", Math.PI/2);
+            animateRain("rainObject3D3", Math.PI);
+            animateRain("rainObject3D4", 3*Math.PI/2);
 
-        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
-        bigRain1.rotation.y = Math.PI;
-        var rainElementsArray = bigRain1.children;
-        for (var j = 0; j < rainElementsArray.length; j++) {
-            var element = rainElementsArray[j];
-            if (element.position.y > -1) {
-                element.position.y -= 0.2;
-            } else {
-                element.position.y = 65;
-            }  
-        }
+            // Animate fire (at the center)
 
-        var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
-        bigRain1.rotation.y = 3*Math.PI/2;
-        var rainElementsArray = bigRain1.children;
-        for (var j = 0; j < rainElementsArray.length; j++) {
-            var element = rainElementsArray[j];
-            if (element.position.y > -1) {
-                element.position.y -= 0.2;
-            } else {
-                element.position.y = 65;
-            }  
-        }
-
-        // Enable/disable rain
-        if (keyS) {
-            var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
-            bigRain1.visible = false;
-            var bigRain2 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
-            bigRain2.visible = false;
-            var bigRain3 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
-            bigRain3.visible = false;
-            var bigRain4 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
-            bigRain4.visible = false;
-        } else if (keyX) {
-            var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
-            bigRain1.visible = true;
-            var bigRain2 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
-            bigRain2.visible = true;
-            var bigRain3 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
-            bigRain3.visible = true;
-            var bigRain4 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
-            bigRain4.visible = true;
-        }
-
-        // Animate fire (at the center)
-
-        for (var f = 1; f < 5; f++) {
-            var fire1 = sceneElements.sceneGraph.getObjectByName("fireObject" + f).children[0];
-            var fireElementsArray = fire1.children;
-            for (var j = 0; j < fireElementsArray.length; j++) {
-                var fireElement = fireElementsArray[j];
-                if (fireElement.visible == true) {
-                    fireElement.visible = false;
-                } else {
-                    fireElement.visible = true;
+            for (var f = 1; f < 5; f++) {
+                var fire1 = sceneElements.sceneGraph.getObjectByName("fireObject" + f).children[0];
+                var fireElementsArray = fire1.children;
+                for (var j = 0; j < fireElementsArray.length; j++) {
+                    var fireElement = fireElementsArray[j];
+                    if (fireElement.visible == true) {
+                        fireElement.visible = false;
+                    } else {
+                        fireElement.visible = true;
+                    }
                 }
             }
-        }
+        
+            // Enable/disable rain
+            if (keyS) {
+                var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
+                bigRain1.visible = false;
+                var bigRain2 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
+                bigRain2.visible = false;
+                var bigRain3 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
+                bigRain3.visible = false;
+                var bigRain4 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
+                bigRain4.visible = false;
+            } else if (keyX) {
+                var bigRain1 = sceneElements.sceneGraph.getObjectByName("rainObject3D1").children[0];
+                bigRain1.visible = true;
+                var bigRain2 = sceneElements.sceneGraph.getObjectByName("rainObject3D2").children[0];
+                bigRain2.visible = true;
+                var bigRain3 = sceneElements.sceneGraph.getObjectByName("rainObject3D3").children[0];
+                bigRain3.visible = true;
+                var bigRain4 = sceneElements.sceneGraph.getObjectByName("rainObject3D4").children[0];
+                bigRain4.visible = true;
+            }
 
+            // ANIMATE STONES
 
-            /*
-            var lathe1 = sceneElements.sceneGraph.getObjectByName("lathe1");
-            lathe1.rotation.y += 0.05;
-            */
+            // change size of stones when hover
+            for (var i=1; i<9; i++) {
+                var arrayStone = sceneElements.sceneGraph.getObjectByName("center" + i).children;
+                var intersectsStone = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center" + i).children);
+                
+                if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y <= 1.7) {
+                    intersectsStone[0].object.scale.y += 0.2;
+                } else if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y > 1.7) {
+                    intersectsStone[0].object.scale.y = 2.0;
+                } else {
+                    for (var k=0; k<arrayStone.length; k++) {
+                        arrayStone[k].scale.set(1, 1, 1);
+                    }
+                    
+                }
+            }
 
+            // ANIMATE ZERO TWO
 
             // dynamically remove zero twos
             if (keyMinus && existingZeroTwoObjects.length > 0) {
@@ -1497,9 +1407,7 @@ function createTreeSecondType() {
                 removedZeroTwoObjects.push(randomItem);
                 sceneElements.sceneGraph.remove(randomItem);
                 existingZeroTwoObjects.pop(randomItem);
-            }
-
-            else if (keyPlus && existingZeroTwoObjects.length <=8 && removedZeroTwoObjects.length != 0) {
+            } else if (keyPlus && existingZeroTwoObjects.length <=8 && removedZeroTwoObjects.length != 0) {
                 var object = removedZeroTwoObjects[removedZeroTwoObjects.length - 1];
                 sceneElements.sceneGraph.add(object);
                 removedZeroTwoObjects.pop(object);
@@ -1509,10 +1417,10 @@ function createTreeSecondType() {
              // rotate zero twos
             if (!keyAlt && !keyAltGr) {
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
-                var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
-                zerotwoObject.rotation.y -= 0.02;
-                var zerotwo = zerotwoObject.children[0];
-                zerotwo.rotation.y -= 0.1;
+                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
+                    zerotwoObject.rotation.y -= 0.02;
+                    var zerotwo = zerotwoObject.children[0];
+                    zerotwo.rotation.y -= 0.1;
                 }
             } else if (keyAlt) {
                 keyAltGr = false;
@@ -1522,8 +1430,7 @@ function createTreeSecondType() {
                     var zerotwo = zerotwoObject.children[0];
                     zerotwo.rotation.y -= 0.3;
                 } 
-            } 
-            else if (keyAltGr) {
+            } else if (keyAltGr) {
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
                     zerotwoObject.rotation.y += 0.04;
@@ -1531,28 +1438,6 @@ function createTreeSecondType() {
                     zerotwo.rotation.y += 0.2;
                 }
             } 
-
-             // upgrade speed of zero two's rotations
-
-            if (keyP) {
-                for (var i=0; i<existingZeroTwoObjects.length; i++) {
-                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
-                    zerotwoObject.rotation.y -= 0.01 * countSpeed;
-                    var zerotwo = zerotwoObject.children[0];
-                    zerotwo.rotation.y -= 0.05 * countSpeed;
-                }
-                countSpeed = countSpeed + 1;
-            }
-
-            else if (keyM) {
-                for (var i=0; i<existingZeroTwoObjects.length; i++) {
-                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
-                    zerotwoObject.rotation.y -= countReduceSpeed/100;
-                    var zerotwo = zerotwoObject.children[0];
-                    zerotwo.rotation.y -= countReduceSpeed/100;
-                }
-                countReduceSpeed = countReduceSpeed/4;
-             } 
 
             // make each zero two turn into a stone when pressing Shift
             if (keyShift) {
@@ -1565,9 +1450,7 @@ function createTreeSecondType() {
                     zerotwo.position.set(8.5, 13.5, 0);
                     stoneNumber++;
                 }
-            }
-
-            else  if (keyEnter) {
+            } else  if (keyEnter) { // go to the default positions and rotations (turn around the scene's center)
                 for (var z2=0; z2<existingZeroTwoObjects.length; z2++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[z2].name);
                     zerotwoObject.position.set(0, 0, 0);
@@ -1592,154 +1475,110 @@ function createTreeSecondType() {
                 }
             }
 
-    // Change color of tree when mouse hover
-    raycaster.setFromCamera( mouse, sceneElements.camera );
-    
-    // calculate objects intersecting the picking ray
-    var array = sceneElements.sceneGraph.getObjectByName("center").children;
-    
-    // for (var i = 0; i < array.length; )
+            // ANIMATE TREES
 
-    var intersects = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center").children);        
+            // Change color of tree when mouse hover
+            raycaster.setFromCamera(mouse, sceneElements.camera);
+            
+            // calculate objects intersecting the picking ray
+            var array = sceneElements.sceneGraph.getObjectByName("tree1").children;
 
-    if ( intersects.length > 0 && array.includes(intersects[0].object)) {
-        intersects[0].object.material.color.set(0xadff2f);
-        
-    
-    } else {
-        for (var k = 0; k < array.length; k++) {
-            array[k].material.color.set( 0x00472a);
-        }
-        
-    
-    }
+            var intersects = raycaster.intersectObjects(sceneElements.sceneGraph.getObjectByName("tree1").children);        
 
-    // change size of stones when hover
-    for (var i=1; i<9; i++) {
-        var arrayStone = sceneElements.sceneGraph.getObjectByName("center" + i).children;
-        var intersectsStone = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center" + i).children);
-        
-        if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y <= 1.7) {
-            intersectsStone[0].object.scale.y += 0.2;
-        } else if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y > 1.7) {
-            intersectsStone[0].object.scale.y = 2.0;
-        } else {
-            for (var k=0; k<arrayStone.length; k++) {
-                arrayStone[k].scale.set(1, 1, 1);
+            if (intersects.length > 0 && array.includes(intersects[0].object)) {
+                intersects[0].object.material.color.set(0xadff2f);
+            } else {
+                for (var k = 0; k < array.length; k++) {
+                    array[k].material.color.set( 0x00472a);
+                }
+            }
+
+            // ANIMATE MAZES
+
+            // move cylinder with arrows around the maze (1st person camera)
+
+            var cylinder1 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D1").children[0];
+            var cylinder2 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D2").children[0];
+            var cylinder3 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D3").children[0];
+            var cylinder4 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D4").children[0];
+
+            var camera = sceneElements.camera;
+            if (keyTab) { // press Tab to change to the beginning of the maze
+                if (cameraFlag) { 
+                    camera.position.set(0, 5, 149); // only after the 1st time the user pressed Tab, the camera position changed to this position; after that, the flag becomes false and then the camera position "follows" the cylinder
+                    cameraFlag = false;
+                }
+                if (keyArrowUp && cylinder4.position.z >= 52) { // move forward
+                    cylinder4.position.z -= 1;
+                    cylinder1.position.z -= 1;
+                    cylinder2.position.z -= 1;
+                    cylinder3.position.z -= 1;
+                    camera.position.z -= 1;
+            }
+                if (keyArrowDown && cylinder4.position.z <= 145) { // move back
+                    cylinder4.position.z += 1;
+                    cylinder1.position.z += 1;
+                    cylinder2.position.z += 1;
+                    cylinder3.position.z += 1;
+                    camera.position.z += 1;
+                }
+
+                if (keyArrowLeft && cylinder4.position.x >= -48) { // move to the left
+                    cylinder4.position.x -= 1;
+                    cylinder1.position.x -= 1;
+                    cylinder2.position.x -= 1;
+                    cylinder3.position.x -= 1;
+                    camera.position.x -= 1;
+                }
+
+                if (keyArrowRight && cylinder4.position.x <= 48) { // move to the right
+                    cylinder4.position.x += 1;
+                    cylinder1.position.x += 1;
+                    cylinder2.position.x += 1;
+                    cylinder3.position.x += 1;
+                    camera.position.x += 1;
+                }
+            }
+
+            // Update camera to the default position (pressing Esc) --> look at the center of the scene
+            var camera = sceneElements.camera;
+            if (keyEsc) {
+                camera.position.set(-30, 40, 50);
+                camera.lookAt(new THREE.Vector3(0, 5, 10));
+                sceneElements.control.update();
+            }
+
+            // ANIMATE LIGHTS
+
+            // Add/remove lights
+
+            if (keyR) { // pressing R
+                var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
+                redLight.visible = true;
+                var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
+                whiteLight.visible = false;
+            } else if (keyW) { // pressing W
+                var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
+                redLight.visible = false;
+                var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
+                whiteLight.visible = true;
+            } else if (!keyR && !keyW) {
+                var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
+                redLight.visible = false;
+                var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
+                whiteLight.visible = false;
             }
             
-        }
-    }
-
-    // move cylinder with arrows
-
-    var cylinderArray1 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D1").children;
-    var cylinder1 = cylinderArray1[0];
-
-    var cylinderArray2 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D2").children;
-    var cylinder2 = cylinderArray2[0];
-
-    var cylinderArray3 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D3").children;
-    var cylinder3 = cylinderArray3[0];
-
-    var cylinderArray4 = sceneElements.sceneGraph.getObjectByName("cylinderObject3D4").children;
-    var cylinder4 = cylinderArray4[0];
-
-    var camera = sceneElements.camera;
-    if (keyTab) {
-        if (cameraFlag) {
-            camera.position.set(0, 5, 149);
-            cameraFlag = false;
-        }
-        if (keyArrowUp && cylinder4.position.z >= 52) {
-            cylinder4.position.z -= 1;
-            cylinder1.position.z -= 1;
-            cylinder2.position.z -= 1;
-            cylinder3.position.z -= 1;
-            camera.position.z -= 1;
-            //camera.lookAt(cylinder4.position);
-    }
-        if (keyArrowDown && cylinder4.position.z <= 145) {
-            cylinder4.position.z += 1;
-            cylinder1.position.z += 1;
-            cylinder2.position.z += 1;
-            cylinder3.position.z += 1;
-            camera.position.z += 1;
-            //camera.lookAt(cylinder4.position);
-        }
-
-        if (keyArrowLeft && cylinder4.position.x >= -48) {
-            cylinder4.position.x -= 1;
-            cylinder1.position.x -= 1;
-            cylinder2.position.x -= 1;
-            cylinder3.position.x -= 1;
-            camera.position.x -= 1;
-            //camera.lookAt(cylinder4.position);
-        }
-
-        if (keyArrowRight && cylinder4.position.x <= 48) {
-            cylinder4.position.x += 1;
-            cylinder1.position.x += 1;
-            cylinder2.position.x += 1;
-            cylinder3.position.x += 1;
-            camera.position.x += 1;
-            //camera.lookAt(cylinder4.position);
-        }
-    }
-    
-    /*
-    console.log(camera.position.x);
-    console.log(camera.position.y);
-    console.log(camera.position.z);
-    */
-
-    // Add/remove lights
-
-    if (keyR) {
-        var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
-        redLight.visible = true;
-        var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
-        whiteLight.visible = false;
-    } else if (keyW) {
-        var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
-        redLight.visible = false;
-        var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
-        whiteLight.visible = true;
-    } else if (!keyR && !keyW) {
-        var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
-        redLight.visible = false;
-        var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
-        whiteLight.visible = false;
-    }
-    
-    // Update camera
-    var camera = sceneElements.camera;
-    if (keyEsc) {
-        camera.position.set(-30, 40, 50);
-        camera.lookAt(new THREE.Vector3(0, 5, 10));
-        sceneElements.control.update();
-    }
-
             // Rendering
             helper.render(sceneElements);
-
-            // NEW --- Update control of the camera
             sceneElements.control.update();
-
-            // Call for the next frame
-            requestAnimationFrame(computeFrame);
+            requestAnimationFrame(animate);
         }
 
         // STARTING
-
         init();
-
     </script>
-
-
-
 </head>
-
 <body>
     <audio id="player" autoplay loop>
         <source src="resources/danceOfTheDruids.mp3" type="audio/mp3">
