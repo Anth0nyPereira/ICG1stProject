@@ -51,21 +51,29 @@
                 sceneElements.sceneGraph.add(dLight1);
             
                 // pointlights (to illuminate each maze and give some blue-neon vibes)
+                var pLightObject = new THREE.Object3D();
+                pLightObject.name = "pLightObject";
                 var pLight1 = new THREE.PointLight(0xffffbb, 25, 70);
-                pLight1.position.set(115, 20, 0);
-                sceneElements.sceneGraph.add(pLight1);
+                pLight1.name = "pLight1";
+                pLight1.position.set(117, 20, 0);
+                pLightObject.add(pLight1);
 
                 var pLight2 = new THREE.PointLight(0xffffbb, 25, 70);
-                pLight2.position.set(-115, 20, 0);
-                sceneElements.sceneGraph.add(pLight2);
+                pLight2.name = "pLight2";
+                pLight2.position.set(-117, 20, 0);
+                pLightObject.add(pLight2);
 
                 var pLight3 = new THREE.PointLight(0xffffbb, 25, 70);
-                pLight3.position.set(0, 20, 115);
-                sceneElements.sceneGraph.add(pLight3);
+                pLight3.name = "pLight3";
+                pLight3.position.set(0, 20, 117);
+                pLightObject.add(pLight3);
 
                 var pLight4 = new THREE.PointLight(0xffffbb, 25, 70);
-                pLight4.position.set(0, 20, -115);
-                sceneElements.sceneGraph.add(pLight4);
+                pLight4.name = "pLight4";
+                pLight4.position.set(0, 20, -117);
+                pLightObject.add(pLight4);
+
+                sceneElements.sceneGraph.add(pLightObject);
 
                 // hemisphere lights
                 var hLight1 = new THREE.HemisphereLight(0xffffbb, 0x080820, 5); // "white light" (press W)
@@ -94,7 +102,6 @@
                 // initialize orbitcontrols
                 sceneElements.control = new OrbitControls(camera, renderer.domElement);
                 sceneElements.control.screenSpacePanning = true;
-
             },
 
             render: function render(sceneElements) {
@@ -123,7 +130,7 @@
         window.addEventListener('resize', resizeWindow);
 
         // available keys and added events
-        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false, keyEsc = false, keyTab = false;
+        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false, keyEsc = false, keyTab = false, keyBackSpace = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -219,6 +226,9 @@
                 case 27: // Esc
                     keyEsc = true;
                     break;
+                case 8: // BackSpace
+                    keyBackSpace = true;
+                    break;
             }
         }
 
@@ -293,6 +303,9 @@
                     break;
                 case 27: // Esc
                     keyEsc = false;
+                    break;
+                case 8: // BackSpace
+                    keyBackSpace = false;
                     break;
             }
         }   
@@ -1096,15 +1109,16 @@
         }
 
         // function that creates multiple little boxes that reproduce rain
-        function createRain(min, max) {
+        function createRain(number) {
             var rainElements = new THREE.Group();
-            for (var i = 1; i < 800; i++) {
-                var rainGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+            for (var i = 0; i < number; i++) {
+                var size = Math.random()/2;
+                var rainGeometry = new THREE.BoxGeometry(size, size, size);
                 var rainMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
                 var rain = new THREE.Mesh(rainGeometry, rainMaterial);
-                rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+                rain.position.set(randomIntFromInterval(1, 150), randomIntFromInterval(1, 60), randomIntFromInterval(1, 150));
                 while (rain.position.x > 50 && rain.position.z > 50) {
-                    rain.position.set(randomIntFromInterval(min, max), randomIntFromInterval(1, 60), randomIntFromInterval(min, max));
+                    rain.position.set(randomIntFromInterval(1, 150), randomIntFromInterval(1, 60), randomIntFromInterval(1, 150));
                 }
                 rainElements.add(rain);
             }
@@ -1162,24 +1176,16 @@
                 piece.position.y = 5.2;
                 piece.rotation.y = THREE.Math.degToRad(i);
             }
-
             center.scale.set(2, 2 , 2);
             return center;
         }
 
-        // function that creates another type of tree
-        function createTreeSecondType() {
-            // NICE IDEA TO MAKE A NEW KIND OF TREE!! :)
-            var center = new THREE.Object3D();
-            for (var i=0; i<100; i++) {
-                var piece = createPiece(0x00472a);
-                center.add(piece);
-                piece.position.y = 4;
-                piece.position.x = Math.cos(1 + i*0.1)/1.3;
-                piece.rotation.y = Math.PI * Math.random() * 10;
-                piece.position.z = Math.sin(1 + i*0.1)/1.3;
-            }
-            return center;
+        function createTreeBase() {
+            // base of tree (cylinder)
+            var baseGeometry = new THREE.CylinderGeometry(3, 3, 10, 32);
+            var baseMaterial = new THREE.MeshBasicMaterial({color: 0x341c02});
+            var cylinder = new THREE.Mesh(baseGeometry, baseMaterial);
+            return cylinder;
         }
         
         var existingZeroTwoObjects = [];
@@ -1252,17 +1258,30 @@
         }
 
         // Create trees
-        var tree1 = createTree();
-        tree1.name = "tree1";
-        tree1.scale.set(5, 5, 5);
-        tree1.position.set(-35, 0, -35);
-        sceneGraph.add(tree1);
+        for (var t = 1; t < 5; t++) {
+            var tree1 = createTree();
+            tree1.name = "tree" + t;
+            tree1.scale.set(5, 5, 5);
+            sceneGraph.add(tree1);
+            var treeBase1 = createTreeBase();
+            sceneGraph.add(treeBase1);
 
-        var tree2 = createTreeSecondType();
-        tree2.name = "tree2";
-        tree2.position.set(35, -80, -35);
-        tree2.scale.set(7, 20, 7);
-        sceneGraph.add(tree2);
+            if (t == 1) {
+                tree1.position.set(-35, 5, -35);
+                treeBase1.position.set(-35, 4, -35);
+            } else if (t == 2) {
+                tree1.position.set(35, 5, -35);
+                treeBase1.position.set(35, 4, -35);
+            } else if (t == 3) {
+                tree1.position.set(35, 5, 35);
+                treeBase1.position.set(35, 4, 35);
+            } else {
+                tree1.position.set(-35, 5, 35);
+                treeBase1.position.set(-35, 4, 35);
+            }
+            
+        }
+        
 
         // Create celtic cross in the middle of the scene
         var cross1 = createCelticCross();
@@ -1294,7 +1313,8 @@
             cylinderObject3D.name = "cylinderObject3D" + j;
 
             // rain
-            var bigRain = createRain(1, 150);
+            
+            var bigRain = createRain(400);
             var rainObject3D = new THREE.Object3D();
             rainObject3D.add(bigRain);
             sceneGraph.add(rainObject3D);
@@ -1315,7 +1335,7 @@
     
 
         // ANIMATING
-        var delta = 0.1, dispX = 0.2, dispZ = 0.2, countSpeed = 0, countReduceSpeed = 0.01, cameraFlag = true;
+        var delta = 0.1, dispX = 0.2, dispZ = 0.2, countSpeed = 0, countReduceSpeed = 0.01, cameraFlag = true, animateZeroTwoFlag = true;
 
         // initialize raycaster and "mouse coordinates"
         var raycaster = new THREE.Raycaster();
@@ -1335,14 +1355,30 @@
         }
         }
 
+        function animateZeroTwos(stoneNumber) {
+            for (var z2 = 0; z2 < existingZeroTwoObjects.length; z2++) {
+                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[z2].name);
+                    var stone = sceneElements.sceneGraph.getObjectByName("center" + stoneNumber).children[0];
+                    zerotwoObject.position.set(stone.position.x, 0, stone.position.z);
+                    var zerotwo = zerotwoObject.children[0];
+                    zerotwo.position.set(12, 13.5, 0);
+                }
+        }
+
         // animate function
         function animate(time) {
 
+            // Animate Point Lights
+            var pLight = sceneElements.sceneGraph.getObjectByName("pLightObject");
+            pLight.rotation.y += 0.1;
+
             // Animate rain
+            
             animateRain("rainObject3D1", 0);
             animateRain("rainObject3D2", Math.PI/2);
             animateRain("rainObject3D3", Math.PI);
             animateRain("rainObject3D4", 3*Math.PI/2);
+            
 
             // Animate fire (at the center)
 
@@ -1457,6 +1493,8 @@
                     var zerotwo = zerotwoObject.children[0];
                     zerotwo.position.set(20, 13.5, 0);
                 }
+            } else if (keyBackSpace) {
+                animateZeroTwos(randomIntFromInterval(1, 8));
             }
 
             // make each zero two "jump"
@@ -1481,17 +1519,29 @@
             raycaster.setFromCamera(mouse, sceneElements.camera);
             
             // calculate objects intersecting the picking ray
-            var array = sceneElements.sceneGraph.getObjectByName("tree1").children;
 
-            var intersects = raycaster.intersectObjects(sceneElements.sceneGraph.getObjectByName("tree1").children);        
+            for (var t = 1; t < 5; t++) {
+                var array = sceneElements.sceneGraph.getObjectByName("tree" + t).children;
+                var intersects = raycaster.intersectObjects(array);        
 
-            if (intersects.length > 0 && array.includes(intersects[0].object)) {
-                intersects[0].object.material.color.set(0xadff2f);
-            } else {
-                for (var k = 0; k < array.length; k++) {
-                    array[k].material.color.set( 0x00472a);
+                if (intersects.length > 0 && array.includes(intersects[0].object)) {
+                    if (t == 1) {
+                        intersects[0].object.material.color.set(0xadff2f);
+                    } else if (t == 2) {
+                        intersects[0].object.material.color.set(0xfb33db);
+                    } else if (t == 3) {
+                        intersects[0].object.material.color.set(0xff6600);
+                    } else {
+                        intersects[0].object.material.color.set(0xe92efb);
+                    }
+                    
+                } else {
+                    for (var k = 0; k < array.length; k++) {
+                        array[k].material.color.set( 0x00472a);
+                    }
                 }
             }
+            
 
             // ANIMATE MAZES
 
