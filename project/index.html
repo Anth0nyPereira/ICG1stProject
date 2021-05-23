@@ -42,6 +42,7 @@
                 // ambient light
                 
                 var ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+                ambientLight.name = "ambientLight";
                 sceneElements.sceneGraph.add(ambientLight);
 
                 // directional light (to give some color to the stones)
@@ -130,7 +131,7 @@
         window.addEventListener('resize', resizeWindow);
 
         // available keys and added events
-        var keyD = false, keyA = false, keyS = false, keyW = false, keyPlus = false, keyMinus = false, keyP = false, keyM = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false, keyEsc = false, keyTab = false, keyBackSpace = false;
+        var keyPlus = false, keyMinus = false, keyP = false, keyArrowUp = false, keyArrowDown = false, keyArrowLeft = false, keyArrowRight = false, keyShift = false, keyEnter = false, keyAlt = false, keyAltGr = false, keyW = false, keyR = false, keySpace = false, keyS = false, keyX = false, keyEsc = false, keyTab = false, keyBackSpace = false;
         document.addEventListener('keydown', onDocumentKeyDown, false);
         document.addEventListener('keyup', onDocumentKeyUp, false);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -157,18 +158,6 @@
         // case when keys are pressed
         function onDocumentKeyDown(event) {
             switch (event.keyCode) {
-                case 68: //d
-                    keyD = true;
-                    break;
-                case 83: //s
-                    keyS = true;
-                    break;
-                case 65: //a
-                    keyA = true;
-                    break;
-                case 87: //w
-                    keyW = true;
-                    break;
                 case 187: //+
                     keyPlus = true;
                     break;
@@ -177,9 +166,6 @@
                     break;
                 case 80: //P 
                     keyP = true;
-                    break;
-                case 77: //M
-                    keyM = true;
                     break;
                 case 38: // ArrowUp
                     keyArrowUp = true;
@@ -235,18 +221,6 @@
         // case when keys are not pressed
         function onDocumentKeyUp(event) {
             switch (event.keyCode) {
-                case 68: //d
-                    keyD = false;
-                    break;
-                case 83: //s
-                    keyS = false;
-                    break;
-                case 65: //a
-                    keyA = false;
-                    break;
-                case 87: //w
-                    keyW = false;
-                    break;
                 case 187: //+
                     keyPlus = false;
                     break;
@@ -255,9 +229,6 @@
                     break;
                 case 80: //P 
                     keyP = false;
-                    break;
-                case 77: //M
-                    keyM = false;
                     break;
                 case 38: // ArrowUp
                     keyArrowUp = false;
@@ -346,6 +317,40 @@
             return hair;
         }
 
+        function makeEye() {
+            var eyeShape = new THREE.Shape();
+            eyeShape.moveTo( 0,0 );
+            eyeShape.lineTo(0.5, 1);
+            eyeShape.lineTo(1.5, 3);
+            eyeShape.lineTo(3.5, 3);
+            eyeShape.lineTo(5, 1);
+            eyeShape.lineTo(5.5, 0);
+            eyeShape.lineTo(3.5, 3);
+            eyeShape.lineTo(1.5, 3);
+            eyeShape.lineTo(0, 0);
+
+            var extrudeSettings = {steps: 2, depth: 0.01, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+
+            var eyeGeometry = new THREE.ExtrudeGeometry(eyeShape, extrudeSettings);
+            var eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            var eye1 = new THREE.Mesh(eyeGeometry, eyeMaterial) ;
+            return eye1;
+        }
+
+        function makeMouth() {
+            var mouthShape = new THREE.Shape();
+            mouthShape.moveTo(-1, 0);
+            mouthShape.lineTo(1, 0);
+            mouthShape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -1, 0);
+            var extrudeSettings = {steps: 2, depth: 0.01, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+            
+            var mouthGeometry = new THREE.ExtrudeGeometry(mouthShape, extrudeSettings);
+            var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}); // each mouth will have a different/random color
+            var mouthMaterial = new THREE.MeshBasicMaterial({color: randomColor});
+            var mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+            return mouth;
+        }
+
         // head function
         function createHead() {
             var head = new THREE.Group();
@@ -366,41 +371,18 @@
             hair.position.y = -6;
 
             // eyes
-            var eyeShape = new THREE.Shape();
-            eyeShape.moveTo( 0,0 );
-            eyeShape.lineTo(0.5, 1);
-            eyeShape.lineTo(1.5, 3);
-            eyeShape.lineTo(3.5, 3);
-            eyeShape.lineTo(5, 1);
-            eyeShape.lineTo(5.5, 0);
-            eyeShape.lineTo(3.5, 3);
-            eyeShape.lineTo(1.5, 3);
-            eyeShape.lineTo(0, 0);
-
-            var extrudeSettings = {steps: 2, depth: 0.01, bevelEnabled: true, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
-
-            var eyeGeometry = new THREE.ExtrudeGeometry(eyeShape, extrudeSettings);
-            var eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-            var eye1 = new THREE.Mesh(eyeGeometry, eyeMaterial) ;
+            var eye1 = makeEye();
             eye1.position.set(-4, 2.5, 4);
             eye1.rotation.y = -0.2;
             eye1.scale.set(0.3, 0.3, 0.3);
 
-            var eye2 = new THREE.Mesh(eyeGeometry, eyeMaterial) ;
+            var eye2 = makeEye();
             eye2.position.set(3, 2.5, 4);
             eye2.rotation.y = 0.2;
             eye2.scale.set(0.3, 0.3, 0.3);
 
             // mouth
-            var mouthShape = new THREE.Shape();
-            mouthShape.moveTo(-1, 0);
-            mouthShape.lineTo(1, 0);
-            mouthShape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -1, 0);
-
-            var mouthGeometry = new THREE.ExtrudeGeometry(mouthShape, extrudeSettings);
-            var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}); // each mouth will have a different/random color
-            var mouthMaterial = new THREE.MeshBasicMaterial({color: randomColor})
-            var mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+            var mouth = makeMouth();
             mouth.scale.set(0.5, 2, 0.5);
             mouth.position.set(0, 0, 5);
 
@@ -653,7 +635,7 @@
             // HANDS
             // 1st wrist
             var skinMaterial = new THREE.MeshBasicMaterial({color: 0xf7e7ce});
-            var wrist1 = new THREE.Mesh( forearmGeometry, skinMaterial );
+            var wrist1 = new THREE.Mesh(forearmGeometry, skinMaterial);
             wrist1.scale.set(0.7, 0.2, 0.7);
             wrist1.position.set(21, 20, 0);
             wrist1.rotation.z = -0.6;
@@ -680,12 +662,13 @@
             palm2.rotation.x = Math.PI/2;
             body.add(palm2);
 
-            // Flashlight
+            // flashlight
             var flashlight1 = createLathe(0xffcc00);
             flashlight1.scale.set(0.4, 0.4, 0.4);
             flashlight1.position.set(23, 26, 0);
             body.add(flashlight1);
 
+            // light inside the flashlight
             var pointLight = new THREE.PointLight(0xffff00, 2, 25);
             pointLight.castShadow = true;
             pointLight.position.set(23, 26, 0);
@@ -699,12 +682,19 @@
             holder1.position.set(23, 20, 0);
             body.add(holder1);
 
-            // Neck
+            // leaf at the base of the flashlight
+            var completeLeaf1 = createComplexLeaf(0x006400, 0x149414); // green leaf at the base of the flashlight
+            completeLeaf1.position.set(0, 0, 0);
+            completeLeaf1.scale.set(0.7, 0.7, 0.7);
+            completeLeaf1.rotateOnWorldAxis(new THREE.Vector3(0,0,1), -0.9);
+            completeLeaf1.position.set(9, 12.5, 0);
+
+            // neck
             var neck1 = new THREE.Mesh(forearmGeometry, skinMaterial);
             neck1.position.set(0, 5, 0);
             body.add(neck1);
 
-            // Arrows (dress)
+            // arrows (dress)
             var arrowShape = new THREE.Shape();
             arrowShape.moveTo(1, 0);
             arrowShape.lineTo(2, 0);
@@ -714,9 +704,9 @@
             arrowShape.lineTo(0.5, 1.5);
             arrowShape.lineTo(1, 0);
 
-            var ArrowExtrudeSettings = {steps: 2, depth: 0.5, bevelEnabled: false, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
+            var arrowExtrudeSettings = {steps: 2, depth: 0.5, bevelEnabled: false, bevelThickness: 1, bevelSize: 1, bevelOffset: 0, bevelSegments: 1};
 
-            var arrowGeometry = new THREE.ExtrudeGeometry(arrowShape, ArrowExtrudeSettings);
+            var arrowGeometry = new THREE.ExtrudeGeometry(arrowShape, arrowExtrudeSettings);
             var arrowMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             var arrow1 = new THREE.Mesh(arrowGeometry, arrowMaterial);
             arrow1.scale.set(1, 0.5, 1);
@@ -807,12 +797,6 @@
             body.add(tie1);
 
             // COMPLETE LEAF
-            var completeLeaf1 = createComplexLeaf(0x006400, 0x149414); // green leaf at the base of the flashlight
-            completeLeaf1.position.set(0, 0, 0);
-            completeLeaf1.scale.set(0.7, 0.7, 0.7);
-            completeLeaf1.rotateOnWorldAxis(new THREE.Vector3(0,0,1), -0.9);
-            completeLeaf1.position.set(9, 12.5, 0);
-            
             var randomColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}); // each flying leaf will have a random color too!
             var completeLeaf2 = createComplexLeaf(randomColor, randomColor);
             completeLeaf2.translateZ(-100).translateY(-10);
@@ -839,22 +823,6 @@
             zerotwo1.add(head1);
             zerotwo1.add(body1);
             return zerotwo1;
-        }
-
-        // multiple pieces make a tree
-        function createPiece(color) {
-            var shape = new THREE.Shape();
-            shape.moveTo(-0.5, 0);
-            shape.lineTo(0, 1);
-            shape.lineTo(0.5, 0);
-            shape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -0.5, 0);
-            
-            var extrudeSettings = {steps: 2, depth: 0.05, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1, bevelSegments: 0};
-
-            var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-            var material = new THREE.MeshBasicMaterial({color: color});
-            var mesh = new THREE.Mesh(geometry, material);
-            return mesh;
         }
 
         // Auxiliary functions to make a stone 
@@ -893,13 +861,12 @@
             var bool = goodPointsArray(points);
 
             while (!bool) {
-            points = generatePoints();
-            bool = goodPointsArray(points);
+                points = generatePoints();
+                bool = goodPointsArray(points);
             }
 
-            var material = new THREE.MeshLambertMaterial({color: "rgb(128,128,128)", transparent: true});
             var meshGeometry = new ConvexGeometry(points);
-
+            var material = new THREE.MeshLambertMaterial({color: "rgb(128,128,128)"});
             var stone = new THREE.Mesh(meshGeometry, material);
             stone.castShadow = true;
             return stone;
@@ -909,11 +876,11 @@
             var boxGeometry = new THREE.BoxGeometry(10, 10, 10);
             var count = 0;
             while (count < 8) {
-                var boxMaterial = new THREE.MeshPhongMaterial({color: 0x0B5345});
+                var boxMaterial = new THREE.MeshPhongMaterial({color: 0x0b5345});
                 var itemX = possibleValuesRow[Math.floor(Math.random() * possibleValuesRow.length)];
                 var box = new THREE.Mesh(boxGeometry, boxMaterial);
                 var edges = new THREE.EdgesGeometry(boxGeometry);
-                var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xFFD700}));
+                var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0xffd700}));
                 box.position.set(itemX, 5, position);
                 line.position.set(itemX, 5, position);
                 for(var i = 0; i < possibleValuesRow.length; i++){ 
@@ -1143,6 +1110,22 @@
                 }   
             }
             return fireElements;
+        }
+
+        // multiple pieces make a tree
+        function createPiece(color) {
+            var shape = new THREE.Shape();
+            shape.moveTo(-0.5, 0);
+            shape.lineTo(0, 1);
+            shape.lineTo(0.5, 0);
+            shape.bezierCurveTo(0.2, -0.1, -0.2, -0.1, -0.5, 0);
+            
+            var extrudeSettings = {steps: 2, depth: 0.05, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1, bevelSegments: 0};
+
+            var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            var material = new THREE.MeshBasicMaterial({color: color});
+            var mesh = new THREE.Mesh(geometry, material);
+            return mesh;
         }
 
         // create tree function (with multiple pieces created with an extrude)
@@ -1421,10 +1404,10 @@
             // change size of stones when hover
             for (var i=1; i<9; i++) {
                 var arrayStone = sceneElements.sceneGraph.getObjectByName("center" + i).children;
-                var intersectsStone = raycaster.intersectObjects( sceneElements.sceneGraph.getObjectByName("center" + i).children);
+                var intersectsStone = raycaster.intersectObjects(sceneElements.sceneGraph.getObjectByName("center" + i).children);
                 
                 if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y <= 1.7) {
-                    intersectsStone[0].object.scale.y += 0.2;
+                    intersectsStone[0].object.scale.y += 0.1;
                 } else if (intersectsStone.length > 0 && arrayStone.includes(intersectsStone[0].object) && intersectsStone[0].object.scale.y > 1.7) {
                     intersectsStone[0].object.scale.y = 2.0;
                 } else {
@@ -1608,21 +1591,32 @@
 
             // Add/remove lights
 
+            var ambientLight = sceneElements.sceneGraph.getObjectByName("ambientLight");
+            var dLight1 = sceneElements.sceneGraph.getObjectByName("dLight1");
+
             if (keyR) { // pressing R
                 var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
                 redLight.visible = true;
                 var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
                 whiteLight.visible = false;
+                ambientLight.visible = false;
+                dLight1.visible = false;
+
             } else if (keyW) { // pressing W
                 var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
                 redLight.visible = false;
                 var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
                 whiteLight.visible = true;
+                ambientLight.visible = false;
+                dLight1.visible = false;
+
             } else if (!keyR && !keyW) {
                 var redLight = sceneElements.sceneGraph.getObjectByName("hLight2");
                 redLight.visible = false;
                 var whiteLight = sceneElements.sceneGraph.getObjectByName("hLight1");
                 whiteLight.visible = false;
+                ambientLight.visible = true;
+                dLight1.visible = true;
             }
             
             // Rendering
