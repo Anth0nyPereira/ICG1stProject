@@ -1318,7 +1318,7 @@
     
 
         // ANIMATING
-        var delta = 0.1, dispX = 0.2, dispZ = 0.2, countSpeed = 0, countReduceSpeed = 0.01, cameraFlag = true, animateZeroTwoFlag = true;
+        var delta = 0.1, dispX = 0.2, dispZ = 0.2, countSpeed = 0, cameraFlag = true;
 
         // initialize raycaster and "mouse coordinates"
         var raycaster = new THREE.Raycaster();
@@ -1457,6 +1457,19 @@
                     zerotwo.rotation.y += 0.2;
                 }
             } 
+
+            if (keyP) {
+                for (var i=0; i<existingZeroTwoObjects.length; i++) {
+                    var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
+                    zerotwoObject.rotation.y -= 0.001 * countSpeed;
+                    console.log(zerotwoObject.rotation.y);
+                    var zerotwo = zerotwoObject.children[0];
+                    zerotwo.rotation.y -= 0.005 * countSpeed;
+                }
+                countSpeed = countSpeed + 1;
+            } else {
+                countSpeed = 0;
+            }
 
             // make each zero two turn into a stone when pressing Shift
             if (keyShift) {
