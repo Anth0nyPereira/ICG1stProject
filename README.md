@@ -8,10 +8,9 @@
 
 <p align="center">
 To make the audio autoplay on Google Chrome:
-BE SURE THAT YOU DON'T HAVE ANY GOOGLE CHROME WINDOW OPENED
-Open terminal
-Type: google-chrome --autoplay-policy=no-user-gesture-required
-
+Be sure that you don't have any window opened - Open terminal & Type: google-chrome --autoplay-policy=no-user-gesture-required
+</p>
+<p align="center">
 On Firefox:
 Allow permission on browser
 </p>
