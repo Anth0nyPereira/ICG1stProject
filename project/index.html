@@ -1458,7 +1458,7 @@
                 }
             } 
 
-            if (keyP) {
+            if (keyP) { // make each zero two rotate faster progressively
                 for (var i=0; i<existingZeroTwoObjects.length; i++) {
                     var zerotwoObject = sceneElements.sceneGraph.getObjectByName(existingZeroTwoObjects[i].name);
                     zerotwoObject.rotation.y -= 0.001 * countSpeed;
@@ -1522,7 +1522,7 @@
                 if (intersects.length > 0 && array.includes(intersects[0].object)) {
                     for (var i=0; i<array.length; i++) {
                         if (array[i].position.y == intersects[0].object.position.y) {
-                            if (t == 1) {
+                            if (t == 1) { // each t will have a different combination of colors
                                 intersects[0].object.material.color.set(0xadff2f);
                                 array[i].material.color.set(0xfb33db);
                             } else if (t == 2) {
