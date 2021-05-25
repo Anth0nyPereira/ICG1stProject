@@ -9,7 +9,7 @@ Type: google-chrome --autoplay-policy=no-user-gesture-required
 
 On Firefox:
 Allow permission on browser
-  </p>
+</p>
 
 
 
