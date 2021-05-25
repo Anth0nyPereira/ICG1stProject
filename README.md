@@ -2,8 +2,8 @@
 <img align="left" width="100" height="100" src="https://c.tenor.com/QxBGq81QaOcAAAAj/love-%D1%82%D1%8F%D0%BD.gif"> 1st Project of INTRODUÇÃO À COMPUTAÇÃO GRÁFICA Curricular Unit <img align="right" width="100" height="100" src="https://c.tenor.com/QxBGq81QaOcAAAAj/love-%D1%82%D1%8F%D0%BD.gif">
 </p>
 
-### ABSTRACT
 <p align="center">
+  ABSTRACT
   This project consisted of the modeling and animation of a vast set of different meshes and geometries, aiming to recreate a scene from the Outlander (2014) series, such as BoxGeometry, TorusGeometry, ExtrudeGeometry, CylinderGeometry, PlaneGeometry, among others. Some types of light were also used like AmbientLight, DirectionalLight, PointLight, and HemisphericLight. The use of shadows was also applied. The user can interact with the scene using the keyboard.
 
   </p>
