@@ -4,6 +4,8 @@
 
 <p align="center">
   ABSTRACT
+ </p>
+   <p align "center">
   This project consisted of the modeling and animation of a vast set of different meshes and geometries, aiming to recreate a scene from the Outlander (2014) series, such as BoxGeometry, TorusGeometry, ExtrudeGeometry, CylinderGeometry, PlaneGeometry, among others. Some types of light were also used like AmbientLight, DirectionalLight, PointLight, and HemisphericLight. The use of shadows was also applied. The user can interact with the scene using the keyboard.
 
   </p>
