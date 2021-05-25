@@ -1,4 +1,4 @@
-<p align="center"><bold> It's Dance of the Druids, Darling!</bold></p>
+<bold> It's Dance of the Druids, Darling!</bold>
 
 <p align="center">
 <img align="left" width="100" height="100" src="https://c.tenor.com/QxBGq81QaOcAAAAj/love-%D1%82%D1%8F%D0%BD.gif"> 1st Project of INTRODUÇÃO À COMPUTAÇÃO GRÁFICA Curricular Unit <img align="right" width="100" height="100" src="https://c.tenor.com/QxBGq81QaOcAAAAj/love-%D1%82%D1%8F%D0%BD.gif">
